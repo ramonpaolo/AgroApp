@@ -1,17 +1,26 @@
 List users = [
   {
+    "id": 0,
     "name": "Ramon",
-    "mensagen": ["Eae"],
+    "mensagen": [
+      {"type": "img", "submit": "you", "content": "assets/eu.jpg"}
+    ],
     "image": "assets/eu.jpg"
   },
   {
+    "id": 1,
     "name": "Dudu",
-    "mensagen": ["Como ta men?"],
+    "mensagen": [
+      {"type": "txt", "submit": "you", "content": "Eaee"}
+    ],
     "image": "assets/eu.jpg"
   },
   {
+    "id": 2,
     "name": "Enzo",
-    "mensagen": ["Koé meu rei"],
+    "mensagen": [
+      {"type": "txt", "submit": "i", "content": "Enzo aki brow"}
+    ],
     "image": "assets/eu.jpg"
   },
 ];

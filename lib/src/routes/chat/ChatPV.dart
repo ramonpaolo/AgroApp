@@ -1,15 +1,21 @@
 //---- Packages
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 //---- Screens
 import 'package:agricultura/src/routes/chat/PageHero.dart';
 
+//---- Datas
+import 'package:agricultura/src/data/chat.dart';
+
 class ChatPV extends StatefulWidget {
-  ChatPV({Key key, this.name, this.messages, this.image}) : super(key: key);
-  final String name;
+  ChatPV({Key key, this.name, this.messages, this.image, this.id})
+      : super(key: key);
+  final name;
   final messages;
-  final String image;
+  final image;
+  final id;
   @override
   _ChatPVState createState() => _ChatPVState();
 }
@@ -18,9 +24,13 @@ class _ChatPVState extends State<ChatPV> {
   //---- Variables
 
   List messages;
+  List _images = [];
+
   String _text;
+
   var _image;
 
+  var id;
   //---- Functions
 
   void imagem() async {
@@ -28,7 +38,12 @@ class _ChatPVState extends State<ChatPV> {
         await ImagePicker.platform.pickImage(source: ImageSource.camera);
     setState(() {
       _image = imagePicker.path;
+      messages.insert(0, {"type": "img", "submit": "i", "content": "$_image"});
+
+      _images.add(_image);
     });
+
+    print(messages.length);
   }
 
   void galery() async {
@@ -36,13 +51,16 @@ class _ChatPVState extends State<ChatPV> {
         await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = imagePicker.path;
+      messages.insert(0, {"type": "img", "submit": "i", "content": "$_image"});
+      _images.add(_image);
     });
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    messages = widget.messages;
+    messages = users[widget.id]["mensagen"];
+    print(messages);
     super.initState();
   }
 
@@ -157,10 +175,11 @@ class _ChatPVState extends State<ChatPV> {
                                                                             onTap: () =>
                                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => PageHero(_image))),
                                                                             child:
-                                                                                Hero(tag: index, child: Card(child: Image.asset(_image))),
+                                                                                Hero(tag: index, child: Card(child: Image.asset(_images[index]))),
                                                                           ))));
                                                             },
-                                                            itemCount: 2,
+                                                            itemCount:
+                                                                _images.length,
                                                           ))
                                                     ],
                                                   ),
@@ -191,14 +210,35 @@ class _ChatPVState extends State<ChatPV> {
                 itemBuilder: (context, index) {
                   return ClipRRect(
                     child: GestureDetector(
-                        child: Card(
-                            child: Padding(
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left:
+                                    messages[index]["submit"] == "i" ? 240 : 0,
+                                bottom: 5,
+                                right:
+                                    messages[index]["submit"] == "i" ? 5 : 240),
+                            child: Container(
                                 padding: EdgeInsets.all(10),
-                                child: Image.asset(
-                                  _image,
-                                  filterQuality: FilterQuality.high,
-                                  height: 200,
-                                )))),
+                                child: Card(
+                                    color: messages[index]["submit"] == "i"
+                                        ? Colors.green[600]
+                                        : Colors.white,
+                                    child: Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: messages[index]["type"] == "img"
+                                            ? Image.asset(
+                                                messages[index]["content"],
+                                                width: 200,
+                                                height: 200,
+                                              )
+                                            : messages[index]["submit"] == "i"
+                                                ? Text(
+                                                    "${messages[index]["content"]}",
+                                                    style: TextStyle(
+                                                        color: Colors.white70),
+                                                  )
+                                                : Text(
+                                                    "${messages[index]["content"]}")))))),
                     borderRadius: BorderRadius.circular(40),
                   );
                 },
@@ -235,25 +275,25 @@ class _ChatPVState extends State<ChatPV> {
                                           padding: EdgeInsets.only(left: 30),
                                           child: Column(children: [
                                             IconButton(
-                                              icon: Icon(Icons.image),
+                                              icon: Icon(Icons.camera_alt),
                                               iconSize: 88.0,
                                               tooltip: "Tirar foto",
                                               color: Colors.green,
                                               onPressed: imagem,
                                             ),
-                                            Text("Camera")
+                                            Text("Tirar foto")
                                           ])),
                                       Padding(
-                                          padding: EdgeInsets.only(left: 150),
+                                          padding: EdgeInsets.only(left: 130),
                                           child: Column(children: [
                                             IconButton(
                                               icon: Icon(Icons.attach_file),
                                               iconSize: 88.0,
                                               tooltip: "Pegar na galeria",
                                               color: Colors.green,
-                                              onPressed: imagem,
+                                              onPressed: galery,
                                             ),
-                                            Text("Arquivo")
+                                            Text("Pegar Arquivo")
                                           ]))
                                     ])),
                                   ],
@@ -264,13 +304,13 @@ class _ChatPVState extends State<ChatPV> {
                 )),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(bottom: 5),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
                   padding: EdgeInsets.only(left: 20, right: 15),
                   color: Colors.green[100],
-                  width: 330,
+                  width: 300,
                   height: 60,
                   child: TextField(
                     onChanged: (value) {
@@ -278,9 +318,15 @@ class _ChatPVState extends State<ChatPV> {
                       print(_text);
                     },
                     autocorrect: true,
-                    autofocus: false,
                     onSubmitted: (value) {
-                      messages.insert(0, _text);
+                      setState(() {
+                        messages.insert(0, {
+                          "type": "txt",
+                          "submit": "i",
+                          "content": "$_text"
+                        });
+                      });
+                      //messages.add({"type": "txt", "content": "$value"});
                     },
                     maxLines: 60,
                     keyboardType: TextInputType.text,
@@ -292,7 +338,15 @@ class _ChatPVState extends State<ChatPV> {
                         hintText: "Digite sua mensagem aqui..."),
                   ),
                 )),
-          )
+          ),
+          IconButton(
+              icon: Icon(Icons.arrow_forward_ios, color: Colors.green),
+              onPressed: () {
+                setState(() {
+                  messages.insert(
+                      0, {"type": "txt", "submit": "i", "content": "$_text"});
+                });
+              })
         ],
       ),
     );

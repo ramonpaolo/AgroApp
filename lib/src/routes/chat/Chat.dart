@@ -16,8 +16,9 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   //---- Variables
 
-  TextEditingController _searchController = TextEditingController();
   Map user = {"name": null};
+
+  TextEditingController _searchController = TextEditingController();
 
   //---- Functions
 
@@ -36,6 +37,13 @@ class _ChatState extends State<Chat> {
         return search;
       }
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print(users[0]["mensagen"][0]["content"]);
+    super.initState();
   }
 
   @override
@@ -118,11 +126,12 @@ class _ChatState extends State<Chat> {
           ),
           SizedBox(
               width: size.width,
-              height: size.height * 0.645,
+              height:
+                  size.height <= 700 ? size.height * 0.645 : size.height * 0.7,
               child: PageView(children: [
                 SizedBox(
                     width: size.width,
-                    height: size.height * 0.7,
+                    height: size.height * 0.8,
                     child: ClipRRect(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(60),
@@ -140,7 +149,9 @@ class _ChatState extends State<Chat> {
                               ),
                               SizedBox(
                                   width: size.width,
-                                  height: size.height * 0.59,
+                                  height: size.height <= 700
+                                      ? size.height * 0.59
+                                      : size.height * 0.656,
                                   child: user["name"] != null
                                       ? Padding(
                                           padding: EdgeInsets.only(
@@ -193,7 +204,7 @@ class _ChatState extends State<Chat> {
                                                     padding: EdgeInsets.only(
                                                         left: 70),
                                                     child: Text(
-                                                      "${user["mensagen"][0]}",
+                                                      "${user["mensagen"][0]["content"]}",
                                                       style: TextStyle(
                                                           fontStyle:
                                                               FontStyle.italic),
@@ -223,6 +234,8 @@ class _ChatState extends State<Chat> {
                                                                 ["mensagen"],
                                                             image: users[index]
                                                                 ["image"],
+                                                            id: users[index]
+                                                                ["id"],
                                                           ))),
                                               contentPadding:
                                                   EdgeInsets.all(20),
@@ -234,7 +247,7 @@ class _ChatState extends State<Chat> {
                                                     BorderRadius.circular(40),
                                               ),
                                               subtitle: Text(
-                                                  users[index]["mensagen"][0]),
+                                                  "${users[index]["mensagen"][0]["content"]}"),
                                             );
                                           }))
                             ])))),
@@ -255,7 +268,9 @@ class _ChatState extends State<Chat> {
                         ),
                         Container(
                           width: size.width,
-                          height: size.height * 0.59,
+                          height: size.height <= 700
+                              ? size.height * 0.59
+                              : size.height * 0.656,
                           child: ListView.builder(
                             itemCount: 10,
                             itemBuilder: (context, index) {

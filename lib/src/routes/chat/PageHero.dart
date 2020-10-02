@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 class PageHero extends StatelessWidget {
   PageHero(this.image);
   //---- Variables
+
   final image;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +22,7 @@ class PageHero extends StatelessWidget {
               Center(
                   child: Stack(children: [
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(1000),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.asset(
                       image,
                       width: 400,

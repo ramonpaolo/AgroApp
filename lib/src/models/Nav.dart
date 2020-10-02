@@ -103,8 +103,8 @@ class _NavState extends State<Nav> {
                           height: 600,
                           color: Colors.white,
                           child: Column(children: [
-                            Image.network(
-                              "https://img.freepik.com/free-vector/illustration-with-group-people_23-2148466800.jpg?size=626&ext=jpg",
+                            Image.asset(
+                              "assets/reuniao.jpg",
                               height: 200,
                             ),
                             Padding(
