@@ -12,11 +12,15 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> {
   //---- Variables
 
-  var key = GlobalKey<ScaffoldState>();
-  TextEditingController _searchController = TextEditingController();
-  Map planta;
   bool animated = true;
+
   double height = 76.0;
+
+  Map planta;
+
+  TextEditingController _searchController = TextEditingController();
+
+  var key = GlobalKey<ScaffoldState>();
 
   //---- Functions
 
@@ -25,9 +29,7 @@ class _StoreState extends State<Store> {
       if (search == plantas[x]["name"]) {
         print("'Chat.dart': Esse mesmo: $search");
         setState(() {
-          planta["name"] = plantas[x]["name"];
-          planta["mensagen"] = plantas[x]["mensagen"];
-          planta["image"] = plantas[x]["image"];
+          planta = plantas[x];
         });
         return planta;
       } else if (x == plantas.length) {
@@ -184,7 +186,11 @@ class _StoreState extends State<Store> {
                               itemBuilder: (context, index) {
                                 return Dismissible(
                                     onDismissed: (direction) {
-                                      plantas.remove(plantas[index]);
+                                      setState(() {
+                                        plantas.remove(plantas[index]["id"]);
+                                      });
+                                      print(index);
+
                                       key.currentState.showSnackBar(SnackBar(
                                         content: Text(
                                           "Excluido o produto: ${plantas[index]["title"]}",
@@ -226,8 +232,8 @@ class _StoreState extends State<Store> {
                                         secondary: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            child:
-                                                Image.asset("assets/eu.jpg")),
+                                            child: Image.asset(
+                                                "${plantas[index]["image"]}")),
                                         key: Key(DateTime.now().toString()),
                                         value: plantas[index]["checbox"],
                                         checkColor: Colors.white,
