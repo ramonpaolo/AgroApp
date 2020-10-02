@@ -91,6 +91,7 @@ class _ChatState extends State<Chat> {
               child: Container(
                 color: Colors.white,
                 child: TextField(
+                  textCapitalization: TextCapitalization.words,
                   cursorColor: Colors.green[900],
                   controller: _searchController,
                   onChanged: (value) {
@@ -156,66 +157,41 @@ class _ChatState extends State<Chat> {
                                       ? Padding(
                                           padding: EdgeInsets.only(
                                               top: 20, left: 10),
-                                          child: GestureDetector(
-                                              onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ChatPV(
-                                                            name: user["name"],
-                                                            messages: user[
-                                                                "mensagen"],
-                                                            image:
-                                                                user["image"],
-                                                          ))),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        40),
-                                                            child: Image.asset(
-                                                              user["image"],
-                                                              width: 60,
-                                                            )),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 10),
-                                                          child: Text(
-                                                            "${user["name"]}",
-                                                            style: TextStyle(
-                                                                fontSize: 16),
-                                                          ),
-                                                        )
-                                                      ]),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 70),
-                                                    child: Text(
-                                                      "${user["mensagen"][0]["content"]}",
-                                                      style: TextStyle(
-                                                          fontStyle:
-                                                              FontStyle.italic),
-                                                    ),
-                                                  ),
-                                                  Divider(
-                                                    color: Colors.green[700],
-                                                    height: 30,
-                                                  ),
-                                                ],
-                                              )))
+                                          child: ListTile(
+                                            onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ChatPV(
+                                                          name: user["name"],
+                                                          messages:
+                                                              user["mensagen"],
+                                                          image: user["image"],
+                                                          id: user["id"],
+                                                        ))),
+                                            contentPadding: EdgeInsets.only(
+                                                left: 20, right: 20, top: 5),
+                                            title: Text(user["name"]),
+                                            leading: ClipRRect(
+                                              child:
+                                                  Image.asset("assets/eu.jpg"),
+                                              borderRadius:
+                                                  BorderRadius.circular(40),
+                                            ),
+                                            subtitle: user["mensagen"][0]
+                                                        ["type"] ==
+                                                    "img"
+                                                ? Row(children: [
+                                                    Text("Imagem"),
+                                                    Icon(
+                                                      Icons.camera_alt,
+                                                      color: Colors.green,
+                                                      size: 18,
+                                                    )
+                                                  ])
+                                                : Text(
+                                                    "${user["mensagen"][0]["content"]}"),
+                                          ))
                                       : ListView.builder(
                                           padding: EdgeInsets.only(
                                               left: 10, top: 20),
@@ -237,8 +213,8 @@ class _ChatState extends State<Chat> {
                                                             id: users[index]
                                                                 ["id"],
                                                           ))),
-                                              contentPadding:
-                                                  EdgeInsets.all(20),
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 20, right: 20, top: 5),
                                               title: Text(users[index]["name"]),
                                               leading: ClipRRect(
                                                 child: Image.asset(
@@ -246,8 +222,19 @@ class _ChatState extends State<Chat> {
                                                 borderRadius:
                                                     BorderRadius.circular(40),
                                               ),
-                                              subtitle: Text(
-                                                  "${users[index]["mensagen"][0]["content"]}"),
+                                              subtitle: users[index]["mensagen"]
+                                                          [0]["type"] ==
+                                                      "img"
+                                                  ? Row(children: [
+                                                      Text("Imagem"),
+                                                      Icon(
+                                                        Icons.camera_alt,
+                                                        color: Colors.green,
+                                                        size: 18,
+                                                      )
+                                                    ])
+                                                  : Text(
+                                                      "${users[index]["mensagen"][0]["content"]}"),
                                             );
                                           }))
                             ])))),
@@ -272,19 +259,32 @@ class _ChatState extends State<Chat> {
                               ? size.height * 0.59
                               : size.height * 0.656,
                           child: ListView.builder(
-                            itemCount: 10,
+                            itemCount: grupos.length,
                             itemBuilder: (context, index) {
                               return Container(
                                   width: 1000,
                                   height: 100,
                                   padding: EdgeInsets.all(20),
                                   child: ListTile(
-                                    title: Text("Grupo $index"),
+                                    title: Text("${grupos[index]["name"]}"),
                                     leading: ClipRRect(
-                                      child: Image.asset("assets/eu.jpg"),
+                                      child: Image.asset(
+                                          "${grupos[index]["image"]}"),
                                       borderRadius: BorderRadius.circular(40),
                                     ),
-                                    subtitle: Text("$index"),
+                                    subtitle: grupos[index]["mensagen"][0]
+                                                ["type"] ==
+                                            "img"
+                                        ? Row(children: [
+                                            Text("Imagem"),
+                                            Icon(
+                                              Icons.camera_alt,
+                                              color: Colors.green,
+                                              size: 18,
+                                            )
+                                          ])
+                                        : Text(
+                                            "${grupos[index]["mensagen"][0]["content"]}"),
                                   ));
                             },
                           ),

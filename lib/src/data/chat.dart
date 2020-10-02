@@ -24,3 +24,14 @@ List users = [
     "image": "assets/eu.jpg"
   },
 ];
+
+List grupos = [
+  {
+    "id": 0,
+    "name": "De perto",
+    "mensagen": [
+      {"type": "img", "submit": "you", "content": "assets/eu.jpg"}
+    ],
+    "image": "assets/eu.jpg"
+  },
+];

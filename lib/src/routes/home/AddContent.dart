@@ -26,6 +26,14 @@ class _AddContentState extends State<AddContent> {
     });
   }
 
+  Future galery() async {
+    var imagePicker =
+        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = File(imagePicker.path);
+    });
+  }
+
   title(String text) {
     setState(() {
       _titleController.text = text;
@@ -52,13 +60,27 @@ class _AddContentState extends State<AddContent> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      IconButton(
-                          icon: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.green,
-                            semanticLabel: "Tirar foto",
-                          ),
-                          onPressed: imagem),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                              tooltip: "Abrir Pasta",
+                              icon: Icon(
+                                Icons.attach_file,
+                                color: Colors.green,
+                                semanticLabel: "Escolher arquivo",
+                              ),
+                              onPressed: galery),
+                          IconButton(
+                              tooltip: "Tirar foto",
+                              icon: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.green,
+                                semanticLabel: "Tirar foto",
+                              ),
+                              onPressed: imagem),
+                        ],
+                      ),
                       image != null
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(30),
@@ -97,21 +119,19 @@ class _AddContentState extends State<AddContent> {
                                   context: context,
                                   builder: (c) {
                                     return Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(top: 5),
-                                            child: ListTile(
-                                              contentPadding:
-                                                  EdgeInsets.only(left: 180),
-                                              title: Text(
-                                                _titleController.text,
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                              subtitle: Text(
-                                                _subtitleController.text,
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            )),
+                                        ListTile(
+                                          title: Text(
+                                            _titleController.text,
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          subtitle: Text(
+                                            _subtitleController.text,
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
                                         image != null
                                             ? ClipRRect(
                                                 borderRadius:
