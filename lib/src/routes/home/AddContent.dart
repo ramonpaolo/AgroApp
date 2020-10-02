@@ -1,8 +1,8 @@
 //---- Packages
 import 'dart:ui';
+import 'package:agricultura/src/data/home.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class AddContent extends StatefulWidget {
   @override
@@ -12,9 +12,10 @@ class AddContent extends StatefulWidget {
 class _AddContentState extends State<AddContent> {
   //---- Variables
 
-  var image;
   TextEditingController _titleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
+
+  var image;
 
   //---- Functions
 
@@ -22,7 +23,7 @@ class _AddContentState extends State<AddContent> {
     var imagePicker =
         await ImagePicker.platform.pickImage(source: ImageSource.camera);
     setState(() {
-      image = File(imagePicker.path);
+      image = imagePicker.path;
     });
   }
 
@@ -30,7 +31,7 @@ class _AddContentState extends State<AddContent> {
     var imagePicker =
         await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     setState(() {
-      image = File(imagePicker.path);
+      image = imagePicker.path;
     });
   }
 
@@ -38,14 +39,14 @@ class _AddContentState extends State<AddContent> {
     setState(() {
       _titleController.text = text;
     });
-    print(_subtitleController);
+    print(_titleController.text);
   }
 
   subtitle(String text) {
     setState(() {
       _subtitleController.text = text;
     });
-    print(_subtitleController);
+    print(_subtitleController.text);
   }
 
   @override
@@ -85,7 +86,7 @@ class _AddContentState extends State<AddContent> {
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(30),
                               child: Card(
-                                  child: Image.file(
+                                  child: Image.asset(
                                 image,
                                 width: size.width * 0.5,
                               )))
@@ -145,7 +146,7 @@ class _AddContentState extends State<AddContent> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(200),
-                                                        child: Image.file(
+                                                        child: Image.asset(
                                                           image,
                                                           width:
                                                               size.width * 0.7,
@@ -174,7 +175,7 @@ class _AddContentState extends State<AddContent> {
                                                                   height: 50,
                                                                   child: ClipRRect(
                                                                       borderRadius: BorderRadius.circular(90),
-                                                                      child: Image.file(
+                                                                      child: Image.asset(
                                                                         image,
                                                                         fit: BoxFit
                                                                             .fill,
@@ -189,7 +190,20 @@ class _AddContentState extends State<AddContent> {
                                     );
                                   });
                             },
-                            onLongPress: () => Navigator.pop(context),
+                            onLongPress: () {
+                              setState(() {
+                                plantas.insert(0, {
+                                  "id": 3,
+                                  "favorite": false,
+                                  "title": "${_titleController.text}",
+                                  "subtitle": "${_subtitleController.text}",
+                                  "image": "$image",
+                                  "checbox": false
+                                });
+                              });
+                              Future.delayed(Duration(seconds: 1),
+                                  () => Navigator.pop(context));
+                            },
                             icon: Icon(
                               Icons.check,
                               color: Colors.white,
