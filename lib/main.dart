@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -11,7 +12,9 @@ import 'package:agricultura/src/models/Nav.dart';
 import 'package:agricultura/src/auth/login.dart';
 import 'package:agricultura/src/models/Splash.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MaterialApp(
     home: Index(),
     theme: ThemeData(cardColor: Colors.white, fontFamily: "Roboto"),
