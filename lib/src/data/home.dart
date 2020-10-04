@@ -10,6 +10,7 @@ List plantas = [
     "image_author": "assets/images/eu.jpg",
     "describe":
         "Eucalipto com aproximadamente 20 anos de existência. Muito rígido",
+    "views": 4,
   },
   {
     "id": 1,
@@ -22,6 +23,7 @@ List plantas = [
     "image_author": "assets/images/eu.jpg",
     "describe":
         "Samambaia para se criar em casa, enviado diretamente do logradouro em Bahia",
+    "views": 34,
   },
   {
     "id": 2,
@@ -34,5 +36,6 @@ List plantas = [
     "image_author": "assets/images/eu.jpg",
     "describe":
         "Coqueiro típico de Miami(EUA) enviado em aproximadamente 20 dias depois da compra",
+    "views": 651,
   },
 ];
