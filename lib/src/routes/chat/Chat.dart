@@ -9,6 +9,8 @@ import 'package:agricultura/src/routes/chat/ChatPV.dart';
 import 'package:agricultura/src/data/chat.dart';
 
 class Chat extends StatefulWidget {
+  Chat({Key key, this.data}) : super(key: key);
+  final Map data;
   @override
   _ChatState createState() => _ChatState();
 }
@@ -42,7 +44,7 @@ class _ChatState extends State<Chat> {
   @override
   void initState() {
     // TODO: implement initState
-    print(users[0]["mensagen"][0]["content"]);
+    print("------------ Chat.dart -------------");
     super.initState();
   }
 
@@ -75,7 +77,7 @@ class _ChatState extends State<Chat> {
                         padding: EdgeInsets.only(left: 20),
                         child: Center(
                             child: Text(
-                          "Ramon Paolo Maran",
+                          "${widget.data["name"]}",
                           style: TextStyle(
                               fontSize: 18,
                               color: Colors.green,
