@@ -26,6 +26,8 @@ class _UserState extends State<User> {
   List myPlantas = [];
   List menorToMaior = [];
 
+  Widget icon;
+
   //---- Functios
 
   myplantas() async {
@@ -55,6 +57,27 @@ class _UserState extends State<User> {
   void initState() {
     // TODO: implement initState
     print("--------------- User.dart--------------");
+    //print(FirebaseAuth.instance.currentUser.emailVerified);
+    if (FirebaseAuth.instance.currentUser.emailVerified) {
+      setState(() {
+        icon = Tooltip(
+            message: "Email verificado",
+            child: Icon(
+              Icons.verified_user,
+              color: Colors.green,
+            ));
+      });
+    } else {
+      FirebaseAuth.instance.currentUser.reload();
+      setState(() {
+        icon = Tooltip(
+            message: "Email Não verificado",
+            child: Icon(
+              Icons.info_outline,
+              color: Colors.green,
+            ));
+      });
+    }
     myplantas();
     super.initState();
   }
@@ -102,43 +125,49 @@ class _UserState extends State<User> {
                                 fontWeight: FontWeight.bold),
                           )
                         ]))),
-                IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colors.green,
-                    ),
-                    onPressed: () {
-                      showModalBottomSheet(
-                          context: (context),
-                          builder: (context) {
-                            return Container(
-                              padding: EdgeInsets.all(40),
-                              color: Colors.white,
-                              width: 1000,
-                              height: 1000,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    icon,
+                    IconButton(
+                        icon: Icon(
+                          Icons.settings,
+                          color: Colors.green,
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                              context: (context),
+                              builder: (context) {
+                                return Container(
+                                  padding: EdgeInsets.all(40),
+                                  color: Colors.white,
+                                  width: 1000,
+                                  height: 1000,
+                                  child: Column(
                                     children: [
-                                      Text("Localização $localizacao"),
-                                      Switch(
-                                        value: localizacao,
-                                        onChanged: (v) {
-                                          setState(() {
-                                            localizacao = v;
-                                          });
-                                        },
-                                        activeColor: Colors.green,
-                                      )
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text("Localização $localizacao"),
+                                          Switch(
+                                            value: localizacao,
+                                            onChanged: (v) {
+                                              setState(() {
+                                                localizacao = v;
+                                              });
+                                            },
+                                            activeColor: Colors.green,
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            );
-                          });
-                    }),
+                                );
+                              });
+                        }),
+                  ],
+                )
               ],
             ),
             Divider(
