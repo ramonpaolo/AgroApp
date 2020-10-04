@@ -4,7 +4,7 @@ List plantas = [
     "favorite": false,
     "title": "Eucalipto",
     "subtitle": "Plantio",
-    "image": "assets/planta.webp",
+    "image": "assets/images/planta.webp",
     "checbox": true
   },
   {
@@ -12,7 +12,7 @@ List plantas = [
     "favorite": true,
     "title": "Samambaia",
     "subtitle": "Bahiana",
-    "image": "assets/samambaia.jpg",
+    "image": "assets/images/samambaia.jpg",
     "checbox": true
   },
   {
@@ -20,7 +20,7 @@ List plantas = [
     "favorite": false,
     "title": "Coqueiro",
     "subtitle": "Americano",
-    "image": "assets/cokeiro.webp",
+    "image": "assets/images/cokeiro.webp",
     "checbox": false
   },
 ];
