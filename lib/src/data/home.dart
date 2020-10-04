@@ -8,6 +8,8 @@ List plantas = [
     "checbox": true,
     "author": "Ramon Paolo Maran",
     "image_author": "assets/images/eu.jpg",
+    "describe":
+        "Eucalipto com aproximadamente 20 anos de existência. Muito rígido",
   },
   {
     "id": 1,
@@ -18,6 +20,8 @@ List plantas = [
     "checbox": true,
     "author": "Ramon Paolo Maran",
     "image_author": "assets/images/eu.jpg",
+    "describe":
+        "Samambaia para se criar em casa, enviado diretamente do logradouro em Bahia",
   },
   {
     "id": 2,
@@ -28,5 +32,7 @@ List plantas = [
     "checbox": false,
     "author": "Ramon Paolo Maran",
     "image_author": "assets/images/eu.jpg",
+    "describe":
+        "Coqueiro típico de Miami(EUA) enviado em aproximadamente 20 dias depois da compra",
   },
 ];
