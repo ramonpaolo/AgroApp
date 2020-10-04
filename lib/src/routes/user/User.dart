@@ -1,11 +1,16 @@
 //---- Packages
-import 'package:agricultura/src/auth/login.dart';
-import 'package:agricultura/src/data/home.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 //---- Screens
+import 'package:agricultura/src/auth/login.dart';
 import 'package:agricultura/src/routes/user/Visualizar.dart';
+
+//---- Datas
+import 'package:agricultura/src/data/home.dart';
 
 class User extends StatefulWidget {
   User({Key key, this.data}) : super(key: key);
@@ -15,10 +20,13 @@ class User extends StatefulWidget {
 }
 
 class _UserState extends State<User> {
+  //---- Variables
   bool localizacao = true;
 
   List myPlantas = [];
   List menorToMaior = [];
+
+  //---- Functios
 
   myplantas() async {
     for (var x = 0; x < plantas.length; x++) {
@@ -30,6 +38,17 @@ class _UserState extends State<User> {
         print("Não é meu");
       }
     }
+  }
+
+  Future<File> _getData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    var file = File("${directory.path}/data.json");
+    return file;
+  }
+
+  Future _saveData() async {
+    final path = await _getData();
+    await path.delete();
   }
 
   @override
@@ -62,12 +81,18 @@ class _UserState extends State<User> {
                           Padding(
                             padding: EdgeInsets.only(top: 10),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(200),
-                              child: Image.asset(
-                                "${myPlantas[0]["image_author"]}",
-                                height: 180,
-                              ),
-                            ),
+                                borderRadius: BorderRadius.circular(200),
+                                child: myPlantas.length >= 1
+                                    ? Image.asset(
+                                        "${myPlantas[0]["image_author"]}",
+                                        height: 180,
+                                      )
+                                    : Icon(
+                                        Icons.person,
+                                        semanticLabel: "Sem Foto de perfil",
+                                        color: Colors.green,
+                                        size: 168,
+                                      )),
                           ),
                           Text(
                             "${widget.data["name"]}",
@@ -123,9 +148,16 @@ class _UserState extends State<User> {
               "Meus anúncios",
               style: TextStyle(fontSize: 22, color: Colors.white),
             ),
-            construtor(myPlantas),
+            myPlantas.length == 0
+                ? Text(
+                    "Sem anúncio",
+                    style: TextStyle(color: Colors.white),
+                  )
+                : construtor(myPlantas),
             TextButton.icon(
-                onPressed: () {
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  await _saveData();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Login()));
                 },
