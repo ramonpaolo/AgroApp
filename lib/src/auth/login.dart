@@ -160,7 +160,9 @@ class _LoginState extends State<Login> {
                       width: 20,
                       color: Colors.white,
                     ),
-                    Text("Login Facebook")
+                    Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text("Login Facebook"))
                   ]),
                 ),
                 color: Colors.blue[600],

@@ -175,7 +175,9 @@ class _CadastroState extends State<Cadastro> {
                       width: 20,
                       color: Colors.white,
                     ),
-                    Text("Cadastro Facebook")
+                    Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text("Cadastro Facebook"))
                   ]),
                 ),
                 color: Colors.blue[600],
