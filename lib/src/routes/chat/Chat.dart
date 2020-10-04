@@ -67,7 +67,7 @@ class _ChatState extends State<Chat> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(40),
                           child: Image.asset(
-                            "assets/eu.jpg",
+                            "assets/images/eu.jpg",
                           ),
                         ),
                       ),
@@ -173,8 +173,8 @@ class _ChatState extends State<Chat> {
                                                 left: 20, right: 20, top: 5),
                                             title: Text(user["name"]),
                                             leading: ClipRRect(
-                                              child:
-                                                  Image.asset("assets/eu.jpg"),
+                                              child: Image.asset(
+                                                  "assets/images/eu.jpg"),
                                               borderRadius:
                                                   BorderRadius.circular(40),
                                             ),
@@ -218,7 +218,7 @@ class _ChatState extends State<Chat> {
                                               title: Text(users[index]["name"]),
                                               leading: ClipRRect(
                                                 child: Image.asset(
-                                                    "assets/eu.jpg"),
+                                                    "assets/images/eu.jpg"),
                                                 borderRadius:
                                                     BorderRadius.circular(40),
                                               ),
