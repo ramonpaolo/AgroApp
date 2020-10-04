@@ -131,7 +131,7 @@ class _LoginState extends State<Login> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(40),
                           child: Image.asset(
-                            "assets/google.jpg",
+                            "assets/images/google.jpg",
                             width: 30,
                           ),
                         ),
@@ -156,7 +156,7 @@ class _LoginState extends State<Login> {
                   height: 50,
                   child: Row(children: [
                     Image.asset(
-                      "assets/facebook.png",
+                      "assets/images/facebook.png",
                       width: 20,
                       color: Colors.white,
                     ),
