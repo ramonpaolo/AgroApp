@@ -111,13 +111,6 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    datas();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
