@@ -1,6 +1,7 @@
 //----  Packages
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -19,11 +20,11 @@ class Nav extends StatefulWidget {
 class _NavState extends State<Nav> {
   //---- Variables
 
+  double sizeIcon = 40;
+
   Map data = {};
 
   int _page = 0;
-
-  double sizeIcon = 40;
 
   Future<File> _getData() async {
     try {
@@ -55,6 +56,7 @@ class _NavState extends State<Nav> {
   void initState() {
     // TODO: implement initState
     print("------------- Nav.dart ---------------");
+
     _readData();
     super.initState();
   }
