@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 
 //---- Screens
 import 'package:agricultura/src/routes/chat/PageHero.dart';
@@ -16,6 +18,7 @@ class ChatPV extends StatefulWidget {
   final messages;
   final image;
   final id;
+
   @override
   _ChatPVState createState() => _ChatPVState();
 }
@@ -39,11 +42,10 @@ class _ChatPVState extends State<ChatPV> {
     setState(() {
       _image = imagePicker.path;
       messages.insert(0, {"type": "img", "submit": "i", "content": "$_image"});
-
       _images.add(_image);
     });
 
-    print(messages.length);
+    print(messages[0]["content"]);
   }
 
   void galery() async {
@@ -54,6 +56,32 @@ class _ChatPVState extends State<ChatPV> {
       messages.insert(0, {"type": "img", "submit": "i", "content": "$_image"});
       _images.add(_image);
     });
+  }
+
+  Future<File> _getData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    var file = File("${directory.path}/data.json");
+    return file;
+  }
+
+  Future _saveData() async {
+    final path = await _getData();
+    final file = {
+      "id": 1,
+      "name": "Dudu",
+      "mensagen": [
+        {"type": "txt", "submit": "you", "content": "Eaee"}
+      ],
+      "image": "assets/eu.jpg"
+    };
+    return await path.writeAsString(file.toString());
+  }
+
+  Future _readData() async {
+    final data = await _getData();
+
+    var j = await json.decode(data.readAsString().toString());
+    print(await j);
   }
 
   @override
@@ -71,6 +99,7 @@ class _ChatPVState extends State<ChatPV> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(children: [
+          RaisedButton(onPressed: _readData),
           ClipRRect(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(60),
@@ -191,6 +220,9 @@ class _ChatPVState extends State<ChatPV> {
                             ),
                           ],
                         )),
+                    messages[0]["content"] != null
+                        ? Text(messages[0]["content"])
+                        : Text("Null"),
                     Divider(
                       height: 8,
                       color: Colors.green,
