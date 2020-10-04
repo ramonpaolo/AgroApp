@@ -17,6 +17,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.green,
       body: SingleChildScrollView(
@@ -43,7 +44,7 @@ class _LoginState extends State<Login> {
                           ))),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 150, left: 360),
+                  padding: EdgeInsets.only(top: 150, left: size.width * 0.88),
                   child: Tooltip(
                       message: "Cadastrar",
                       child: IconButton(
