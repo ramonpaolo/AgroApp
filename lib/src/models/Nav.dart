@@ -1,5 +1,9 @@
 //----  Packages
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
 
 //---- Screens
 import 'package:agricultura/src/routes/chat/Chat.dart';
@@ -18,6 +22,30 @@ class _NavState extends State<Nav> {
   int _page = 0;
   List pages = [Home(), Chat(), Store()];
   double sizeIcon = 40;
+
+  //---- Functions
+
+  Future<File> _getData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    var file = File("${directory.path}/data.json");
+    return file;
+  }
+
+  Future _readData() async {
+    final directory = await _getData();
+    String file = directory.readAsStringSync();
+    var jsonConvert = jsonDecode(file);
+    print(jsonConvert);
+    return jsonConvert;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("------------- Nav.dart ---------------");
+    _readData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
