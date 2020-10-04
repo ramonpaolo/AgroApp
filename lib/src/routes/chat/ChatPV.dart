@@ -64,31 +64,23 @@ class _ChatPVState extends State<ChatPV> {
     return file;
   }
 
-  Future _saveData() async {
-    final path = await _getData();
-    final file = {
-      "id": 1,
-      "name": "Dudu",
-      "mensagen": [
-        {"type": "txt", "submit": "you", "content": "Eaee"}
-      ],
-      "image": "assets/eu.jpg"
-    };
-    return await path.writeAsString(file.toString());
-  }
-
   Future _readData() async {
-    final data = await _getData();
-
-    var j = await json.decode(data.readAsString().toString());
-    print(await j);
+    try {
+      final data = await _getData();
+      var j = await json.decode(data.readAsStringSync());
+      print(await j);
+      return await j;
+    } catch (e) {
+      print(e);
+      print("Error _readData");
+    }
   }
 
   @override
   void initState() {
     // TODO: implement initState
+    print("-------------- ChatPV.dart -----------------");
     messages = users[widget.id]["mensagen"];
-    print(messages);
     super.initState();
   }
 
@@ -99,7 +91,6 @@ class _ChatPVState extends State<ChatPV> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(children: [
-          RaisedButton(onPressed: _readData),
           ClipRRect(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(60),
@@ -220,9 +211,6 @@ class _ChatPVState extends State<ChatPV> {
                             ),
                           ],
                         )),
-                    messages[0]["content"] != null
-                        ? Text(messages[0]["content"])
-                        : Text("Null"),
                     Divider(
                       height: 8,
                       color: Colors.green,
