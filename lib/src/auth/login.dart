@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //---- Screens
 import 'package:agricultura/src/auth/cadastro.dart';
@@ -19,8 +20,45 @@ class _LoginState extends State<Login> {
   //---- Variables
   bool obscuteText = true;
 
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
+
+  Future loginEmailSenha(email, senha) async {
+    try {
+      await auth.signInWithEmailAndPassword(email: email, password: senha);
+      await _saveData(email, senha);
+      await Future.delayed(
+          Duration(seconds: 1),
+          () => Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  child: Nav(), type: PageTransitionType.bottomToTop)));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        print("Email não encontrado");
+      } else if (e.code == "wrong-password") {
+        print("Senha errada");
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future autonomo() async {
+    try {
+      await auth.signInAnonymously();
+      await Future.delayed(
+          Duration(seconds: 1),
+          () => Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  child: Nav(), type: PageTransitionType.bottomToTop)));
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   void initState() {
@@ -126,7 +164,7 @@ class _LoginState extends State<Login> {
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
                 onPressed: () async {
-                  await _readData(
+                  await loginEmailSenha(
                       _controllerEmail.text, _controllerPassword.text);
                 },
                 child: Container(
@@ -189,6 +227,22 @@ class _LoginState extends State<Login> {
                 color: Colors.blue[600],
               ),
             ),
+            Divider(
+              color: Colors.green,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: RaisedButton(
+                onPressed: () async {
+                  await autonomo();
+                },
+                child: Container(
+                    width: 130,
+                    height: 50,
+                    child: Center(child: Text("Login Anônimo"))),
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
@@ -234,6 +288,14 @@ class _LoginState extends State<Login> {
     final directory = await getApplicationDocumentsDirectory();
     var file = File("${directory.path}/data.json");
     return file;
+  }
+
+  Future _saveData(email, password) async {
+    final file = await _getData();
+    var j = {'email': '$email', 'password': '$password', 'name': 'Ramon paolo'};
+    var encode = jsonEncode(j);
+    var write = await file.writeAsString(encode);
+    return write;
   }
 
   Future _readData(email, password) async {
