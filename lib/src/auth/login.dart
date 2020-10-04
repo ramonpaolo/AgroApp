@@ -1,10 +1,14 @@
 //---- Packages
-import 'package:agricultura/src/models/Nav.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'dart:async';
 
 //---- Screens
 import 'package:agricultura/src/auth/cadastro.dart';
+import 'package:agricultura/src/models/Nav.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,6 +18,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   //---- Variables
   bool obscuteText = true;
+
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +89,8 @@ class _LoginState extends State<Login> {
                                 Icons.email,
                                 color: Colors.green,
                               ),
-                              false),
+                              false,
+                              _controllerEmail),
                         ),
                       ),
                       Divider(
@@ -101,7 +109,8 @@ class _LoginState extends State<Login> {
                                   Icons.vpn_key,
                                   color: Colors.green,
                                 ),
-                                true),
+                                true,
+                                _controllerPassword),
                           ))
                     ],
                   ),
@@ -109,12 +118,16 @@ class _LoginState extends State<Login> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
-                onPressed: () => Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                        child: Nav(),
-                        type: PageTransitionType.bottomToTop,
-                        duration: Duration(milliseconds: 600))),
+                onPressed: () async {
+                  await _saveData(
+                      _controllerEmail.text, "assets/images/eu.jpg");
+                  Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                          child: Nav(),
+                          type: PageTransitionType.bottomToTop,
+                          duration: Duration(milliseconds: 600)));
+                },
                 child: Container(
                     width: 130,
                     height: 50,
@@ -181,9 +194,15 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget formulario(TextInputType keyBoardType, String hintText,
-      bool obscureText, Icon prefixIcon, bool suffixIcon) {
+  Widget formulario(
+      TextInputType keyBoardType,
+      String hintText,
+      bool obscureText,
+      Icon prefixIcon,
+      bool suffixIcon,
+      TextEditingController controller) {
     return TextFormField(
+      controller: controller,
       keyboardType: keyBoardType,
       obscureText: obscureText,
       cursorColor: Colors.green,
@@ -208,5 +227,18 @@ class _LoginState extends State<Login> {
           contentPadding: EdgeInsets.all(20),
           hoverColor: Colors.white),
     );
+  }
+
+  Future<File> _getData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    var file = File("${directory.path}/data.json");
+    return file;
+  }
+
+  Future _saveData(name, image) async {
+    final path = await _getData();
+    final file = {"name": "$name", "image": "$image"};
+    var en = jsonEncode(file);
+    await path.writeAsString(en);
   }
 }
