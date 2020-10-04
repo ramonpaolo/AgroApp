@@ -25,6 +25,8 @@ class _LoginState extends State<Login> {
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
 
+  String text = "";
+
   Future loginEmailSenha(email, senha) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: senha);
@@ -38,8 +40,14 @@ class _LoginState extends State<Login> {
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
         print("Email não encontrado");
+        await showDialog(
+            context: (context),
+            child: AlertDialog(content: Text("Email não cadastrado")));
       } else if (e.code == "wrong-password") {
         print("Senha errada");
+        await showDialog(
+            context: (context),
+            child: AlertDialog(content: Text("Senha errada")));
       }
     } catch (e) {
       print(e.toString());
@@ -292,28 +300,24 @@ class _LoginState extends State<Login> {
 
   Future _saveData(email, password) async {
     final file = await _getData();
-    var j = {'email': '$email', 'password': '$password', 'name': 'Ramon paolo'};
+    var j;
+    if (FirebaseAuth.instance.currentUser.displayName == null) {
+      print("firebase name null");
+      j = {
+        'email': '$email',
+        'password': '$password',
+        'name': "Ramon Paolo Maran"
+      };
+    } else {
+      print("firebase name não null");
+      j = {
+        'email': '$email',
+        'password': '$password',
+        'name': "${FirebaseAuth.instance.currentUser.displayName}"
+      };
+    }
     var encode = jsonEncode(j);
     var write = await file.writeAsString(encode);
     return write;
-  }
-
-  Future _readData(email, password) async {
-    try {
-      var file = await _getData();
-      var read = file.readAsStringSync();
-      var decode = jsonDecode(read);
-      if (decode["email"] == email && decode["password"] == password) {
-        print("Email e senha iguais.");
-        Navigator.pushReplacement(
-            context,
-            PageTransition(
-                child: Nav(),
-                type: PageTransitionType.bottomToTop,
-                duration: Duration(milliseconds: 600)));
-      }
-    } catch (e) {
-      print(e);
-    }
   }
 }

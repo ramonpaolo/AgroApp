@@ -21,21 +21,48 @@ class _CadastroState extends State<Cadastro> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  String text = "";
+
   TextEditingController _controllerName = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
+
+  Widget txtBtn = Text("");
 
   //---- Functions
 
   Future cadastroEmailSenha(email, senha) async {
     try {
-      auth.createUserWithEmailAndPassword(email: email, password: senha);
+      await auth.createUserWithEmailAndPassword(email: email, password: senha);
+      User user = FirebaseAuth.instance.currentUser;
+      await user.sendEmailVerification();
+
+      setState(() {
+        text =
+            "Você tem até 1 hora para confirmar o Email ou sua conta será cancelada";
+        txtBtn = TextButton(
+            onPressed: () => Future.delayed(
+                Duration(seconds: 1),
+                () => Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                        child: Nav(),
+                        type: PageTransitionType.bottomToTop,
+                        duration: Duration(milliseconds: 600)))),
+            child: Text("Ok"));
+      });
+      await _saveData(_controllerName.text, email, senha);
     } on FirebaseAuthException catch (e) {
-      print(e.code);
       if (e.code == "weak-password") {
         print("Senha errada");
+        setState(() {
+          text = "Senha errada";
+        });
       } else if (e.code == "email-already-in-use") {
         print("Email em uso");
+        setState(() {
+          text = "Email já em uso";
+        });
       }
     } catch (e) {
       print(e);
@@ -166,14 +193,10 @@ class _CadastroState extends State<Cadastro> {
                 onPressed: () async {
                   await cadastroEmailSenha(
                       _controllerEmail.text, _controllerPassword.text);
-                  await _saveData(_controllerName.text, _controllerEmail.text,
-                      _controllerPassword.text);
-                  Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: Nav(),
-                          type: PageTransitionType.bottomToTop,
-                          duration: Duration(milliseconds: 600)));
+                  await showDialog(
+                      context: (context),
+                      child: AlertDialog(
+                          content: Text("$text"), actions: [txtBtn]));
                 },
                 child: Container(
                     width: 150,
