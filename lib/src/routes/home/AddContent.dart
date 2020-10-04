@@ -16,6 +16,8 @@ class _AddContentState extends State<AddContent> {
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
+  TextEditingController _describeController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
 
   var image;
 
@@ -49,6 +51,20 @@ class _AddContentState extends State<AddContent> {
       _subtitleController.text = text;
     });
     print(_subtitleController.text);
+  }
+
+  describe(String text) {
+    setState(() {
+      _describeController.text = text;
+    });
+    print(_describeController.text);
+  }
+
+  price(String text) {
+    setState(() {
+      _describeController.text = text;
+    });
+    print(_priceController.text);
   }
 
   @override
@@ -96,12 +112,23 @@ class _AddContentState extends State<AddContent> {
                       Divider(
                         color: Colors.white,
                       ),
-                      formulario("Titulo", 1, 0, _titleController, title),
+                      formulario("Titulo", 1, 0, _titleController, title,
+                          TextInputType.name),
                       Divider(
                         color: Colors.white,
                       ),
-                      formulario(
-                          "Subtítulo", 3, 15, _subtitleController, subtitle),
+                      formulario("Subtítulo", 3, 15, _subtitleController,
+                          subtitle, TextInputType.text),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      formulario("Describe", 3, 15, _describeController,
+                          describe, TextInputType.text),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      formulario("Price", 1, 1, _priceController, price,
+                          TextInputType.number),
                       Divider(
                         color: Colors.white,
                       ),
@@ -203,6 +230,9 @@ class _AddContentState extends State<AddContent> {
                                   "checbox": false,
                                   "author": "${widget.name}",
                                   "image_author": "assets/images/eu.jpg",
+                                  "describe": "${_describeController.text}",
+                                  "views": 0,
+                                  "price": _priceController.text,
                                 });
                               });
                               Future.delayed(Duration(seconds: 1),
@@ -224,8 +254,13 @@ class _AddContentState extends State<AddContent> {
                 ))));
   }
 
-  Widget formulario(String hintText, int maxLines, double top,
-      TextEditingController controller, Function fun) {
+  Widget formulario(
+      String hintText,
+      int maxLines,
+      double top,
+      TextEditingController controller,
+      Function fun,
+      TextInputType textInputType) {
     return ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: Container(
@@ -235,7 +270,7 @@ class _AddContentState extends State<AddContent> {
             onChanged: (e) {
               fun(e);
             },
-            keyboardType: TextInputType.text,
+            keyboardType: textInputType,
             textAlign: TextAlign.start,
             textCapitalization: TextCapitalization.words,
             maxLines: maxLines,
