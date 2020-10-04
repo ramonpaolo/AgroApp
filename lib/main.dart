@@ -25,6 +25,8 @@ class Index extends StatefulWidget {
 }
 
 class _IndexState extends State<Index> {
+  String data = "";
+
   Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File("${directory.path}/data.json");
@@ -34,12 +36,26 @@ class _IndexState extends State<Index> {
   Future _readData() async {
     try {
       final file = await _getData();
-      final decode = jsonDecode(file.readAsStringSync());
-      print(decode);
+      final decode = await jsonDecode(file.readAsStringSync());
+      setState(() {
+        data = "tem";
+      });
+      print(await decode);
       return decode;
     } catch (e) {
-      print(e);
+      print("Error: " + e.toString());
+      setState(() {
+        data = "nao";
+      });
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("------------ main.dart------------");
+    _readData();
+    super.initState();
   }
 
   @override
@@ -47,7 +63,7 @@ class _IndexState extends State<Index> {
     return Simple_splashscreen(
         context: context,
         splashscreenWidget: Splash(),
-        gotoWidget: _readData() != null ? Nav() : Login(),
+        gotoWidget: data == "tem" ? Nav() : Login(),
         timerInSeconds: 2);
   }
 }
