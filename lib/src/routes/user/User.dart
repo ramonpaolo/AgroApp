@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:agricultura/src/auth/login.dart';
 import 'package:agricultura/src/data/home.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -106,7 +107,20 @@ class _UserState extends State<User> {
                 },
                 itemCount: myPlantas.length,
               ),
-            )
+            ),
+            TextButton.icon(
+                onPressed: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Login()));
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  "Logout",
+                  style: TextStyle(color: Colors.white),
+                ))
           ],
         ),
       ),
