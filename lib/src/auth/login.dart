@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:agricultura/src/models/Nav.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -107,7 +108,12 @@ class _LoginState extends State<Login> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () => Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                        child: Nav(),
+                        type: PageTransitionType.bottomToTop,
+                        duration: Duration(milliseconds: 600))),
                 child: Container(
                     width: 130,
                     height: 50,

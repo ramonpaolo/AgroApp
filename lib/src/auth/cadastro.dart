@@ -1,5 +1,9 @@
 //---- Packages
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+
+//---- Screens
+import 'package:agricultura/src/models/Nav.dart';
 
 class Cadastro extends StatefulWidget {
   @override
@@ -122,7 +126,12 @@ class _CadastroState extends State<Cadastro> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () => Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                        child: Nav(),
+                        type: PageTransitionType.bottomToTop,
+                        duration: Duration(milliseconds: 600))),
                 child: Container(
                     width: 150,
                     height: 50,
