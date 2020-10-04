@@ -1,7 +1,7 @@
 //----  Packages
+import 'package:agricultura/src/routes/user/User.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -56,7 +56,6 @@ class _NavState extends State<Nav> {
   void initState() {
     // TODO: implement initState
     print("------------- Nav.dart ---------------");
-
     _readData();
     super.initState();
   }
@@ -72,7 +71,9 @@ class _NavState extends State<Nav> {
                 ? Chat(
                     data: data,
                   )
-                : Store(),
+                : _page == 2
+                    ? Store()
+                    : User(data: data),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           items: [
@@ -127,6 +128,21 @@ class _NavState extends State<Nav> {
                     )),
               ),
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person, color: Colors.green),
+              title: Text("Person", style: TextStyle(color: Colors.green)),
+              activeIcon: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Container(
+                    width: sizeIcon,
+                    height: sizeIcon,
+                    color: Colors.green,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    )),
+              ),
+            ),
           ],
           currentIndex: _page,
           onTap: (value) {
@@ -152,7 +168,7 @@ class _NavState extends State<Nav> {
                           color: Colors.white,
                           child: Column(children: [
                             Image.asset(
-                              "assets/reuniao.jpg",
+                              "assets/images/reuniao.jpg",
                               height: 200,
                             ),
                             Padding(
@@ -166,7 +182,9 @@ class _NavState extends State<Nav> {
                                 onPressed: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AddContent())),
+                                        builder: (context) => AddContent(
+                                              name: data["name"],
+                                            ))),
                                 icon: Icon(
                                   Icons.check,
                                   color: Colors.white,
