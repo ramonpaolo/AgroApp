@@ -1,6 +1,10 @@
 //---- Packages
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 //---- Screens
 import 'package:agricultura/src/models/Nav.dart';
@@ -17,6 +21,21 @@ class _CadastroState extends State<Cadastro> {
   TextEditingController _controllerName = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
+
+  //---- Functions
+
+  Future<File> _getData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    var file = File("${directory.path}/data.json");
+    return file;
+  }
+
+  Future _saveData(name, email, password) async {
+    final path = await _getData();
+    final file = {"name": "$name", "email": "$email", "password": "$password"};
+    var en = jsonEncode(file);
+    await path.writeAsString(en);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,12 +145,16 @@ class _CadastroState extends State<Cadastro> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
-                onPressed: () => Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                        child: Nav(),
-                        type: PageTransitionType.bottomToTop,
-                        duration: Duration(milliseconds: 600))),
+                onPressed: () async {
+                  await _saveData(_controllerName.text, _controllerEmail.text,
+                      _controllerPassword.text);
+                  Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                          child: Nav(),
+                          type: PageTransitionType.bottomToTop,
+                          duration: Duration(milliseconds: 600)));
+                },
                 child: Container(
                     width: 150,
                     height: 50,
