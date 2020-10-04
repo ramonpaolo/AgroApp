@@ -1,9 +1,5 @@
 //---- Packages
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
-
-//---- Screens
-import 'package:agricultura/src/auth/login.dart';
 
 class Cadastro extends StatefulWidget {
   @override
@@ -58,11 +54,7 @@ class _CadastroState extends State<Cadastro> {
                             Icons.arrow_back,
                             color: Colors.white,
                           ),
-                          onPressed: () => Navigator.push(
-                              context,
-                              PageTransition(
-                                  child: Login(),
-                                  type: PageTransitionType.rightToLeft))),
+                          onPressed: () => Navigator.pop(context)),
                     )),
               ],
             ),
@@ -154,7 +146,7 @@ class _CadastroState extends State<Cadastro> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(40),
                           child: Image.asset(
-                            "assets/google.jpg",
+                            "assets/images/google.jpg",
                             width: 30,
                           ),
                         ),
@@ -179,7 +171,7 @@ class _CadastroState extends State<Cadastro> {
                   height: 50,
                   child: Row(children: [
                     Image.asset(
-                      "assets/facebook.png",
+                      "assets/images/facebook.png",
                       width: 20,
                       color: Colors.white,
                     ),
