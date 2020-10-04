@@ -30,9 +30,12 @@ class _HomeState extends State<Home> {
 
   //---- Functions
 
+  //----- Key api: 63c27cec
+
   Future money() async {
     try {
       response = await http.get("https://api.hgbrasil.com/finance");
+      //response = await http.get("https://google");
       var json = await jsonDecode(response.body);
 
       dolar = await json["results"]["currencies"]["USD"]["buy"];
@@ -49,6 +52,7 @@ class _HomeState extends State<Home> {
     try {
       response = await http
           .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=63c27cec");
+      //response = await http.get("https://google");
       tempo = await jsonDecode(response.body);
       print("API Tempo:");
       print(await tempo);
@@ -62,6 +66,7 @@ class _HomeState extends State<Home> {
     try {
       response = await http.get(
           "https://api.hgbrasil.com/geoip?key=63c27cec&address=remote&precision=false");
+      //response = await http.get("https://google");
       localization = await jsonDecode(response.body);
       print("API localização:");
       print(await localization);
@@ -118,7 +123,7 @@ class _HomeState extends State<Home> {
     return Container(
         child: FutureBuilder(
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.hasData) {
           return RefreshIndicator(
               child: SingleChildScrollView(
                 child: Column(
@@ -367,7 +372,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               onRefresh: json);
-        } else if (snapshot.connectionState == ConnectionState.none) {
+        } else {
           return RefreshIndicator(
             child: SingleChildScrollView(
               child: Column(
@@ -598,8 +603,6 @@ class _HomeState extends State<Home> {
             ),
             onRefresh: () => json(),
           );
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
         }
       },
       future: datas(),
