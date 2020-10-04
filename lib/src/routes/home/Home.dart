@@ -1,8 +1,8 @@
 //---- Packages
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
@@ -30,22 +30,6 @@ class _HomeState extends State<Home> {
 
   //---- Functions
 
-  Future search(search) async {
-    for (var x = 0; x <= plantas.length; x++) {
-      if (search == plantas[x]["title"]) {
-        print("Esse mesmo: $search");
-        setState(() {
-          pesquisa = search;
-          planta = plantas[x];
-        });
-        return pesquisa;
-      } else if (x == plantas.length) {
-        print("Não tem :(");
-        return search;
-      }
-    }
-  }
-
   Future money() async {
     try {
       response = await http.get("https://api.hgbrasil.com/finance");
@@ -64,7 +48,7 @@ class _HomeState extends State<Home> {
   Future wheater(woeid) async {
     try {
       response = await http
-          .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=6b6695e0");
+          .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=63c27cec");
       tempo = await jsonDecode(response.body);
       print("API Tempo:");
       print(await tempo);
@@ -77,7 +61,7 @@ class _HomeState extends State<Home> {
   Future localizatio() async {
     try {
       response = await http.get(
-          "https://api.hgbrasil.com/geoip?key=6b6695e0&address=remote&precision=false");
+          "https://api.hgbrasil.com/geoip?key=63c27cec&address=remote&precision=false");
       localization = await jsonDecode(response.body);
       print("API localização:");
       print(await localization);
@@ -85,7 +69,7 @@ class _HomeState extends State<Home> {
       print(e);
     }
 
-    return await localization["resuls"]["woeid"] != null ? localization : null;
+    return await localization["results"]["woeid"] != null ? localization : null;
   }
 
   Future<dynamic> datas() async {
@@ -99,6 +83,22 @@ class _HomeState extends State<Home> {
     return {await dolar, await tempo, await localization};
   }
 
+  Future search(search) async {
+    for (var x = 0; x <= plantas.length; x++) {
+      if (search == plantas[x]["title"]) {
+        print("Esse mesmo: $search");
+        setState(() {
+          pesquisa = search;
+          planta = plantas[x];
+        });
+        return pesquisa;
+      } else if (x == plantas.length) {
+        print("Não tem :(");
+        return search;
+      }
+    }
+  }
+
   Future json() async {
     setState(() {
       plantas = plantas;
@@ -108,7 +108,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     // TODO: implement initState
-
+    datas();
     super.initState();
   }
 
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
     return Container(
         child: FutureBuilder(
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done) {
           return RefreshIndicator(
               child: SingleChildScrollView(
                 child: Column(
@@ -323,7 +323,11 @@ class _HomeState extends State<Home> {
                                                     children: [
                                                       Image.asset(
                                                         "${plantas[index]["image"]}",
-                                                        width: 10,
+                                                        width: 500,
+                                                        filterQuality:
+                                                            FilterQuality.high,
+                                                        fit: BoxFit.fill,
+                                                        height: 160,
                                                       ),
                                                       IconButton(
                                                           icon: Icon(
@@ -362,8 +366,8 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              onRefresh: datas);
-        } else {
+              onRefresh: json);
+        } else if (snapshot.connectionState == ConnectionState.none) {
           return RefreshIndicator(
             child: SingleChildScrollView(
               child: Column(
@@ -594,24 +598,11 @@ class _HomeState extends State<Home> {
             ),
             onRefresh: () => json(),
           );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
         }
       },
       future: datas(),
     ));
   }
 }
-
-/*FutureBuilder(
-        future: Future(datas),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-                child: Column(children: [
-              
-              
-              
-            ]));
-          } else if (snapshot.hasError) {
-            return Center(child: CircularProgressIndicator());
-          }
-        });*/
