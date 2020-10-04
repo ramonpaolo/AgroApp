@@ -19,31 +19,43 @@ class Nav extends StatefulWidget {
 class _NavState extends State<Nav> {
   //---- Variables
 
+  Map data = {};
+
   int _page = 0;
-  List pages = [Home(), Chat(), Store()];
+
   double sizeIcon = 40;
 
-  //---- Functions
-
-  /*Future<File> _getData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    var file = File("${directory.path}/data.json");
-    return file;
+  Future<File> _getData() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File("${directory.path}/data.json");
+      print("Path existe");
+      return file;
+    } catch (e) {
+      print("Path nem existe");
+      return null;
+    }
   }
 
   Future _readData() async {
-    final directory = await _getData();
-    String file = directory.readAsStringSync();
-    var jsonConvert = jsonDecode(file);
-    print(jsonConvert);
-    return jsonConvert;
-  }*/
+    try {
+      final file = await _getData();
+      final decode = await jsonDecode(file.readAsStringSync());
+      print(await decode);
+      setState(() {
+        data = decode;
+      });
+      return decode;
+    } catch (e) {
+      print("Error: " + e.toString());
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     print("------------- Nav.dart ---------------");
-
+    _readData();
     super.initState();
   }
 
@@ -52,7 +64,13 @@ class _NavState extends State<Nav> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.green[500],
-        body: pages[_page],
+        body: _page == 0
+            ? Home()
+            : _page == 1
+                ? Chat(
+                    data: data,
+                  )
+                : Store(),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           items: [
