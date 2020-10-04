@@ -23,6 +23,13 @@ class _LoginState extends State<Login> {
   TextEditingController _controllerPassword = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    print("---------- login.dart------------");
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
