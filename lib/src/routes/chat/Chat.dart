@@ -29,9 +29,7 @@ class _ChatState extends State<Chat> {
       if (search == users[x]["name"]) {
         print("'Chat.dart': Esse mesmo: $search");
         setState(() {
-          user["name"] = users[x]["name"];
-          user["mensagen"] = users[x]["mensagen"];
-          user["image"] = users[x]["image"];
+          user = users[x];
         });
         return user;
       } else if (x == users.length) {
