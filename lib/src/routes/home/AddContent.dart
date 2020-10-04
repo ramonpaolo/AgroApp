@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddContent extends StatefulWidget {
+  AddContent({Key key, this.name}) : super(key: key);
+  final String name;
   @override
   _AddContentState createState() => _AddContentState();
 }
@@ -198,7 +200,9 @@ class _AddContentState extends State<AddContent> {
                                   "title": "${_titleController.text}",
                                   "subtitle": "${_subtitleController.text}",
                                   "image": "$image",
-                                  "checbox": false
+                                  "checbox": false,
+                                  "author": "${widget.name}",
+                                  "image_author": "assets/images/eu.jpg",
                                 });
                               });
                               Future.delayed(Duration(seconds: 1),
