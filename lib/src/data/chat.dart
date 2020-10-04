@@ -3,7 +3,7 @@ List users = [
     "id": 0,
     "name": "Ramon",
     "mensagen": [
-      {"type": "img", "submit": "you", "content": "assets/eu.jpg"}
+      {"type": "img", "submit": "you", "content": "assets/images/eu.jpg"}
     ],
     "image": "assets/images/eu.jpg"
   },
@@ -30,8 +30,8 @@ List grupos = [
     "id": 0,
     "name": "De perto",
     "mensagen": [
-      {"type": "img", "submit": "you", "content": "assets/eu.jpg"}
+      {"type": "img", "submit": "you", "content": "assets/images/eu.jpg"}
     ],
-    "image": "assets/eu.jpg"
+    "image": "assets/images/eu.jpg"
   },
 ];
