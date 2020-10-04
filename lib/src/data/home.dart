@@ -5,7 +5,9 @@ List plantas = [
     "title": "Eucalipto",
     "subtitle": "Plantio",
     "image": "assets/images/planta.webp",
-    "checbox": true
+    "checbox": true,
+    "author": "Ramon Paolo Maran",
+    "image_author": "assets/images/eu.jpg",
   },
   {
     "id": 1,
@@ -13,7 +15,9 @@ List plantas = [
     "title": "Samambaia",
     "subtitle": "Bahiana",
     "image": "assets/images/samambaia.jpg",
-    "checbox": true
+    "checbox": true,
+    "author": "Ramon Paolo Maran",
+    "image_author": "assets/images/eu.jpg",
   },
   {
     "id": 2,
@@ -21,6 +25,8 @@ List plantas = [
     "title": "Coqueiro",
     "subtitle": "Americano",
     "image": "assets/images/cokeiro.webp",
-    "checbox": false
+    "checbox": false,
+    "author": "Ramon Paolo Maran",
+    "image_author": "assets/images/eu.jpg",
   },
 ];
