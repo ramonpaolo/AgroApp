@@ -5,7 +5,7 @@ List users = [
     "mensagen": [
       {"type": "img", "submit": "you", "content": "assets/eu.jpg"}
     ],
-    "image": "assets/eu.jpg"
+    "image": "assets/images/eu.jpg"
   },
   {
     "id": 1,
@@ -13,7 +13,7 @@ List users = [
     "mensagen": [
       {"type": "txt", "submit": "you", "content": "Eaee"}
     ],
-    "image": "assets/eu.jpg"
+    "image": "assets/images/eu.jpg"
   },
   {
     "id": 2,
@@ -21,7 +21,7 @@ List users = [
     "mensagen": [
       {"type": "txt", "submit": "i", "content": "Enzo aki brow"}
     ],
-    "image": "assets/eu.jpg"
+    "image": "assets/images/eu.jpg"
   },
 ];
 
