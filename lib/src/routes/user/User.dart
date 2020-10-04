@@ -15,9 +15,10 @@ class User extends StatefulWidget {
 }
 
 class _UserState extends State<User> {
-  List myPlantas = [];
-
   bool localizacao = true;
+
+  List myPlantas = [];
+  List menorToMaior = [];
 
   myplantas() async {
     for (var x = 0; x < plantas.length; x++) {
@@ -122,125 +123,7 @@ class _UserState extends State<User> {
               "Meus anúncios",
               style: TextStyle(fontSize: 22, color: Colors.white),
             ),
-            Container(
-              width: 1000,
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                          width: 170,
-                          child: Card(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 110,
-                                  child: Image.asset(
-                                    "${myPlantas[index]["image"]}",
-                                    fit: BoxFit.fill,
-                                    filterQuality: FilterQuality.high,
-                                  ),
-                                ),
-                                ListTile(
-                                  title: Text("${myPlantas[index]["title"]}"),
-                                  subtitle:
-                                      Text("${myPlantas[index]["subtitle"]}"),
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        child: Visualizar(
-                                          name: myPlantas[index]["title"],
-                                        ),
-                                        type: PageTransitionType.bottomToTop),
-                                  ),
-                                  trailing: Padding(
-                                      padding: EdgeInsets.only(top: 6),
-                                      child: Tooltip(
-                                        message: "Views",
-                                        child: Column(
-                                          children: [
-                                            Icon(
-                                              Icons.remove_red_eye,
-                                              color: Colors.green,
-                                            ),
-                                            Text(
-                                              myPlantas[index]["views"]
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.green),
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                  onLongPress: () => showModalBottomSheet(
-                                      context: (context),
-                                      builder: (context) {
-                                        return SingleChildScrollView(
-                                            child: Container(
-                                          padding: EdgeInsets.all(20),
-                                          height: 500,
-                                          width: 1000,
-                                          child: Column(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: Image.asset(
-                                                  myPlantas[index]["image"],
-                                                  height: 140,
-                                                  filterQuality:
-                                                      FilterQuality.high,
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      Icons.download_rounded,
-                                                      color: Colors.green,
-                                                    ),
-                                                    onPressed: () {},
-                                                  ),
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      Icons.share,
-                                                      color: Colors.green,
-                                                    ),
-                                                    onPressed: () {},
-                                                  ),
-                                                ],
-                                              ),
-                                              ListTile(
-                                                title: Text(
-                                                    myPlantas[index]["title"]),
-                                                subtitle: Text(myPlantas[index]
-                                                    ["subtitle"]),
-                                              ),
-                                              Padding(
-                                                  padding: EdgeInsets.all(15),
-                                                  child: Text(
-                                                    myPlantas[index]
-                                                        ["describe"],
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ))
-                                            ],
-                                          ),
-                                        ));
-                                      }),
-                                )
-                              ],
-                            ),
-                          )));
-                },
-                itemCount: myPlantas.length,
-              ),
-            ),
+            construtor(myPlantas),
             TextButton.icon(
                 onPressed: () {
                   Navigator.pushReplacement(context,
@@ -259,4 +142,118 @@ class _UserState extends State<User> {
       ),
     );
   }
+}
+
+Widget construtor(List item) {
+  return Container(
+    width: 1000,
+    height: 200,
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, index) {
+        return ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+                width: 170,
+                child: Card(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 110,
+                        child: Image.asset(
+                          "${item[index]["image"]}",
+                          fit: BoxFit.fill,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                      ListTile(
+                        title: Text("${item[index]["title"]}"),
+                        subtitle: Text("${item[index]["subtitle"]}"),
+                        onTap: () => Navigator.push(
+                          context,
+                          PageTransition(
+                              child: Visualizar(
+                                name: item[index]["title"],
+                              ),
+                              type: PageTransitionType.bottomToTop),
+                        ),
+                        trailing: Padding(
+                            padding: EdgeInsets.only(top: 6),
+                            child: Tooltip(
+                              message: "Views",
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.remove_red_eye,
+                                    color: Colors.green,
+                                  ),
+                                  Text(
+                                    item[index]["views"].toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green),
+                                  )
+                                ],
+                              ),
+                            )),
+                        onLongPress: () => showModalBottomSheet(
+                            context: (context),
+                            builder: (context) {
+                              return SingleChildScrollView(
+                                  child: Container(
+                                padding: EdgeInsets.all(20),
+                                height: 500,
+                                width: 1000,
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Image.asset(
+                                        item[index]["image"],
+                                        height: 140,
+                                        filterQuality: FilterQuality.high,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.download_rounded,
+                                            color: Colors.green,
+                                          ),
+                                          onPressed: () {},
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.share,
+                                            color: Colors.green,
+                                          ),
+                                          onPressed: () {},
+                                        ),
+                                      ],
+                                    ),
+                                    ListTile(
+                                      title: Text(item[index]["title"]),
+                                      subtitle: Text(item[index]["subtitle"]),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.all(15),
+                                        child: Text(
+                                          item[index]["describe"],
+                                          style: TextStyle(fontSize: 16),
+                                        ))
+                                  ],
+                                ),
+                              ));
+                            }),
+                      )
+                    ],
+                  ),
+                )));
+      },
+      itemCount: item.length,
+    ),
+  );
 }
