@@ -25,7 +25,7 @@ class _NavState extends State<Nav> {
 
   //---- Functions
 
-  Future<File> _getData() async {
+  /*Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
     var file = File("${directory.path}/data.json");
     return file;
@@ -37,13 +37,13 @@ class _NavState extends State<Nav> {
     var jsonConvert = jsonDecode(file);
     print(jsonConvert);
     return jsonConvert;
-  }
+  }*/
 
   @override
   void initState() {
     // TODO: implement initState
     print("------------- Nav.dart ---------------");
-    _readData();
+
     super.initState();
   }
 
