@@ -119,14 +119,8 @@ class _LoginState extends State<Login> {
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
                 onPressed: () async {
-                  await _saveData(
-                      _controllerEmail.text, "assets/images/eu.jpg");
-                  Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: Nav(),
-                          type: PageTransitionType.bottomToTop,
-                          duration: Duration(milliseconds: 600)));
+                  await _readData(
+                      _controllerEmail.text, _controllerPassword.text);
                 },
                 child: Container(
                     width: 130,
@@ -235,10 +229,22 @@ class _LoginState extends State<Login> {
     return file;
   }
 
-  Future _saveData(name, image) async {
-    final path = await _getData();
-    final file = {"name": "$name", "image": "$image"};
-    var en = jsonEncode(file);
-    await path.writeAsString(en);
+  Future _readData(email, password) async {
+    try {
+      var file = await _getData();
+      var read = file.readAsStringSync();
+      var decode = jsonDecode(read);
+      if (decode["email"] == email && decode["password"] == password) {
+        print("Email e senha iguais.");
+        Navigator.pushReplacement(
+            context,
+            PageTransition(
+                child: Nav(),
+                type: PageTransitionType.bottomToTop,
+                duration: Duration(milliseconds: 600)));
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
