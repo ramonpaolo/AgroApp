@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,11 +19,28 @@ class _CadastroState extends State<Cadastro> {
   //---- Variables
   bool obscuteText = true;
 
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   TextEditingController _controllerName = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
 
   //---- Functions
+
+  Future cadastroEmailSenha(email, senha) async {
+    try {
+      auth.createUserWithEmailAndPassword(email: email, password: senha);
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      if (e.code == "weak-password") {
+        print("Senha errada");
+      } else if (e.code == "email-already-in-use") {
+        print("Email em uso");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -146,6 +164,8 @@ class _CadastroState extends State<Cadastro> {
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
                 onPressed: () async {
+                  await cadastroEmailSenha(
+                      _controllerEmail.text, _controllerPassword.text);
                   await _saveData(_controllerName.text, _controllerEmail.text,
                       _controllerPassword.text);
                   Navigator.pushReplacement(
