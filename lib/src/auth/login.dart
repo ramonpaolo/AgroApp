@@ -186,7 +186,7 @@ class _LoginState extends State<Login> {
     return TextFormField(
       keyboardType: keyBoardType,
       obscureText: obscureText,
-      cursorColor: Colors.white,
+      cursorColor: Colors.green,
       decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,

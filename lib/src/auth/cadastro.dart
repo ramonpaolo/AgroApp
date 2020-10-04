@@ -209,7 +209,7 @@ class _CadastroState extends State<Cadastro> {
       controller: controller,
       keyboardType: keyBoardType,
       obscureText: obscureText,
-      cursorColor: Colors.white,
+      cursorColor: Colors.green,
       decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,
