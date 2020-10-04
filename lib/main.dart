@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
 
 //---- Screens
-import 'package:agricultura/src/models/Splash.dart';
 import 'package:agricultura/src/models/Nav.dart';
+import 'package:agricultura/src/auth/login.dart';
+import 'package:agricultura/src/models/Splash.dart';
 
 void main() {
   runApp(MaterialApp(
     home: Index(),
-    theme: ThemeData(cardColor: Colors.white),
+    theme: ThemeData(cardColor: Colors.white, fontFamily: "Roboto"),
     title: "Agro é tudo",
   ));
 }
@@ -25,7 +26,7 @@ class _IndexState extends State<Index> {
     return Simple_splashscreen(
         context: context,
         splashscreenWidget: Splash(),
-        gotoWidget: Nav(),
+        gotoWidget: Login(),
         timerInSeconds: 2);
   }
 }
