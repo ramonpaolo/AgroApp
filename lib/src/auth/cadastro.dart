@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -22,6 +23,13 @@ class _CadastroState extends State<Cadastro> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   String text = "";
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   TextEditingController _controllerName = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
@@ -64,6 +72,27 @@ class _CadastroState extends State<Cadastro> {
           text = "Email já em uso";
         });
       }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future loginGoogle() async {
+    try {
+      await _googleSignIn.signIn();
+      await auth.createUserWithEmailAndPassword(
+          email: _googleSignIn.currentUser.email,
+          password: _googleSignIn.currentUser.displayName);
+      await _saveData(
+          _googleSignIn.currentUser.displayName,
+          _googleSignIn.currentUser.email,
+          _googleSignIn.currentUser.displayName);
+      await Future.delayed(
+          Duration(seconds: 1),
+          () => Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  child: Nav(), type: PageTransitionType.bottomToTop)));
     } catch (e) {
       print(e);
     }
@@ -211,7 +240,9 @@ class _CadastroState extends State<Cadastro> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await loginGoogle();
+                },
                 child: Container(
                   width: 150,
                   height: 50,

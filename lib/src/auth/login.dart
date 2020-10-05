@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
@@ -21,6 +22,13 @@ class _LoginState extends State<Login> {
   bool obscuteText = true;
 
   FirebaseAuth auth = FirebaseAuth.instance;
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
@@ -65,6 +73,16 @@ class _LoginState extends State<Login> {
                   child: Nav(), type: PageTransitionType.bottomToTop)));
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future loginGoogle() async {
+    try {
+      await _googleSignIn.signIn();
+      await loginEmailSenha(_googleSignIn.currentUser.email,
+          _googleSignIn.currentUser.displayName);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -188,7 +206,9 @@ class _LoginState extends State<Login> {
             ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await loginGoogle();
+                },
                 child: Container(
                   width: 130,
                   height: 50,
@@ -301,7 +321,7 @@ class _LoginState extends State<Login> {
   Future _saveData(email, password) async {
     final file = await _getData();
     var j;
-    if (FirebaseAuth.instance.currentUser.displayName == null) {
+    if (_googleSignIn.currentUser.displayName == null) {
       print("firebase name null");
       j = {
         'email': '$email',
@@ -313,7 +333,7 @@ class _LoginState extends State<Login> {
       j = {
         'email': '$email',
         'password': '$password',
-        'name': "${FirebaseAuth.instance.currentUser.displayName}"
+        'name': "${_googleSignIn.currentUser.displayName}"
       };
     }
     var encode = jsonEncode(j);

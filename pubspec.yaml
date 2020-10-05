@@ -28,6 +28,7 @@ dependencies:
   path_provider: "^1.6.18"
   page_transition: ^1.1.7+2
   firebase_auth: ^0.18.1+1
+  google_sign_in: ^4.5.4
   flutter:
     sdk: flutter
 
