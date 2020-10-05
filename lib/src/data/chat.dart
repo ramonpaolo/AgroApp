@@ -1,9 +1,13 @@
 List users = [
   {
     "id": 0,
-    "name": "Ramon",
+    "name": "José",
     "mensagen": [
-      {"type": "img", "submit": "you", "content": "assets/images/eu.jpg"}
+      {
+        "type": "img",
+        "name": "Ramon Paolo Maran",
+        "content": "assets/images/eu.jpg"
+      }
     ],
     "image": "assets/images/eu.jpg"
   },
@@ -11,7 +15,7 @@ List users = [
     "id": 1,
     "name": "Dudu",
     "mensagen": [
-      {"type": "txt", "submit": "you", "content": "Eaee"}
+      {"type": "txt", "name": "Ramon Paolo Maran", "content": "Eaee"}
     ],
     "image": "assets/images/eu.jpg"
   },
@@ -19,7 +23,7 @@ List users = [
     "id": 2,
     "name": "Enzo",
     "mensagen": [
-      {"type": "txt", "submit": "i", "content": "Enzo aki brow"}
+      {"type": "txt", "name": "Ramon Paolo Maran", "content": "Enzo aki brow"}
     ],
     "image": "assets/images/eu.jpg"
   },
@@ -30,7 +34,7 @@ List grupos = [
     "id": 0,
     "name": "De perto",
     "mensagen": [
-      {"type": "img", "submit": "you", "content": "assets/images/eu.jpg"}
+      {"type": "img", "name": "Rodolfo", "content": "assets/images/eu.jpg"}
     ],
     "image": "assets/images/eu.jpg"
   },
