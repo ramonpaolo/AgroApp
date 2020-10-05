@@ -319,18 +319,22 @@ Widget construtor(List item) {
                                     ListTile(
                                       title: Text(item[index]["title"]),
                                       subtitle: Text(item[index]["subtitle"]),
+                                      trailing: Text(
+                                        "R\$" + item[index]["price"],
+                                        style: TextStyle(color: Colors.green),
+                                      ),
                                     ),
                                     Padding(
                                         padding: EdgeInsets.all(15),
                                         child: Text(
                                           item[index]["describe"],
                                           style: TextStyle(fontSize: 16),
-                                        ))
+                                        )),
                                   ],
                                 ),
                               ));
                             }),
-                      )
+                      ),
                     ],
                   ),
                 )));
