@@ -186,7 +186,7 @@ class _ChatPVState extends State<ChatPV> {
                                                                             onTap: () =>
                                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => PageHero(_image))),
                                                                             child:
-                                                                                Hero(tag: index, child: Card(child: Image.asset(_images[index]))),
+                                                                                Hero(tag: index, child: Card(child: Image.file(File(_images[index])))),
                                                                           ))));
                                                             },
                                                             itemCount:
@@ -249,8 +249,9 @@ class _ChatPVState extends State<ChatPV> {
                                         child: messages[index]["type"] == "img"
                                             ? Column(
                                                 children: [
-                                                  Image.asset(
-                                                    messages[index]["content"],
+                                                  Image.file(
+                                                    File(messages[index]
+                                                        ["content"]),
                                                     width: 200,
                                                     height: 200,
                                                   ),

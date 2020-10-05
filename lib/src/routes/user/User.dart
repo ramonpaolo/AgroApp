@@ -242,8 +242,8 @@ Widget construtor(List item) {
                     children: [
                       Container(
                         height: 110,
-                        child: Image.asset(
-                          "${item[index]["image"]}",
+                        child: Image.file(
+                          File(item[index]["image"]),
                           fit: BoxFit.fill,
                           filterQuality: FilterQuality.high,
                         ),
@@ -290,8 +290,8 @@ Widget construtor(List item) {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(20),
-                                      child: Image.asset(
-                                        item[index]["image"],
+                                      child: Image.file(
+                                        File(item[index]["image"]),
                                         height: 140,
                                         filterQuality: FilterQuality.high,
                                       ),

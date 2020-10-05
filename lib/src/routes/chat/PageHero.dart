@@ -1,5 +1,6 @@
 //---- Packages
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class PageHero extends StatelessWidget {
   PageHero(this.image);
@@ -23,8 +24,9 @@ class PageHero extends StatelessWidget {
                   child: Stack(children: [
                 ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(
-                      image,
+                    child: Image.file(
+                      File(image),
+                      filterQuality: FilterQuality.high,
                       width: 400,
                       height: 400,
                       fit: BoxFit.fill,

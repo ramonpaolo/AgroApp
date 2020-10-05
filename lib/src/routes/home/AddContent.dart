@@ -1,8 +1,11 @@
 //---- Packages
 import 'dart:ui';
-import 'package:agricultura/src/data/home.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+//---- Datas
+import 'package:agricultura/src/data/home.dart';
 
 class AddContent extends StatefulWidget {
   AddContent({Key key, this.name}) : super(key: key);
@@ -104,8 +107,8 @@ class _AddContentState extends State<AddContent> {
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(30),
                               child: Card(
-                                  child: Image.asset(
-                                image,
+                                  child: Image.file(
+                                File(image),
                                 width: size.width * 0.5,
                               )))
                           : Text("Adicione uma imagem"),
@@ -175,8 +178,8 @@ class _AddContentState extends State<AddContent> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(200),
-                                                        child: Image.asset(
-                                                          image,
+                                                        child: Image.file(
+                                                          File(image),
                                                           width:
                                                               size.width * 0.7,
                                                           height:

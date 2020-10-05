@@ -1,4 +1,5 @@
 //---- Packages
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 //---- Datas
@@ -245,8 +246,8 @@ class _StoreState extends State<Store> {
                                       secondary: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          child: Image.asset(
-                                              "${planta["image"]}")),
+                                          child: Image.file(
+                                              File(planta["image"]))),
                                       key: Key(DateTime.now().toString()),
                                       value: planta["checbox"],
                                       checkColor: Colors.white,
@@ -313,8 +314,8 @@ class _StoreState extends State<Store> {
                                             secondary: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
-                                                child: Image.asset(
-                                                    "${plantas[index]["image"]}")),
+                                                child: Image.file(File(
+                                                    plantas[index]["image"]))),
                                             key: Key(DateTime.now().toString()),
                                             value: plantas[index]["checbox"],
                                             checkColor: Colors.white,

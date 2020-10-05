@@ -1,4 +1,6 @@
 //---- Packages
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -266,8 +268,8 @@ class _HomeState extends State<Home> {
                                             Stack(
                                               textDirection: TextDirection.rtl,
                                               children: [
-                                                Image.asset(
-                                                  planta["image"],
+                                                Image.file(
+                                                  File(planta["image"]),
                                                   filterQuality:
                                                       FilterQuality.high,
                                                   fit: BoxFit.fill,
@@ -334,8 +336,8 @@ class _HomeState extends State<Home> {
                     Stack(
                       textDirection: TextDirection.rtl,
                       children: [
-                        Image.asset(
-                          "${item[index]["image"]}",
+                        Image.file(
+                          File(item[index]["image"]),
                           width: 500,
                           filterQuality: FilterQuality.high,
                           fit: BoxFit.fill,
