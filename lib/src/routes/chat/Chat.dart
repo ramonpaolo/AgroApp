@@ -266,6 +266,16 @@ class _ChatState extends State<Chat> {
                                   height: 100,
                                   padding: EdgeInsets.all(20),
                                   child: ListTile(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChatPV(
+                                                  name: grupos[index]["name"],
+                                                  messages: grupos[index]
+                                                      ["mensagen"],
+                                                  image: grupos[index]["image"],
+                                                  id: grupos[index]["id"],
+                                                ))),
                                     title: Text("${grupos[index]["name"]}"),
                                     leading: ClipRRect(
                                       child: Image.asset(
