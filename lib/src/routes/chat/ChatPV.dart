@@ -12,12 +12,13 @@ import 'package:agricultura/src/routes/chat/PageHero.dart';
 import 'package:agricultura/src/data/chat.dart';
 
 class ChatPV extends StatefulWidget {
-  ChatPV({Key key, this.name, this.messages, this.image, this.id})
+  ChatPV({Key key, this.name, this.messages, this.image, this.id, this.user})
       : super(key: key);
   final name;
   final messages;
   final image;
   final id;
+  final user;
 
   @override
   _ChatPVState createState() => _ChatPVState();
@@ -41,11 +42,14 @@ class _ChatPVState extends State<ChatPV> {
         await ImagePicker.platform.pickImage(source: ImageSource.camera);
     setState(() {
       _image = imagePicker.path;
-      messages.insert(0, {"type": "img", "submit": "i", "content": "$_image"});
+      messages.insert(0, {
+        "type": "img",
+        "name": "${widget.user["name"]}",
+        "content": "$_image"
+      });
       _images.add(_image);
     });
-
-    print(messages[0]["content"]);
+    //print(messages[0]["content"]);
   }
 
   void galery() async {
@@ -53,27 +57,13 @@ class _ChatPVState extends State<ChatPV> {
         await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = imagePicker.path;
-      messages.insert(0, {"type": "img", "submit": "i", "content": "$_image"});
+      messages.insert(0, {
+        "type": "img",
+        "name": "${widget.user["name"]}",
+        "content": "$_image"
+      });
       _images.add(_image);
     });
-  }
-
-  Future<File> _getData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    var file = File("${directory.path}/data.json");
-    return file;
-  }
-
-  Future _readData() async {
-    try {
-      final data = await _getData();
-      var j = await json.decode(data.readAsStringSync());
-      print(await j);
-      return await j;
-    } catch (e) {
-      print(e);
-      print("Error _readData");
-    }
   }
 
   @override
@@ -81,6 +71,7 @@ class _ChatPVState extends State<ChatPV> {
     // TODO: implement initState
     print("-------------- ChatPV.dart -----------------");
     messages = users[widget.id]["mensagen"];
+
     super.initState();
   }
 
@@ -223,6 +214,7 @@ class _ChatPVState extends State<ChatPV> {
                 )),
           ),
           Container(
+              padding: EdgeInsets.only(bottom: 30),
               width: 1000,
               height: 530,
               child: ListView.builder(
@@ -232,33 +224,74 @@ class _ChatPVState extends State<ChatPV> {
                     child: GestureDetector(
                         child: Padding(
                             padding: EdgeInsets.only(
-                                left:
-                                    messages[index]["submit"] == "i" ? 240 : 0,
+                                left: messages[index]["name"] ==
+                                        "${widget.user["name"]}"
+                                    ? 200
+                                    : 0,
                                 bottom: 5,
-                                right:
-                                    messages[index]["submit"] == "i" ? 5 : 240),
+                                right: messages[index]["name"] ==
+                                        "${widget.user["name"]}"
+                                    ? 5
+                                    : 140),
                             child: Container(
                                 padding: EdgeInsets.all(10),
                                 child: Card(
-                                    color: messages[index]["submit"] == "i"
+                                    color: messages[index]["name"] ==
+                                            "${widget.user["name"]}"
                                         ? Colors.green[600]
                                         : Colors.white,
                                     child: Padding(
-                                        padding: EdgeInsets.all(10),
+                                        padding: EdgeInsets.only(
+                                            top:
+                                                messages[index]["type"] == "img"
+                                                    ? 15
+                                                    : 0),
                                         child: messages[index]["type"] == "img"
-                                            ? Image.asset(
-                                                messages[index]["content"],
-                                                width: 200,
-                                                height: 200,
+                                            ? Column(
+                                                children: [
+                                                  Image.asset(
+                                                    messages[index]["content"],
+                                                    width: 200,
+                                                    height: 200,
+                                                  ),
+                                                  messages[index]["name"] ==
+                                                          widget.user["name"]
+                                                      ? ListTile(
+                                                          title: Text(
+                                                          "${widget.user["name"]}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ))
+                                                      : ListTile(
+                                                          title: Text(
+                                                          "${widget.name}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        ))
+                                                ],
                                               )
-                                            : messages[index]["submit"] == "i"
-                                                ? Text(
-                                                    "${messages[index]["content"]}",
-                                                    style: TextStyle(
-                                                        color: Colors.white70),
-                                                  )
-                                                : Text(
-                                                    "${messages[index]["content"]}")))))),
+                                            : messages[index]["name"] ==
+                                                    "${widget.user["name"]}"
+                                                ? ListTile(
+                                                    title: Text(
+                                                      "${messages[index]["content"]}",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.white70),
+                                                    ),
+                                                    subtitle: Text(
+                                                      "${messages[index]["name"]}",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ))
+                                                : ListTile(
+                                                    title: Text(
+                                                        "${messages[index]["content"]}"),
+                                                    subtitle:
+                                                        Text("${widget.name}"),
+                                                  )))))),
                     borderRadius: BorderRadius.circular(40),
                   );
                 },
@@ -342,11 +375,10 @@ class _ChatPVState extends State<ChatPV> {
                       setState(() {
                         messages.insert(0, {
                           "type": "txt",
-                          "submit": "i",
-                          "content": "$_text"
+                          "content": "$_text",
+                          "name": "${widget.user["name"]}"
                         });
                       });
-                      //messages.add({"type": "txt", "content": "$value"});
                     },
                     maxLines: 60,
                     keyboardType: TextInputType.text,
@@ -363,8 +395,11 @@ class _ChatPVState extends State<ChatPV> {
               icon: Icon(Icons.arrow_forward_ios, color: Colors.green),
               onPressed: () {
                 setState(() {
-                  messages.insert(
-                      0, {"type": "txt", "submit": "i", "content": "$_text"});
+                  messages.insert(0, {
+                    "type": "txt",
+                    "content": "$_text",
+                    "name": "${widget.user["name"]}"
+                  });
                 });
               })
         ],
