@@ -41,28 +41,28 @@ class _AddContentState extends State<AddContent> {
 
   title(String text) {
     setState(() {
-      _titleController.text = text;
+      text = _titleController.text;
     });
     print(_titleController.text);
   }
 
   subtitle(String text) {
     setState(() {
-      _subtitleController.text = text;
+      text = _subtitleController.text;
     });
     print(_subtitleController.text);
   }
 
   describe(String text) {
     setState(() {
-      _describeController.text = text;
+      text = _describeController.text;
     });
     print(_describeController.text);
   }
 
   price(String text) {
     setState(() {
-      _describeController.text = text;
+      text = _priceController.text;
     });
     print(_priceController.text);
   }
@@ -219,7 +219,8 @@ class _AddContentState extends State<AddContent> {
                                     );
                                   });
                             },
-                            onLongPress: () {
+                            onLongPress: () async {
+                              print(_priceController.text);
                               setState(() {
                                 plantas.insert(0, {
                                   "id": 3,
@@ -232,10 +233,10 @@ class _AddContentState extends State<AddContent> {
                                   "image_author": "assets/images/eu.jpg",
                                   "describe": "${_describeController.text}",
                                   "views": 0,
-                                  "price": _priceController.text,
+                                  "price": "${_priceController.text}",
                                 });
                               });
-                              Future.delayed(Duration(seconds: 1),
+                              await Future.delayed(Duration(seconds: 1),
                                   () => Navigator.pop(context));
                             },
                             icon: Icon(
@@ -267,6 +268,7 @@ class _AddContentState extends State<AddContent> {
           height: 50,
           color: Colors.green[200],
           child: TextField(
+            controller: controller,
             onChanged: (e) {
               fun(e);
             },
