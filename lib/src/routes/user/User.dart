@@ -178,6 +178,31 @@ class _UserState extends State<User> {
                                           )
                                         ],
                                       ),
+                                      TextButton.icon(
+                                          onPressed: () async {
+                                            try {
+                                              await FirebaseAuth
+                                                  .instance.currentUser
+                                                  .delete();
+                                            } catch (e) {
+                                              await _googleSignIn.disconnect();
+                                            }
+                                            await _saveData();
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Login()));
+                                          },
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Colors.green,
+                                          ),
+                                          label: Text(
+                                            "Deletar conta",
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          ))
                                     ],
                                   ),
                                 );
