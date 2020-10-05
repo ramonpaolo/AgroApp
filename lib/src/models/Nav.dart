@@ -1,5 +1,7 @@
 //----  Packages
+import 'package:agricultura/src/models/Anonimous.dart';
 import 'package:agricultura/src/routes/user/User.dart';
+import 'package:firebase_auth/firebase_auth.dart' as AuthFire;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -51,6 +53,44 @@ class _NavState extends State<Nav> {
     }
   }
 
+  page(index) {
+    if (AuthFire.FirebaseAuth.instance.currentUser.isAnonymous) {
+      switch (index) {
+        case 0:
+          return Home();
+          break;
+        case 1:
+          return Anonimous();
+          break;
+        case 2:
+          return Anonimous();
+          break;
+        case 3:
+          return Anonimous();
+          break;
+        default:
+          Anonimous();
+      }
+    } else {
+      switch (index) {
+        case 0:
+          return Home();
+          break;
+        case 1:
+          return Chat(data: data);
+          break;
+        case 2:
+          return Store();
+          break;
+        case 3:
+          return User(data: data);
+          break;
+        default:
+          Home();
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -64,15 +104,7 @@ class _NavState extends State<Nav> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.green[500],
-        body: _page == 0
-            ? Home()
-            : _page == 1
-                ? Chat(
-                    data: data,
-                  )
-                : _page == 2
-                    ? Store()
-                    : User(data: data),
+        body: page(_page),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           items: [
