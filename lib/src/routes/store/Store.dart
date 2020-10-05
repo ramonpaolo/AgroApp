@@ -13,6 +13,7 @@ class _StoreState extends State<Store> {
   //---- Variables
 
   bool animated = true;
+  bool pesquisa = false;
 
   double height = 76.0;
 
@@ -25,11 +26,12 @@ class _StoreState extends State<Store> {
   //---- Functions
 
   Future search(search) async {
-    for (var x = 0; x <= plantas.length; x++) {
-      if (search == plantas[x]["name"]) {
+    for (var x = 0; x < plantas.length; x++) {
+      if (search == plantas[x]["title"]) {
         print("'Chat.dart': Esse mesmo: $search");
         setState(() {
           planta = plantas[x];
+          pesquisa = true;
         });
         return planta;
       } else if (x == plantas.length) {
@@ -37,6 +39,13 @@ class _StoreState extends State<Store> {
         return search;
       }
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("---------------------- Store.dart-------------");
+    super.initState();
   }
 
   @override
@@ -139,7 +148,7 @@ class _StoreState extends State<Store> {
                           cursorColor: Colors.green[900],
                           controller: _searchController,
                           onChanged: (value) {
-                            search(_searchController.text);
+                            search(value);
                           },
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
@@ -150,9 +159,17 @@ class _StoreState extends State<Store> {
                                 Icons.search,
                                 color: Colors.green,
                               ),
-                              suffixIcon: Icon(
-                                Icons.clear,
-                                color: Colors.green,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.clear,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _searchController.clear();
+                                    pesquisa = false;
+                                  });
+                                },
                               )),
                         ),
                       ),
@@ -181,69 +198,133 @@ class _StoreState extends State<Store> {
                             : size.height * 0.64 + height,
                         child: Padding(
                           padding: EdgeInsets.only(left: 20, right: 40),
-                          child: ListView.builder(
-                              itemCount: plantas.length,
-                              itemBuilder: (context, index) {
-                                return Dismissible(
-                                    onDismissed: (direction) {
-                                      setState(() {
-                                        plantas.remove(plantas[index]["id"]);
-                                      });
-                                      print(index);
+                          child: pesquisa == true
+                              ? Dismissible(
+                                  onDismissed: (direction) {
+                                    setState(() {
+                                      plantas.remove(planta["id"]);
+                                    });
 
-                                      key.currentState.showSnackBar(SnackBar(
-                                        content: Text(
-                                          "Excluido o produto: ${plantas[index]["title"]}",
-                                          style: TextStyle(color: Colors.green),
-                                        ),
-                                        duration: Duration(seconds: 3),
-                                        backgroundColor: Colors.white,
-                                      ));
-                                    },
-                                    background: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Container(
-                                          color: Colors.red,
-                                          child: Align(
-                                            alignment: Alignment(-0.5, 0),
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                            ),
-                                          )),
-                                    ),
-                                    direction: DismissDirection.startToEnd,
-                                    key: Key(DateTime.now().toString()),
-                                    child: CheckboxListTile(
-                                        subtitle: IconButton(
-                                            icon: Icon(Icons.favorite,
-                                                color: plantas[index]
-                                                        ["favorite"]
-                                                    ? Colors.green
-                                                    : Colors.black),
-                                            onPressed: () {
-                                              setState(() {
-                                                plantas[index]["favorite"] =
-                                                    !plantas[index]["favorite"];
-                                              });
-                                            }),
-                                        contentPadding: EdgeInsets.all(10),
-                                        title: Text(plantas[index]["title"]),
-                                        secondary: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: Image.asset(
-                                                "${plantas[index]["image"]}")),
-                                        key: Key(DateTime.now().toString()),
-                                        value: plantas[index]["checbox"],
-                                        checkColor: Colors.white,
-                                        activeColor: Colors.green,
-                                        onChanged: (v) {
+                                    key.currentState.showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Excluido o produto: ${planta["title"]}",
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      duration: Duration(seconds: 3),
+                                      backgroundColor: Colors.white,
+                                    ));
+                                  },
+                                  background: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Container(
+                                        color: Colors.red,
+                                        child: Align(
+                                          alignment: Alignment(-0.5, 0),
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                          ),
+                                        )),
+                                  ),
+                                  direction: DismissDirection.startToEnd,
+                                  key: Key(DateTime.now().toString()),
+                                  child: CheckboxListTile(
+                                      subtitle: IconButton(
+                                          icon: Icon(Icons.favorite,
+                                              color: planta["favorite"]
+                                                  ? Colors.green
+                                                  : Colors.black),
+                                          onPressed: () {
+                                            setState(() {
+                                              planta["favorite"] =
+                                                  !planta["favorite"];
+                                            });
+                                          }),
+                                      contentPadding: EdgeInsets.all(10),
+                                      title: Text(planta["title"]),
+                                      secondary: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.asset(
+                                              "${planta["image"]}")),
+                                      key: Key(DateTime.now().toString()),
+                                      value: planta["checbox"],
+                                      checkColor: Colors.white,
+                                      activeColor: Colors.green,
+                                      onChanged: (v) {
+                                        setState(() {
+                                          planta["checbox"] = v;
+                                        });
+                                      }))
+                              : ListView.builder(
+                                  itemCount: plantas.length,
+                                  itemBuilder: (context, index) {
+                                    return Dismissible(
+                                        onDismissed: (direction) {
                                           setState(() {
-                                            plantas[index]["checbox"] = v;
+                                            plantas
+                                                .remove(plantas[index]["id"]);
                                           });
-                                        }));
-                              }),
+                                          print(index);
+
+                                          key.currentState
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                              "Excluido o produto: ${plantas[index]["title"]}",
+                                              style: TextStyle(
+                                                  color: Colors.green),
+                                            ),
+                                            duration: Duration(seconds: 3),
+                                            backgroundColor: Colors.white,
+                                          ));
+                                        },
+                                        background: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Container(
+                                              color: Colors.red,
+                                              child: Align(
+                                                alignment: Alignment(-0.5, 0),
+                                                child: Icon(
+                                                  Icons.delete,
+                                                  color: Colors.white,
+                                                ),
+                                              )),
+                                        ),
+                                        direction: DismissDirection.startToEnd,
+                                        key: Key(DateTime.now().toString()),
+                                        child: CheckboxListTile(
+                                            subtitle: IconButton(
+                                                icon: Icon(Icons.favorite,
+                                                    color: plantas[index]
+                                                            ["favorite"]
+                                                        ? Colors.green
+                                                        : Colors.black),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    plantas[index]["favorite"] =
+                                                        !plantas[index]
+                                                            ["favorite"];
+                                                  });
+                                                }),
+                                            contentPadding: EdgeInsets.all(10),
+                                            title:
+                                                Text(plantas[index]["title"]),
+                                            secondary: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Image.asset(
+                                                    "${plantas[index]["image"]}")),
+                                            key: Key(DateTime.now().toString()),
+                                            value: plantas[index]["checbox"],
+                                            checkColor: Colors.white,
+                                            activeColor: Colors.green,
+                                            onChanged: (v) {
+                                              setState(() {
+                                                plantas[index]["checbox"] = v;
+                                              });
+                                            }));
+                                  }),
                         ),
                       ),
                       SizedBox(
