@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
@@ -26,7 +27,19 @@ class _UserState extends State<User> {
   List myPlantas = [];
   List menorToMaior = [];
 
-  Widget icon;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Widget icon = Tooltip(
+      message: "Email Não verificado",
+      child: Icon(
+        Icons.info_outline,
+        color: Colors.green,
+      ));
 
   //---- Functios
 
@@ -58,25 +71,29 @@ class _UserState extends State<User> {
     // TODO: implement initState
     print("--------------- User.dart--------------");
     //print(FirebaseAuth.instance.currentUser.emailVerified);
-    if (FirebaseAuth.instance.currentUser.emailVerified) {
-      setState(() {
-        icon = Tooltip(
-            message: "Email verificado",
-            child: Icon(
-              Icons.verified_user,
-              color: Colors.green,
-            ));
-      });
-    } else {
-      FirebaseAuth.instance.currentUser.reload();
-      setState(() {
-        icon = Tooltip(
-            message: "Email Não verificado",
-            child: Icon(
-              Icons.info_outline,
-              color: Colors.green,
-            ));
-      });
+    try {
+      if (FirebaseAuth.instance.currentUser.emailVerified) {
+        setState(() {
+          icon = Tooltip(
+              message: "Email verificado",
+              child: Icon(
+                Icons.verified_user,
+                color: Colors.green,
+              ));
+        });
+      } else {
+        FirebaseAuth.instance.currentUser.reload();
+        setState(() {
+          icon = Tooltip(
+              message: "Email Não verificado",
+              child: Icon(
+                Icons.info_outline,
+                color: Colors.green,
+              ));
+        });
+      }
+    } catch (e) {
+      print(e);
     }
     myplantas();
     super.initState();
@@ -185,7 +202,11 @@ class _UserState extends State<User> {
                 : construtor(myPlantas),
             TextButton.icon(
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
+                  try {
+                    await FirebaseAuth.instance.signOut();
+                  } catch (e) {
+                    await _googleSignIn.signOut();
+                  }
                   await _saveData();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Login()));
