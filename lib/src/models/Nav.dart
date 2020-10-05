@@ -30,10 +30,8 @@ class _NavState extends State<Nav> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file = File("${directory.path}/data.json");
-      print("Path existe");
       return file;
     } catch (e) {
-      print("Path nem existe");
       return null;
     }
   }
@@ -42,11 +40,12 @@ class _NavState extends State<Nav> {
     try {
       final file = await _getData();
       final decode = await jsonDecode(file.readAsStringSync());
-      print(await decode);
+      //print("Decode: " + await decode.toString());
       setState(() {
         data = decode;
       });
-      return decode;
+      print(data);
+      return data;
     } catch (e) {
       print("Error: " + e.toString());
     }
