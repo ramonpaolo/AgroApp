@@ -43,6 +43,7 @@ class _ChatState extends State<Chat> {
   void initState() {
     // TODO: implement initState
     print("------------ Chat.dart -------------");
+    print(widget.data);
     super.initState();
   }
 
@@ -164,6 +165,7 @@ class _ChatState extends State<Chat> {
                                                     builder: (context) =>
                                                         ChatPV(
                                                           name: user["name"],
+                                                          user: widget.data,
                                                           messages:
                                                               user["mensagen"],
                                                           image: user["image"],
@@ -208,6 +210,7 @@ class _ChatState extends State<Chat> {
                                                             messages: users[
                                                                     index]
                                                                 ["mensagen"],
+                                                            user: widget.data,
                                                             image: users[index]
                                                                 ["image"],
                                                             id: users[index]
