@@ -34,8 +34,8 @@ class _HomeState extends State<Home> {
 
   Future money() async {
     try {
-      response = await http.get("https://api.hgbrasil.com/finance");
-      //response = await http.get("https://google");
+      //response = await http.get("https://api.hgbrasil.com/finance");
+      response = await http.get("https://google");
       var json = await jsonDecode(response.body);
 
       dolar = await json["results"]["currencies"]["USD"]["buy"];
@@ -50,9 +50,9 @@ class _HomeState extends State<Home> {
 
   Future wheater(woeid) async {
     try {
-      response = await http
-          .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=63c27cec");
-      //response = await http.get("https://google");
+      //response = await http
+      //  .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=63c27cec");
+      response = await http.get("https://google");
       tempo = await jsonDecode(response.body);
       print("API Tempo:");
       print(await tempo);
@@ -64,9 +64,9 @@ class _HomeState extends State<Home> {
 
   Future localizatio() async {
     try {
-      response = await http.get(
-          "https://api.hgbrasil.com/geoip?key=63c27cec&address=remote&precision=false");
-      //response = await http.get("https://google");
+      //response = await http.get(
+      //    "https://api.hgbrasil.com/geoip?key=63c27cec&address=remote&precision=false");
+      response = await http.get("https://google");
       localization = await jsonDecode(response.body);
       print("API localização:");
       print(await localization);
@@ -116,7 +116,7 @@ class _HomeState extends State<Home> {
     return Container(
         child: FutureBuilder(
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.active) {
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -304,6 +304,13 @@ class _HomeState extends State<Home> {
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return Center(
+            child: Text(
+              "Error",
+              style: TextStyle(color: Colors.white, fontSize: 48),
+            ),
           );
         }
       },
