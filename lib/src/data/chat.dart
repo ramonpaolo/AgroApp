@@ -3,15 +3,11 @@ List users = [
     "id": 0,
     "name": "José",
     "mensagen": [
-      {
-        "type": "img",
-        "name": "Ramon Paolo Maran",
-        "content": "assets/images/eu.jpg"
-      }
+      {"type": "txt", "name": "José", "content": "Naaa"}
     ],
     "image": "assets/images/eu.jpg"
   },
-  {
+  /*{
     "id": 1,
     "name": "Dudu",
     "mensagen": [
@@ -26,13 +22,13 @@ List users = [
       {"type": "txt", "name": "Ramon Paolo Maran", "content": "Enzo aki brow"}
     ],
     "image": "assets/images/eu.jpg"
-  },
+  },*/
 ];
 
 List grupos = [
   {
     "id": 0,
-    "name": "De perto",
+    "name": "Grupo de Itapeva",
     "mensagen": [
       {"type": "img", "name": "Rodolfo", "content": "assets/images/eu.jpg"}
     ],
