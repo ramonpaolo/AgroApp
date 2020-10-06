@@ -229,7 +229,7 @@ class _AddContentState extends State<AddContent> {
                                       "favorite": false,
                                       "title": "${_titleController.text}",
                                       "subtitle": "${_subtitleController.text}",
-                                      "image": "$image",
+                                      "image": _images,
                                       "checbox": false,
                                       "author": "${widget.name}",
                                       "image_author": "assets/images/eu.jpg",
