@@ -208,7 +208,7 @@ Widget construtor(List item) {
                       Container(
                         height: 110,
                         child: Image.file(
-                          File(item[index]["image"]),
+                          File(item[index]["image"][0]),
                           fit: BoxFit.fill,
                           filterQuality: FilterQuality.high,
                         ),

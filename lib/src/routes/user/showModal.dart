@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -58,7 +59,7 @@ showModalConf(context, localizacao, FirebaseAuth, _googleSignIn, _saveData,
       });
 }
 
-showModal(context, item, index) {
+showModal(context, List item, index) {
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -75,7 +76,7 @@ showModal(context, item, index) {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.file(
-                  File(item[index]["image"]),
+                  File(item[index]["image"][0]),
                   height: 140,
                   filterQuality: FilterQuality.high,
                 ),
