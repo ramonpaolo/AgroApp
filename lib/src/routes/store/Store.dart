@@ -314,7 +314,8 @@ class _StoreState extends State<Store> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 child: Image.file(File(
-                                                    plantas[index]["image"]))),
+                                                    plantas[index]["image"]
+                                                        [0]))),
                                             key: Key(DateTime.now().toString()),
                                             value: plantas[index]["checbox"],
                                             checkColor: Colors.white,
