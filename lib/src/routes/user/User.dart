@@ -1,5 +1,4 @@
 //---- Packages
-import 'package:agricultura/src/routes/user/showModal.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 //---- Screens
 import 'package:agricultura/src/auth/login.dart';
 import 'package:agricultura/src/routes/user/Visualizar.dart';
+import 'package:agricultura/src/routes/user/showModal.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
@@ -71,7 +71,7 @@ class _UserState extends State<User> {
   void initState() {
     // TODO: implement initState
     print("--------------- User.dart--------------");
-    //print(FirebaseAuth.instance.currentUser.emailVerified);
+
     try {
       if (FirebaseAuth.instance.currentUser.emailVerified) {
         setState(() {
@@ -84,14 +84,6 @@ class _UserState extends State<User> {
         });
       } else {
         FirebaseAuth.instance.currentUser.reload();
-        setState(() {
-          icon = Tooltip(
-              message: "Email Não verificado",
-              child: Icon(
-                Icons.info_outline,
-                color: Colors.green,
-              ));
-        });
       }
     } catch (e) {
       print(e);

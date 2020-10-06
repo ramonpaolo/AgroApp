@@ -4,57 +4,65 @@ import 'dart:io';
 showModalConf(context, localizacao, FirebaseAuth, _googleSignIn, _saveData,
     Login, setState) {
   return showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(40), topRight: Radius.circular(40))),
       context: (context),
       builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(40),
-          color: Colors.white,
-          width: 1000,
-          height: 1000,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: Container(
+              padding: EdgeInsets.all(40),
+              color: Colors.white,
+              width: 1000,
+              height: 1000,
+              child: Column(
                 children: [
-                  Text("Localização $localizacao"),
-                  Switch(
-                    value: localizacao,
-                    onChanged: (v) {
-                      setState(() {
-                        localizacao = v;
-                      });
-                    },
-                    activeColor: Colors.green,
-                  )
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Localização $localizacao"),
+                      Switch(
+                        value: localizacao,
+                        onChanged: (v) {
+                          setState(() {
+                            localizacao = v;
+                          });
+                        },
+                        activeColor: Colors.green,
+                      )
+                    ],
+                  ),
+                  TextButton.icon(
+                      onPressed: () async {
+                        try {
+                          await FirebaseAuth.instance.currentUser.delete();
+                        } catch (e) {
+                          await _googleSignIn.disconnect();
+                        }
+                        await _saveData();
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => Login()));
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.green,
+                      ),
+                      label: Text(
+                        "Deletar conta",
+                        style: TextStyle(color: Colors.green),
+                      ))
                 ],
               ),
-              TextButton.icon(
-                  onPressed: () async {
-                    try {
-                      await FirebaseAuth.instance.currentUser.delete();
-                    } catch (e) {
-                      await _googleSignIn.disconnect();
-                    }
-                    await _saveData();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Login()));
-                  },
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.green,
-                  ),
-                  label: Text(
-                    "Deletar conta",
-                    style: TextStyle(color: Colors.green),
-                  ))
-            ],
-          ),
-        );
+            ));
       });
 }
 
 showModal(context, item, index) {
   return showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(40), topRight: Radius.circular(40))),
       context: (context),
       builder: (context) {
         return SingleChildScrollView(
