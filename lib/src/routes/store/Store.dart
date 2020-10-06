@@ -1,5 +1,6 @@
 //---- Packages
 import 'dart:io';
+import 'package:agricultura/src/routes/store/showModal.dart';
 import 'package:flutter/material.dart';
 
 //---- Datas
@@ -266,8 +267,6 @@ class _StoreState extends State<Store> {
                                             plantas
                                                 .remove(plantas[index]["id"]);
                                           });
-                                          print(index);
-
                                           key.currentState
                                               .showSnackBar(SnackBar(
                                             content: Text(
@@ -339,12 +338,7 @@ class _StoreState extends State<Store> {
                                   Tooltip(message: "ó");
                                 },
                                 onPressed: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (c) {
-                                        return Container(
-                                            child: Text("Terminar aki"));
-                                      });
+                                  showModal(context);
                                 },
                                 color: Colors.green,
                                 child: Text(

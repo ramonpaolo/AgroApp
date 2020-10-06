@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:agricultura/src/routes/user/showModal.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -152,61 +153,8 @@ class _UserState extends State<User> {
                           color: Colors.green,
                         ),
                         onPressed: () {
-                          showModalBottomSheet(
-                              context: (context),
-                              builder: (context) {
-                                return Container(
-                                  padding: EdgeInsets.all(40),
-                                  color: Colors.white,
-                                  width: 1000,
-                                  height: 1000,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Localização $localizacao"),
-                                          Switch(
-                                            value: localizacao,
-                                            onChanged: (v) {
-                                              setState(() {
-                                                localizacao = v;
-                                              });
-                                            },
-                                            activeColor: Colors.green,
-                                          )
-                                        ],
-                                      ),
-                                      TextButton.icon(
-                                          onPressed: () async {
-                                            try {
-                                              await FirebaseAuth
-                                                  .instance.currentUser
-                                                  .delete();
-                                            } catch (e) {
-                                              await _googleSignIn.disconnect();
-                                            }
-                                            await _saveData();
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Login()));
-                                          },
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.green,
-                                          ),
-                                          label: Text(
-                                            "Deletar conta",
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          ))
-                                    ],
-                                  ),
-                                );
-                              });
+                          showModalConf(context, localizacao, FirebaseAuth,
+                              _googleSignIn, _saveData, Login, setState);
                         }),
                   ],
                 )
@@ -274,92 +222,36 @@ Widget construtor(List item) {
                         ),
                       ),
                       ListTile(
-                        title: Text("${item[index]["title"]}"),
-                        subtitle: Text("${item[index]["subtitle"]}"),
-                        onTap: () => Navigator.push(
-                          context,
-                          PageTransition(
-                              child: Visualizar(
-                                name: item[index]["title"],
+                          title: Text("${item[index]["title"]}"),
+                          subtitle: Text("${item[index]["subtitle"]}"),
+                          onTap: () => Navigator.push(
+                                context,
+                                PageTransition(
+                                    child: Visualizar(
+                                      name: item[index]["title"],
+                                    ),
+                                    type: PageTransitionType.bottomToTop),
                               ),
-                              type: PageTransitionType.bottomToTop),
-                        ),
-                        trailing: Padding(
-                            padding: EdgeInsets.only(top: 6),
-                            child: Tooltip(
-                              message: "Views",
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.remove_red_eye,
-                                    color: Colors.green,
-                                  ),
-                                  Text(
-                                    item[index]["views"].toString(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green),
-                                  )
-                                ],
-                              ),
-                            )),
-                        onLongPress: () => showModalBottomSheet(
-                            context: (context),
-                            builder: (context) {
-                              return SingleChildScrollView(
-                                  child: Container(
-                                padding: EdgeInsets.all(20),
-                                height: 500,
-                                width: 1000,
+                          trailing: Padding(
+                              padding: EdgeInsets.only(top: 6),
+                              child: Tooltip(
+                                message: "Views",
                                 child: Column(
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Image.file(
-                                        File(item[index]["image"]),
-                                        height: 140,
-                                        filterQuality: FilterQuality.high,
-                                      ),
+                                    Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.green,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.download_rounded,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () {},
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.share,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () {},
-                                        ),
-                                      ],
-                                    ),
-                                    ListTile(
-                                      title: Text(item[index]["title"]),
-                                      subtitle: Text(item[index]["subtitle"]),
-                                      trailing: Text(
-                                        "R\$" + item[index]["price"],
-                                        style: TextStyle(color: Colors.green),
-                                      ),
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.all(15),
-                                        child: Text(
-                                          item[index]["describe"],
-                                          style: TextStyle(fontSize: 16),
-                                        )),
+                                    Text(
+                                      item[index]["views"].toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green),
+                                    )
                                   ],
                                 ),
-                              ));
-                            }),
-                      ),
+                              )),
+                          onLongPress: () => showModal(context, item, index)),
                     ],
                   ),
                 )));
