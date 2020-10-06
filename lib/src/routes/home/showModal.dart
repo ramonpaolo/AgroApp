@@ -1,64 +1,73 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-showModal(context, image, size, _titleController, _subtitleController) {
+showModal(context, _images, size, _titleController, _subtitleController,
+    _describeController, _priceController) {
   return showModalBottomSheet(
       backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+      ),
       context: context,
       builder: (c) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ListTile(
-              title: Text(
-                _titleController.text,
-                style: TextStyle(fontSize: 18),
-              ),
-              subtitle: Text(
-                _subtitleController.text,
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            image != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                        height: size.height * 0.42,
-                        color: Colors.green[200],
-                        padding: EdgeInsets.all(20),
-                        child: Column(children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(200),
-                            child: Image.file(
-                              File(image),
-                              width: size.width * 0.7,
-                              height: size.height * 0.2,
-                            ),
-                          ),
-                          SizedBox(
-                              width: 1000,
-                              height: 100,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                      padding: EdgeInsets.only(left: 5, top: 2),
-                                      width: 100,
-                                      height: 50,
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(90),
-                                          child: Image.asset(
-                                            image,
-                                            fit: BoxFit.fill,
-                                          )));
-                                },
-                                itemCount: 10,
-                              ))
-                        ])),
-                  )
-                : Text("Adicione uma imagem antes")
-          ],
-        );
+        return ClipRRect(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+            child: Container(
+                width: 1000,
+                height: 1000,
+                child: SingleChildScrollView(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        _titleController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      subtitle: Text(
+                        _subtitleController.text,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      trailing: Text(
+                        "R\$ ${_priceController.text}",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ),
+                    _images.length >= 1
+                        ? CarouselSlider.builder(
+                            itemCount: _images.length,
+                            itemBuilder: (context, index) {
+                              return ClipRRect(
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: Stack(
+                                    alignment: Alignment(1, 1),
+                                    children: [
+                                      Image.file(
+                                        File(_images[index]),
+                                        filterQuality: FilterQuality.high,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ],
+                                  ));
+                            },
+                            options: CarouselOptions(
+                                pauseAutoPlayOnTouch: true,
+                                enlargeCenterPage: true,
+                                enableInfiniteScroll: true,
+                                autoPlay: true,
+                                initialPage: 0,
+                                onPageChanged: (context, index) =>
+                                    print(context)))
+                        : Text("Adicione uma imagem antes"),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    Text("${_describeController.text}")
+                  ],
+                ))));
       });
 }

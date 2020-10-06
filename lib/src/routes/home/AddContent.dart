@@ -1,6 +1,7 @@
 //---- Packages
 import 'dart:ui';
 import 'package:agricultura/src/routes/home/showModal.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -18,6 +19,8 @@ class AddContent extends StatefulWidget {
 class _AddContentState extends State<AddContent> {
   //---- Variables
 
+  List _images = [];
+
   TextEditingController _titleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
   TextEditingController _describeController = TextEditingController();
@@ -32,6 +35,7 @@ class _AddContentState extends State<AddContent> {
         await ImagePicker.platform.pickImage(source: ImageSource.camera);
     setState(() {
       image = imagePicker.path;
+      _images.insert(_images.length, image);
     });
   }
 
@@ -40,6 +44,7 @@ class _AddContentState extends State<AddContent> {
         await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     setState(() {
       image = imagePicker.path;
+      _images.insert(_images.length, image);
     });
   }
 
@@ -76,7 +81,7 @@ class _AddContentState extends State<AddContent> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: Padding(
-            padding: EdgeInsets.only(top: 50, left: 30, right: 30),
+            padding: EdgeInsets.only(top: 20),
             child: Container(
                 width: size.width,
                 height: size.height,
@@ -104,35 +109,89 @@ class _AddContentState extends State<AddContent> {
                               onPressed: imagem),
                         ],
                       ),
-                      image != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Card(
-                                  child: Image.file(
-                                File(image),
-                                width: size.width * 0.5,
-                              )))
+                      _images.length >= 1
+                          ? CarouselSlider.builder(
+                              itemCount: _images.length,
+                              itemBuilder: (context, index) {
+                                return ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Stack(
+                                      alignment: Alignment(1, 1),
+                                      children: [
+                                        Image.file(
+                                          File(_images[index]),
+                                          filterQuality: FilterQuality.high,
+                                          fit: BoxFit.fill,
+                                        ),
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                _images.removeAt(index);
+                                              });
+                                            })
+                                      ],
+                                    ));
+                              },
+                              options: CarouselOptions(
+                                  enlargeCenterPage: true,
+                                  enableInfiniteScroll: false,
+                                  autoPlay: true,
+                                  initialPage: 0,
+                                  onPageChanged: (context, index) =>
+                                      print(context)))
                           : Text("Adicione uma imagem"),
                       Divider(
                         color: Colors.white,
                       ),
-                      formulario("Titulo", 1, 0, _titleController, title,
-                          TextInputType.name),
+                      formulario(
+                          "Titulo",
+                          1,
+                          _titleController,
+                          title,
+                          TextInputType.name,
+                          false,
+                          TextCapitalization.words,
+                          50),
                       Divider(
                         color: Colors.white,
                       ),
-                      formulario("Subtítulo", 3, 15, _subtitleController,
-                          subtitle, TextInputType.text),
+                      formulario(
+                          "Subtítulo",
+                          3,
+                          _subtitleController,
+                          subtitle,
+                          TextInputType.text,
+                          false,
+                          TextCapitalization.sentences,
+                          50),
                       Divider(
                         color: Colors.white,
                       ),
-                      formulario("Describe", 3, 15, _describeController,
-                          describe, TextInputType.text),
+                      formulario(
+                          "Descrição",
+                          20,
+                          _describeController,
+                          describe,
+                          TextInputType.multiline,
+                          false,
+                          TextCapitalization.sentences,
+                          90),
                       Divider(
                         color: Colors.white,
                       ),
-                      formulario("Price", 1, 1, _priceController, price,
-                          TextInputType.number),
+                      formulario(
+                          "Preço",
+                          1,
+                          _priceController,
+                          price,
+                          TextInputType.number,
+                          true,
+                          TextCapitalization.sentences,
+                          50),
                       Divider(
                         color: Colors.white,
                       ),
@@ -143,44 +202,56 @@ class _AddContentState extends State<AddContent> {
                         "Segure o botão para adicionar o conteudo e sair.",
                         style: TextStyle(fontSize: 12),
                       ),
+                      Divider(
+                        color: Colors.white,
+                      ),
                       ClipRRect(
                           borderRadius: BorderRadius.circular(80),
-                          child: RaisedButton.icon(
-                            splashColor: Colors.white,
-                            onPressed: () {
-                              showModal(context, image, size, _titleController,
-                                  _subtitleController);
-                            },
-                            onLongPress: () async {
-                              setState(() {
-                                plantas.insert(0, {
-                                  "id": 3,
-                                  "favorite": false,
-                                  "title": "${_titleController.text}",
-                                  "subtitle": "${_subtitleController.text}",
-                                  "image": "$image",
-                                  "checbox": false,
-                                  "author": "${widget.name}",
-                                  "image_author": "assets/images/eu.jpg",
-                                  "describe": "${_describeController.text}",
-                                  "views": 0,
-                                  "price": "${_priceController.text}",
-                                });
-                              });
-                              await Future.delayed(Duration(seconds: 1),
-                                  () => Navigator.pop(context));
-                            },
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              semanticLabel: "Check",
-                            ),
-                            label: Text(
-                              "Adicionar a venda",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            color: Colors.green,
-                          ))
+                          child: Container(
+                              width: size.width * 0.6,
+                              height: size.height * 0.07,
+                              child: RaisedButton.icon(
+                                splashColor: Colors.white,
+                                onPressed: () {
+                                  showModal(
+                                      context,
+                                      _images,
+                                      size,
+                                      _titleController,
+                                      _subtitleController,
+                                      _describeController,
+                                      _priceController);
+                                },
+                                onLongPress: () async {
+                                  setState(() {
+                                    plantas.insert(0, {
+                                      "id": 2,
+                                      "favorite": false,
+                                      "title": "${_titleController.text}",
+                                      "subtitle": "${_subtitleController.text}",
+                                      "image": "$image",
+                                      "checbox": false,
+                                      "author": "${widget.name}",
+                                      "image_author": "assets/images/eu.jpg",
+                                      "describe": "${_describeController.text}",
+                                      "views": 0,
+                                      "price": "${_priceController.text}",
+                                    });
+                                  });
+                                  await Future.delayed(Duration(seconds: 1),
+                                      () => Navigator.pop(context));
+                                },
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  semanticLabel: "Check",
+                                ),
+                                label: Text(
+                                  "Adicionar a venda",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                color: Colors.green,
+                              )))
                     ],
                   ),
                 ))));
@@ -189,31 +260,38 @@ class _AddContentState extends State<AddContent> {
   Widget formulario(
       String hintText,
       int maxLines,
-      double top,
       TextEditingController controller,
       Function fun,
-      TextInputType textInputType) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(40),
-        child: Container(
-          height: 50,
-          color: Colors.green[200],
-          child: TextField(
-            controller: controller,
-            onChanged: (e) {
-              fun(e);
-            },
-            keyboardType: textInputType,
-            textAlign: TextAlign.start,
-            textCapitalization: TextCapitalization.words,
-            maxLines: maxLines,
-            cursorColor: Colors.green[900],
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(left: 20, top: top),
-                border: InputBorder.none,
-                hintText: hintText,
-                fillColor: Colors.white),
-          ),
-        ));
+      TextInputType textInputType,
+      bool prefix,
+      TextCapitalization textCapitalization,
+      double size) {
+    return Padding(
+        padding: EdgeInsets.only(left: 30, right: 30),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: Container(
+              height: size,
+              color: Colors.green[200],
+              child: TextField(
+                controller: controller,
+                onChanged: (e) {
+                  fun(e);
+                },
+                keyboardType: textInputType,
+                textAlign: TextAlign.start,
+                textCapitalization: textCapitalization,
+                maxLines: maxLines,
+                cursorColor: Colors.green[900],
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                        left: 20, top: size * 0.1, bottom: size * 0.1),
+                    border: InputBorder.none,
+                    hintText: hintText,
+                    hintStyle: TextStyle(color: Colors.white),
+                    prefixText: prefix ? "R\$" : null,
+                    fillColor: Colors.white),
+              ),
+            )));
   }
 }
