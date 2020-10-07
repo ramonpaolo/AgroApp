@@ -16,7 +16,7 @@ class PageHero extends StatelessWidget {
             tag: image,
             child: Column(children: [
               Padding(
-                  padding: EdgeInsets.only(bottom: 100, right: 340, top: 30),
+                  padding: EdgeInsets.only(right: 340, top: 30),
                   child: BackButton(
                     color: Colors.green,
                   )),
@@ -27,8 +27,6 @@ class PageHero extends StatelessWidget {
                     child: Image.file(
                       File(image),
                       filterQuality: FilterQuality.high,
-                      width: 400,
-                      height: 400,
                       fit: BoxFit.fill,
                     ))
               ])),
