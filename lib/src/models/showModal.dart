@@ -44,7 +44,8 @@ showModal(context, data, Size size) {
                             ),
                             label: Text(
                               "Continuar",
-                              style: TextStyle(color: Colors.white),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ))))
               ]),
             ));
