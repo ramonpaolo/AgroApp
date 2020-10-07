@@ -82,8 +82,10 @@ class _UserState extends State<User> {
                 color: Colors.green,
               ));
         });
+        print("Email verificado");
       } else {
         FirebaseAuth.instance.currentUser.reload();
+        print("Email não verificado");
       }
     } catch (e) {
       print(e);
