@@ -53,7 +53,7 @@ class _InstructionState extends State<Instruction> {
                       borderRadius: BorderRadius.circular(60),
                       child: Container(
                         color:
-                            _page == 0 ? Colors.green[100] : Colors.green[200],
+                            _page == 0 ? Colors.green[100] : Colors.green[300],
                         width: 20,
                         height: 10,
                       )),
@@ -64,7 +64,7 @@ class _InstructionState extends State<Instruction> {
                         child: Container(
                           color: _page == 1
                               ? Colors.green[100]
-                              : Colors.green[200],
+                              : Colors.green[300],
                           width: 20,
                           height: 10,
                         )),
