@@ -62,7 +62,7 @@ class _UserState extends State<User> {
     return file;
   }
 
-  Future _saveData() async {
+  Future _deleteData() async {
     final path = await _getData();
     await path.delete();
   }
@@ -71,7 +71,7 @@ class _UserState extends State<User> {
   void initState() {
     // TODO: implement initState
     print("--------------- User.dart--------------");
-
+    print(widget.data);
     try {
       if (FirebaseAuth.instance.currentUser.emailVerified) {
         setState(() {
@@ -114,20 +114,12 @@ class _UserState extends State<User> {
                         color: Colors.white,
                         child: Column(children: [
                           Padding(
-                            padding: EdgeInsets.only(top: 10),
+                            padding: EdgeInsets.only(top: 60),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(200),
-                                child: myPlantas.length >= 1
-                                    ? Image.asset(
-                                        "${myPlantas[0]["image_author"]}",
-                                        height: 180,
-                                      )
-                                    : Icon(
-                                        Icons.person,
-                                        semanticLabel: "Sem Foto de perfil",
-                                        color: Colors.green,
-                                        size: 168,
-                                      )),
+                                child: Image.network(
+                                  "${widget.data["image"]}",
+                                )),
                           ),
                           Text(
                             "${widget.data["name"]}",
@@ -148,7 +140,7 @@ class _UserState extends State<User> {
                         ),
                         onPressed: () {
                           showModalConf(context, localizacao, FirebaseAuth,
-                              _googleSignIn, _saveData, Login, setState);
+                              _googleSignIn, _deleteData, Login, setState);
                         }),
                   ],
                 )
@@ -174,7 +166,7 @@ class _UserState extends State<User> {
                   } catch (e) {
                     await _googleSignIn.signOut();
                   }
-                  await _saveData();
+                  await _deleteData();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Login()));
                 },

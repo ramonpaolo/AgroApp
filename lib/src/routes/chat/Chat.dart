@@ -66,11 +66,8 @@ class _ChatState extends State<Chat> {
                       Padding(
                         padding: EdgeInsets.all(3),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: Image.asset(
-                            "assets/images/eu.jpg",
-                          ),
-                        ),
+                            borderRadius: BorderRadius.circular(40),
+                            child: Image.network("${widget.data["image"]}")),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 20),
