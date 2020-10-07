@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:agricultura/src/models/instructions/instruction.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,8 +29,7 @@ class Index extends StatefulWidget {
 }
 
 class _IndexState extends State<Index> {
-  String data = "";
-
+  String widgets = "";
   Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File("${directory.path}/data.json");
@@ -39,17 +39,20 @@ class _IndexState extends State<Index> {
   Future _readData() async {
     try {
       final file = await _getData();
-      final decode = await jsonDecode(file.readAsStringSync());
-      setState(() {
-        data = "tem";
+      Map decode = await jsonDecode(file.readAsStringSync());
+      decode.forEach((key, value) {
+        if (key == "screen" && value == "true") {
+          widgets = "true";
+        } else if (key == "email" && value != null) {
+          setState(() {
+            widgets = "signOut";
+          });
+        }
       });
-      print(await decode);
+
       return decode;
     } catch (e) {
       print("Error: " + e.toString());
-      setState(() {
-        data = "nao";
-      });
     }
   }
 
@@ -66,7 +69,12 @@ class _IndexState extends State<Index> {
     return Simple_splashscreen(
         context: context,
         splashscreenWidget: Splash(),
-        gotoWidget: data == "tem" ? Nav() : Login(),
+        gotoWidget: widgets == "true"
+            ? widgets == "signOut"
+                ? Login()
+                : Nav()
+            : Instruction(),
+        // data == "tem" ? Nav() : Login(),
         timerInSeconds: 2);
   }
 }
