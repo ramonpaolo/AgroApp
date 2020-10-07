@@ -83,6 +83,7 @@ class _CadastroState extends State<Cadastro> {
       await auth.createUserWithEmailAndPassword(
           email: _googleSignIn.currentUser.email,
           password: _googleSignIn.currentUser.displayName);
+      await FirebaseAuth.instance.currentUser.sendEmailVerification();
       await _saveData(
           _googleSignIn.currentUser.displayName,
           _googleSignIn.currentUser.email,
