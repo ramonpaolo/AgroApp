@@ -324,17 +324,19 @@ class _LoginState extends State<Login> {
     if (_googleSignIn.currentUser.displayName == null) {
       print("firebase name null");
       j = {
-        'email': '$email',
-        'password': '$password',
+        'email': "$email",
+        'password': "$password",
         'name': "Ramon Paolo Maran",
+        'image': "${_googleSignIn.currentUser.photoUrl}",
         'screen': "true"
       };
     } else {
       print("firebase name não null");
       j = {
-        'email': '$email',
-        'password': '$password',
+        'email': "$email",
+        'password': "$password",
         'name': "${_googleSignIn.currentUser.displayName}",
+        'image': "${_googleSignIn.currentUser.photoUrl}",
         'screen': "true"
       };
     }
