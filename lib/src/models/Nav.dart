@@ -13,7 +13,6 @@ import 'dart:convert';
 import 'package:agricultura/src/routes/chat/Chat.dart';
 import 'package:agricultura/src/routes/store/Store.dart';
 import 'package:agricultura/src/routes/home/Home.dart';
-import 'package:agricultura/src/routes/home/AddContent.dart';
 
 class Nav extends StatefulWidget {
   @override
@@ -41,13 +40,14 @@ class _NavState extends State<Nav> {
 
   Future _readData() async {
     try {
+      print("_readData");
       final file = await _getData();
       final decode = await jsonDecode(file.readAsStringSync());
-      //print("Decode: " + await decode.toString());
+      //print("Decode: " + decode.toString());
       setState(() {
         data = decode;
       });
-      print(data);
+      print("Data: " + data.toString());
       return data;
     } catch (e) {
       print("Error: " + e.toString());
