@@ -1,13 +1,11 @@
 //---- Packages
-import 'package:agricultura/src/routes/chat/showModal.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
 
 //---- Screens
 import 'package:agricultura/src/routes/chat/PageHero.dart';
+import 'package:agricultura/src/routes/chat/showModal.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/chat.dart';
@@ -142,72 +140,7 @@ class _ChatPVState extends State<ChatPV> {
                                       color: Colors.green,
                                     ),
                                     onPressed: () {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(40),
-                                                  topRight:
-                                                      Radius.circular(40))),
-                                          builder: (c) {
-                                            return ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(40),
-                                                child: Container(
-                                                    height: 1000,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      child: Column(
-                                                        children: [
-                                                          Divider(
-                                                            color: Colors.white,
-                                                          ),
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        200),
-                                                            child: Image.asset(
-                                                              widget.image,
-                                                              width: 200,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            widget.name,
-                                                            style: TextStyle(
-                                                                fontSize: 24),
-                                                          ),
-                                                          SizedBox(
-                                                              width: 1000,
-                                                              height: 130,
-                                                              child: ListView
-                                                                  .builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                          left:
-                                                                              20),
-                                                                      child: ClipRRect(
-                                                                          borderRadius: BorderRadius.circular(30),
-                                                                          child: Container(
-                                                                              width: 100,
-                                                                              child: GestureDetector(
-                                                                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PageHero(_image))),
-                                                                                child: Hero(tag: index, child: Card(child: Image.file(File(_images[index])))),
-                                                                              ))));
-                                                                },
-                                                                itemCount:
-                                                                    _images
-                                                                        .length,
-                                                              ))
-                                                        ],
-                                                      ),
-                                                    )));
-                                          });
+                                      showModalDrazer(_images, context, widget);
                                     },
                                     tooltip: "Menu usuário",
                                   )),
@@ -246,6 +179,7 @@ class _ChatPVState extends State<ChatPV> {
                                     ? 5
                                     : 140),
                             child: Container(
+                                width: 1000,
                                 padding: EdgeInsets.all(10),
                                 child: Card(
                                     color: messages[index]["name"] ==
@@ -264,8 +198,9 @@ class _ChatPVState extends State<ChatPV> {
                                                   Image.file(
                                                     File(messages[index]
                                                         ["content"]),
-                                                    width: 200,
-                                                    height: 200,
+                                                    filterQuality:
+                                                        FilterQuality.high,
+                                                    fit: BoxFit.fill,
                                                   ),
                                                   messages[index]["name"] ==
                                                           widget.user["name"]
@@ -273,8 +208,8 @@ class _ChatPVState extends State<ChatPV> {
                                                           title: Text(
                                                           "${widget.user["name"]}",
                                                           style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
+                                                              color: Colors
+                                                                  .white70),
                                                         ))
                                                       : ListTile(
                                                           title: Text(
@@ -291,13 +226,13 @@ class _ChatPVState extends State<ChatPV> {
                                                     title: Text(
                                                       "${messages[index]["content"]}",
                                                       style: TextStyle(
-                                                          color:
-                                                              Colors.white70),
+                                                          color: Colors.white),
                                                     ),
                                                     subtitle: Text(
                                                       "${messages[index]["name"]}",
                                                       style: TextStyle(
-                                                          color: Colors.white),
+                                                          color:
+                                                              Colors.white70),
                                                     ))
                                                 : ListTile(
                                                     title: Text(
