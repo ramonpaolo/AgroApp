@@ -326,14 +326,16 @@ class _LoginState extends State<Login> {
       j = {
         'email': '$email',
         'password': '$password',
-        'name': "Ramon Paolo Maran"
+        'name': "Ramon Paolo Maran",
+        'screen': "true"
       };
     } else {
       print("firebase name não null");
       j = {
         'email': '$email',
         'password': '$password',
-        'name': "${_googleSignIn.currentUser.displayName}"
+        'name': "${_googleSignIn.currentUser.displayName}",
+        'screen': "true"
       };
     }
     var encode = jsonEncode(j);
