@@ -1,5 +1,6 @@
 //---- Packages
 import 'dart:io';
+import 'package:agricultura/src/routes/home/Product.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -7,6 +8,7 @@ import 'dart:convert';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -307,12 +309,13 @@ class _HomeState extends State<Home> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
-          return Center(
+          return construtor(size, plantas);
+          /* Center(
             child: Text(
               "Error",
               style: TextStyle(color: Colors.white, fontSize: 48),
             ),
-          );
+          );*/
         }
       },
       future: datas(),
@@ -336,8 +339,7 @@ class _HomeState extends State<Home> {
                       textDirection: TextDirection.rtl,
                       children: [
                         Image.file(
-                          File(item[index]["image"]),
-                          width: 500,
+                          File(item[index]["image"][0]),
                           filterQuality: FilterQuality.high,
                           fit: BoxFit.fill,
                           height: 160,
@@ -360,6 +362,13 @@ class _HomeState extends State<Home> {
                     ListTile(
                       title: Text(item[index]["title"]),
                       subtitle: Text(item[index]["subtitle"]),
+                      onTap: () => Navigator.push(
+                          context,
+                          PageTransition(
+                              child: Product(
+                                item: item[index],
+                              ),
+                              type: PageTransitionType.bottomToTop)),
                     ),
                   ],
                 ),
