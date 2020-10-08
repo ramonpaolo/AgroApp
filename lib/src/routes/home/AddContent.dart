@@ -1,10 +1,12 @@
 //---- Packages
 import 'dart:ui';
-import 'package:agricultura/src/routes/home/showModal.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+//---- Screens
+import 'package:agricultura/src/routes/home/showModal.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
