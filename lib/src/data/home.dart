@@ -4,7 +4,7 @@ List plantas = [
     "favorite": false,
     "title": "Eucalipto",
     "subtitle": "Plantio",
-    "image": "assets/images/planta.webp",
+    "image": "assets/images/agricultura.png",
     "checbox": true,
     "author": "Ramon Paolo Maran",
     "image_author": "assets/images/eu.jpg",
