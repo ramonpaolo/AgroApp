@@ -1,8 +1,11 @@
 //---- Packages
-import 'package:agricultura/src/data/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:sigepweb/sigepweb.dart';
+
+//---- Datas
+import 'package:agricultura/src/data/user.dart';
 
 class Product extends StatefulWidget {
   Product({Key key, this.item}) : super(key: key);
@@ -12,9 +15,46 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
-  var item;
+  //---- Variables
+
+  bool freteBuscado = false;
+
   List images = [];
+
+  Map sedex = {"name": "", "price": "", "time_delivery": ""};
+  Map pac = {"name": "", "price": "", "time_delivery": ""};
+
+  TextEditingController _cepController = TextEditingController();
+
+  var item;
   var _snack = GlobalKey<ScaffoldState>();
+
+  //---- Functions
+
+  correios(String cep) async {
+    var sigep = Sigepweb(contrato: SigepContrato.semContrato());
+    var calcPrecoPrazo = await sigep.calcPrecoPrazo(
+        cepOrigem: "70002900", cepDestino: cep, valorPeso: 1.0);
+    for (var item in calcPrecoPrazo) {
+      print("${item.nome}: R\$ ${item.valor}");
+      if (item.nome == "Sedex") {
+        setState(() {
+          sedex["name"] = item.nome.toString();
+          sedex["price"] = item.valor.toString();
+          sedex["time_delivery"] = item.prazoEntrega.toString();
+          freteBuscado = true;
+        });
+      } else {
+        setState(() {
+          pac["name"] = item.nome.toString();
+          pac["price"] = item.valor.toString();
+          pac["time_delivery"] = item.prazoEntrega.toString();
+          freteBuscado = true;
+        });
+      }
+    }
+  }
+
   imagesL() {
     for (var x = 0; x < 20; x++) {
       try {
@@ -26,6 +66,65 @@ class _ProductState extends State<Product> {
     }
   }
 
+  addInUser(String text) {
+    List usuario;
+    setState(() {
+      usuario = user[text];
+    });
+    print("Usuario: " + usuario.toString());
+    if (usuario.length >= 1) {
+      for (var x = 0; x < usuario.length; x++) {
+        if (usuario[x] == item["id"]) {
+          usuario.forEach((element) {
+            if (element == item["id"]) {
+              setState(() {
+                usuario.remove(element);
+              });
+              _snack.currentState.showSnackBar(SnackBar(
+                content: Text(
+                  "Removido do $text",
+                  style: TextStyle(color: Colors.green),
+                ),
+                backgroundColor: Colors.white,
+              ));
+              print("$text removido");
+              print(usuario);
+            }
+          });
+        } else {
+          setState(() {
+            usuario.add(item["id"]);
+            user[text] = usuario;
+          });
+          _snack.currentState.showSnackBar(SnackBar(
+            content: Text(
+              "Adicionado no $text",
+              style: TextStyle(color: Colors.green),
+            ),
+            backgroundColor: Colors.white,
+          ));
+          print("Adiciona");
+        }
+      }
+    } else {
+      setState(() {
+        usuario.add(item["id"]);
+        user[text] = usuario;
+      });
+      _snack.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "Adicionado no $text",
+          style: TextStyle(color: Colors.green),
+        ),
+        backgroundColor: Colors.white,
+      ));
+      print("Primeiro $text do perfil :)");
+    }
+    print(usuario.length.toString() +
+        " id cadastrado com valor: " +
+        user[text].toString());
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -35,7 +134,6 @@ class _ProductState extends State<Product> {
     setState(() {
       item["views"] += 1;
     });
-    print(item["image"][0]);
     super.initState();
   }
 
@@ -80,7 +178,9 @@ class _ProductState extends State<Product> {
                                     Icons.add_shopping_cart_sharp,
                                     color: Colors.green,
                                   ),
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    addInUser("car_shop");
+                                  }),
                               IconButton(
                                   tooltip: "Compartilhar",
                                   icon: Icon(
@@ -90,61 +190,10 @@ class _ProductState extends State<Product> {
                                   onPressed: () {}),
                               IconButton(
                                   tooltip: "Adicionar no favoritos",
-                                  icon: Icon(Icons.favorite),
+                                  icon:
+                                      Icon(Icons.favorite, color: Colors.green),
                                   onPressed: () {
-                                    List usuario;
-                                    setState(() {
-                                      usuario = user["favorites"];
-                                    });
-                                    print("Usuario" + usuario.toString());
-                                    if (usuario.length >= 1) {
-                                      for (var x = 0; x < usuario.length; x++) {
-                                        if (usuario[x] == item["id"]) {
-                                          if (x == usuario.length - 1) {
-                                            _snack.currentState
-                                                .showSnackBar(SnackBar(
-                                              content: Text(
-                                                "Já está em seu favoritos",
-                                                style: TextStyle(
-                                                    color: Colors.green),
-                                              ),
-                                              action: SnackBarAction(
-                                                textColor: Colors.green[400],
-                                                label: "Tirar favorito",
-                                                onPressed: () {
-                                                  usuario.forEach((element) {
-                                                    if (element == item["id"]) {
-                                                      setState(() {
-                                                        usuario.remove(element);
-                                                      });
-                                                      print(
-                                                          "Favorito removido");
-                                                    }
-                                                  });
-                                                  //user.removeWhere(
-                                                  //    (key, value) => key == "favorite" ? value == item["id"]);
-                                                },
-                                              ),
-                                              backgroundColor: Colors.white,
-                                            ));
-                                          }
-                                        } else {
-                                          setState(() {
-                                            usuario.add(item["id"]);
-                                            user["favorites"] = usuario;
-                                          });
-                                        }
-                                      }
-                                    } else {
-                                      setState(() {
-                                        usuario.add(item["id"]);
-                                        user["favorites"] = usuario;
-                                      });
-                                      print("Primeiro favorito do perfil :)");
-                                    }
-                                    print(usuario.length.toString() +
-                                        " id cadastrado com valor: " +
-                                        user["favorites"].toString());
+                                    addInUser("favorites");
                                   }),
                             ],
                           ),
@@ -185,6 +234,13 @@ class _ProductState extends State<Product> {
                     child: Container(
                       color: Colors.white,
                       child: TextFormField(
+                        controller: _cepController,
+                        onChanged: (e) {
+                          if (_cepController.text.length == 8) {
+                            print("Igual a oito");
+                          }
+                          print(e);
+                        },
                         cursorColor: Colors.green,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -193,7 +249,7 @@ class _ProductState extends State<Product> {
                               color: Colors.green,
                             ),
                             border: InputBorder.none,
-                            hintText: "CEP",
+                            hintText: "CEP do destino",
                             contentPadding: EdgeInsets.all(20)),
                       ),
                     )),
@@ -204,7 +260,19 @@ class _ProductState extends State<Product> {
                   width: 200,
                   height: 40,
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (_cepController.text.length == 8) {
+                        await correios(_cepController.text);
+                      } else {
+                        _snack.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            "CEP ${_cepController.text} inválido",
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          backgroundColor: Colors.white,
+                        ));
+                      }
+                    },
                     color: Colors.white,
                     child: Text(
                       "Ver frete",
@@ -212,7 +280,54 @@ class _ProductState extends State<Product> {
                     ),
                   ),
                 ),
-              )
+              ),
+              Divider(
+                color: Colors.green,
+              ),
+              AnimatedCrossFade(
+                  firstChild: Text(""),
+                  secondChild: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        width: 200,
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  sedex["name"],
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                                Spacer(),
+                                Text(
+                                  "R\$" + sedex["price"].toString(),
+                                  style: TextStyle(color: Colors.green[200]),
+                                )
+                              ],
+                            ),
+                            Divider(color: Colors.green),
+                            Row(
+                              children: [
+                                Text(
+                                  pac["name"],
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                                Spacer(),
+                                Text(
+                                  "R\$" + pac["price"].toString(),
+                                  style: TextStyle(color: Colors.green[200]),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      )),
+                  crossFadeState: freteBuscado == true
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: Duration(milliseconds: 400)),
             ],
           ),
         ));
