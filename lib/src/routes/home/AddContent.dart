@@ -22,6 +22,11 @@ class _AddContentState extends State<AddContent> {
   //---- Variables
 
   List _images = [];
+  List<DropdownMenuItem<int>> listDrop = [];
+
+  int selectedCategory;
+
+  String category = "";
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
@@ -76,6 +81,39 @@ class _AddContentState extends State<AddContent> {
       text = _priceController.text;
     });
     print(_priceController.text);
+  }
+
+  loadData() {
+    listDrop.add(DropdownMenuItem(
+      child: Text(
+        "Plantas",
+      ),
+      value: 1,
+    ));
+    listDrop.add(DropdownMenuItem(
+      child: Text(
+        "Adubo",
+      ),
+      value: 2,
+    ));
+    listDrop.add(DropdownMenuItem(
+      child: Text(
+        "Cosméticos",
+      ),
+      value: 3,
+    ));
+    listDrop.add(DropdownMenuItem(
+      child: Text(
+        "Peças",
+      ),
+      value: 4,
+    ));
+  }
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
   }
 
   @override
@@ -197,6 +235,35 @@ class _AddContentState extends State<AddContent> {
                       Divider(
                         color: Colors.white,
                       ),
+                      ClipRRect(
+                        child: DropdownButton(
+                            value: selectedCategory,
+                            hint: Text("Selecione a categoria"),
+                            dropdownColor: Colors.green[200],
+                            items: listDrop,
+                            onChanged: (value) {
+                              if (value == 1) {
+                                setState(() {
+                                  category = "Plantas";
+                                });
+                              } else if (value == 2) {
+                                setState(() {
+                                  category = "Adubos";
+                                });
+                              } else if (value == 3) {
+                                setState(() {
+                                  category = "Cosméticos";
+                                });
+                              } else if (value == 4) {
+                                setState(() {
+                                  category = "Peças";
+                                });
+                              }
+                              setState(() {
+                                selectedCategory = value;
+                              });
+                            }),
+                      ),
                       Text(
                           "Clique no botão para visualizar o conteudo antes de ser postado.",
                           style: TextStyle(fontSize: 12)),
@@ -226,20 +293,23 @@ class _AddContentState extends State<AddContent> {
                                 },
                                 onLongPress: () async {
                                   setState(() {
-                                    plantas.insert(0, {
-                                      "id": 2,
+                                    produtos.insert(0, {
+                                      "id": 0,
                                       "favorite": false,
                                       "title": "${_titleController.text}",
                                       "subtitle": "${_subtitleController.text}",
                                       "image": _images,
                                       "checbox": false,
                                       "author": "${widget.name}",
+                                      "category": category,
                                       "image_author": "assets/images/eu.jpg",
                                       "describe": "${_describeController.text}",
                                       "views": 0,
                                       "price": "${_priceController.text}",
                                     });
                                   });
+                                  print(category);
+                                  Navigator.pop(context);
                                 },
                                 icon: Icon(
                                   Icons.check,

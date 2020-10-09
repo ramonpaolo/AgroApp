@@ -1,4 +1,4 @@
-List plantas = [
+List produtos = [
   /*{
     "id": 0,
     "favorite": false,
@@ -8,6 +8,7 @@ List plantas = [
     "checbox": true,
     "author": "Ramon Paolo Maran",
     "image_author": "assets/images/eu.jpg",
+    "category": "plantas",
     "describe":
         "Eucalipto com aproximadamente 20 anos de existência. Muito rígido",
     "views": 4,
