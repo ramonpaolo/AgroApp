@@ -35,15 +35,10 @@ class _ProductsState extends State<Products> {
                     Navigator.pop(context);
                   }),
             ),
-            Divider(
-              height: 30,
-              color: Colors.green,
-            ),
             Container(
               width: size.width,
-              height: size.height * 0.35,
+              height: size.height * 0.89,
               child: ListView.builder(
-                scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       onTap: () => Navigator.push(
@@ -61,8 +56,8 @@ class _ProductsState extends State<Products> {
                               child: Column(
                                 children: [
                                   Container(
-                                    width: size.width * 0.548,
-                                    height: size.height * 0.225,
+                                    width: size.width,
+                                    height: size.height * 0.3,
                                     child: Image.file(
                                       File(widget.category[index]["image"][0]),
                                       fit: BoxFit.fill,

@@ -85,17 +85,21 @@ class _CategoryState extends State<Category> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
-                              width: 100,
-                              height: 220,
+                              width: 1000,
+                              height: size.height * 0.32,
                               child: Card(
                                   color: Colors.white,
                                   child: Column(
                                     children: [
-                                      Image.file(
-                                        File(produtosDaCategoriaEscolhida[index]
-                                            ["image"][0]),
-                                        fit: BoxFit.fill,
-                                        filterQuality: FilterQuality.high,
+                                      Container(
+                                        width: 100,
+                                        height: 130,
+                                        child: Image.file(
+                                          File(produtosDaCategoriaEscolhida[
+                                              index]["image"][0]),
+                                          fit: BoxFit.fill,
+                                          filterQuality: FilterQuality.high,
+                                        ),
                                       ),
                                       ListTile(
                                         title: Text(
@@ -126,14 +130,56 @@ class _CategoryState extends State<Category> {
                 ),
                 Container(
                   width: 200,
-                  height: 100,
+                  height: 1000,
                   child: ListView.builder(
                     itemBuilder: (context, index) {
-                      return Text("$index");
+                      return GestureDetector(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                              width: 1000,
+                              height: size.height * 0.32,
+                              child: Card(
+                                  color: Colors.white,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        height: 100,
+                                        child: Image.file(
+                                          File(produtosDaCategoriaEscolhida[
+                                              index]["image"][0]),
+                                          fit: BoxFit.fill,
+                                          filterQuality: FilterQuality.high,
+                                        ),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                            produtosDaCategoriaEscolhida[index]
+                                                ["title"]),
+                                        subtitle: Text(
+                                            produtosDaCategoriaEscolhida[index]
+                                                ["subtitle"]),
+                                        trailing: Text(
+                                          "R\$25,00",
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                      )
+                                    ],
+                                  ))),
+                        ),
+                        onTap: () => Navigator.push(
+                            context,
+                            PageTransition(
+                                child: Product(
+                                  item: produtosDaCategoriaEscolhida[index],
+                                ),
+                                type: PageTransitionType.rightToLeft)),
+                      );
                     },
                     itemCount: produtosDaCategoriaEscolhida.length,
                   ),
-                )
+                ),
               ],
             )
           ],
