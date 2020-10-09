@@ -49,7 +49,7 @@ Widget construtor(
       ),
       Container(
           width: 1000,
-          height: 240,
+          height: 220,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: item.length,
@@ -72,28 +72,28 @@ Widget construtor(
                               Stack(
                                 textDirection: TextDirection.rtl,
                                 children: [
-                                  Image.file(
-                                    File(item[index]["image"][0]),
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
+                                  Container(
+                                    width: size.width * 0.5,
                                     height: size.height * 0.2,
+                                    child: Image.file(
+                                      File(item[index]["image"][0]),
+                                      filterQuality: FilterQuality.high,
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 100),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          Icons.favorite_border,
-                                          color: item[index]["favorite"]
-                                              ? Colors.green
-                                              : Colors.black,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            item[index]["favorite"] =
-                                                !item[index]["favorite"];
-                                          });
-                                        }),
-                                  )
+                                  IconButton(
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        color: item[index]["favorite"]
+                                            ? Colors.green
+                                            : Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          item[index]["favorite"] =
+                                              !item[index]["favorite"];
+                                        });
+                                      }),
                                 ],
                               ),
                               ListTile(
