@@ -25,7 +25,7 @@ class _UserState extends State<User> {
   //---- Variables
   bool localizacao = true;
 
-  List myPlantas = [];
+  List myProduts = [];
   List menorToMaior = [];
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -44,11 +44,11 @@ class _UserState extends State<User> {
 
   //---- Functios
 
-  myplantas() async {
+  getMyProduts() async {
     for (var x = 0; x < produtos.length; x++) {
       if (produtos[x]["author"] == widget.data["name"]) {
         setState(() {
-          myPlantas.add(produtos[x]);
+          myProduts.add(produtos[x]);
         });
       } else {
         print("Não é meu");
@@ -58,8 +58,7 @@ class _UserState extends State<User> {
 
   Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
-    var file = File("${directory.path}/data.json");
-    return file;
+    return File("${directory.path}/data.json");
   }
 
   Future _deleteData() async {
@@ -90,7 +89,7 @@ class _UserState extends State<User> {
     } catch (e) {
       print(e);
     }
-    myplantas();
+    getMyProduts();
     super.initState();
   }
 
@@ -114,11 +113,14 @@ class _UserState extends State<User> {
                         color: Colors.white,
                         child: Column(children: [
                           Padding(
-                            padding: EdgeInsets.only(top: 60),
+                            padding: EdgeInsets.only(top: 30),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(200),
                                 child: Image.network(
                                   "${widget.data["image"]}",
+                                  filterQuality: FilterQuality.high,
+                                  fit: BoxFit.fill,
+                                  height: 160,
                                 )),
                           ),
                           Text(
@@ -153,12 +155,12 @@ class _UserState extends State<User> {
               "Meus anúncios",
               style: TextStyle(fontSize: 22, color: Colors.white),
             ),
-            myPlantas.length == 0
+            myProduts.length == 0
                 ? Text(
                     "Sem anúncio",
                     style: TextStyle(color: Colors.white),
                   )
-                : construtor(myPlantas),
+                : construtor(myProduts),
             TextButton.icon(
                 onPressed: () async {
                   try {
@@ -192,55 +194,55 @@ Widget construtor(List item) {
     child: ListView.builder(
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
-        return ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-                width: 170,
-                child: Card(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 110,
-                        child: Image.file(
-                          File(item[index]["image"][0]),
-                          fit: BoxFit.fill,
-                          filterQuality: FilterQuality.high,
-                        ),
+        return GestureDetector(
+            onLongPress: () => showModal(context, item, index),
+            onTap: () => Navigator.push(
+                  context,
+                  PageTransition(
+                      child: Visualizar(data: item[index]),
+                      type: PageTransitionType.bottomToTop),
+                ),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                    width: 170,
+                    child: Card(
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 110,
+                            child: Image.file(
+                              File(item[index]["image"][0]),
+                              fit: BoxFit.fill,
+                              filterQuality: FilterQuality.high,
+                            ),
+                          ),
+                          ListTile(
+                            title: Text(item[index]["title"]),
+                            subtitle: Text(item[index]["subtitle"]),
+                            trailing: Padding(
+                                padding: EdgeInsets.only(top: 6),
+                                child: Tooltip(
+                                  message: "Views",
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.remove_red_eye,
+                                        color: Colors.green,
+                                      ),
+                                      Text(
+                                        item[index]["views"].toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green),
+                                      )
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ],
                       ),
-                      ListTile(
-                          title: Text("${item[index]["title"]}"),
-                          subtitle: Text("${item[index]["subtitle"]}"),
-                          onTap: () => Navigator.push(
-                                context,
-                                PageTransition(
-                                    child: Visualizar(
-                                      name: item[index]["title"],
-                                    ),
-                                    type: PageTransitionType.bottomToTop),
-                              ),
-                          trailing: Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Tooltip(
-                                message: "Views",
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.green,
-                                    ),
-                                    Text(
-                                      item[index]["views"].toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green),
-                                    )
-                                  ],
-                                ),
-                              )),
-                          onLongPress: () => showModal(context, item, index)),
-                    ],
-                  ),
-                )));
+                    ))));
       },
       itemCount: item.length,
     ),
