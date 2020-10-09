@@ -46,7 +46,6 @@ class _ProductState extends State<Product> {
         });
       } else {
         setState(() {
-          pac["name"] = item.nome.toString();
           pac["price"] = item.valor.toString();
           pac["time_delivery"] = item.prazoEntrega.toString();
           freteBuscado = true;
@@ -55,7 +54,7 @@ class _ProductState extends State<Product> {
     }
   }
 
-  imagesL() {
+  quantidadeImagens() {
     for (var x = 0; x < 20; x++) {
       try {
         images.add(item["image"][x]);
@@ -130,7 +129,7 @@ class _ProductState extends State<Product> {
     // TODO: implement initState
     print("-------- Product.dart---------");
     item = widget.item;
-    imagesL();
+    quantidadeImagens();
     setState(() {
       item["views"] += 1;
     });
@@ -139,6 +138,7 @@ class _ProductState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         key: _snack,
         backgroundColor: Colors.green,
@@ -232,6 +232,7 @@ class _ProductState extends State<Product> {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(40),
                     child: Container(
+                      width: size.width,
                       color: Colors.white,
                       child: TextFormField(
                         controller: _cepController,
@@ -239,7 +240,6 @@ class _ProductState extends State<Product> {
                           if (_cepController.text.length == 8) {
                             print("Igual a oito");
                           }
-                          print(e);
                         },
                         cursorColor: Colors.green,
                         keyboardType: TextInputType.number,
@@ -257,7 +257,7 @@ class _ProductState extends State<Product> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
-                  width: 200,
+                  width: size.width * 0.5,
                   height: 40,
                   child: RaisedButton(
                     onPressed: () async {
@@ -290,17 +290,21 @@ class _ProductState extends State<Product> {
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         padding: EdgeInsets.all(10),
-                        width: 200,
+                        width: size.width * 0.5,
                         color: Colors.white,
                         child: Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  sedex["name"],
+                                  "Sedex",
                                   style: TextStyle(color: Colors.green),
                                 ),
-                                Spacer(),
+                                Text(
+                                  sedex["time_delivery"] + " dias",
+                                  style: TextStyle(color: Colors.green[300]),
+                                ),
                                 Text(
                                   "R\$" + sedex["price"].toString(),
                                   style: TextStyle(color: Colors.green[200]),
@@ -309,12 +313,16 @@ class _ProductState extends State<Product> {
                             ),
                             Divider(color: Colors.green),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  pac["name"],
+                                  "Pac",
                                   style: TextStyle(color: Colors.green),
                                 ),
-                                Spacer(),
+                                Text(
+                                  pac["time_delivery"] + " dias",
+                                  style: TextStyle(color: Colors.green[300]),
+                                ),
                                 Text(
                                   "R\$" + pac["price"].toString(),
                                   style: TextStyle(color: Colors.green[200]),
