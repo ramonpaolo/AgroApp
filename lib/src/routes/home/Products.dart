@@ -41,7 +41,7 @@ class _ProductsState extends State<Products> {
             ),
             Container(
               width: size.width,
-              height: size.height * 0.25,
+              height: size.height * 0.35,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
@@ -58,25 +58,27 @@ class _ProductsState extends State<Products> {
                           child: Container(
                             width: size.width * 0.548,
                             child: Card(
-                              child: Stack(
-                                alignment: Alignment.bottomLeft,
+                              child: Column(
                                 children: [
-                                  Image.file(
-                                    File(widget.category[index]["image"][0]),
-                                    fit: BoxFit.fill,
-                                    filterQuality: FilterQuality.high,
+                                  Container(
+                                    width: size.width * 0.548,
+                                    height: size.height * 0.225,
+                                    child: Image.file(
+                                      File(widget.category[index]["image"][0]),
+                                      fit: BoxFit.fill,
+                                      filterQuality: FilterQuality.high,
+                                    ),
                                   ),
                                   ListTile(
                                     title: Text(
                                       widget.category[index]["title"],
-                                      style: TextStyle(color: Colors.white),
                                     ),
                                     subtitle: Text(
-                                        widget.category[index]["subtitle"],
-                                        style: TextStyle(color: Colors.white)),
+                                      widget.category[index]["subtitle"],
+                                    ),
                                     trailing: Text(
                                         "R\$" + widget.category[index]["price"],
-                                        style: TextStyle(color: Colors.white)),
+                                        style: TextStyle(color: Colors.green)),
                                   ),
                                 ],
                               ),
