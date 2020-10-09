@@ -1,7 +1,4 @@
 //----  Packages
-import 'package:agricultura/src/models/Anonimous.dart';
-import 'package:agricultura/src/models/showModal.dart';
-import 'package:agricultura/src/routes/user/User.dart';
 import 'package:firebase_auth/firebase_auth.dart' as AuthFire;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,9 +7,15 @@ import 'dart:async';
 import 'dart:convert';
 
 //---- Screens
+import 'package:agricultura/src/models/Anonimous.dart';
+import 'package:agricultura/src/routes/user/User.dart';
+import 'package:agricultura/src/models/showModal.dart';
 import 'package:agricultura/src/routes/chat/Chat.dart';
 import 'package:agricultura/src/routes/store/Store.dart';
 import 'package:agricultura/src/routes/home/Home.dart';
+
+//---- Datas
+import 'package:agricultura/src/data/user.dart';
 
 class Nav extends StatefulWidget {
   @override
@@ -81,7 +84,9 @@ class _NavState extends State<Nav> {
           return Chat(data: data);
           break;
         case 2:
-          return Store();
+          return Store(
+            user: user,
+          );
           break;
         case 3:
           return User(data: data);

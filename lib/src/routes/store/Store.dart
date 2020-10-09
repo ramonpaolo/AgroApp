@@ -1,12 +1,16 @@
 //---- Packages
 import 'dart:io';
-import 'package:agricultura/src/routes/store/showModal.dart';
 import 'package:flutter/material.dart';
+
+//----Screens
+import 'package:agricultura/src/routes/store/showModal.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
 
 class Store extends StatefulWidget {
+  Store({Key key, this.user}) : super(key: key);
+  final user;
   @override
   _StoreState createState() => _StoreState();
 }
@@ -20,12 +24,29 @@ class _StoreState extends State<Store> {
   double height = 76.0;
 
   Map planta;
+  Map user;
+
+  List produtosNoCarrinho = [];
 
   TextEditingController _searchController = TextEditingController();
 
   var key = GlobalKey<ScaffoldState>();
 
   //---- Functions
+
+  quantidadeProdutosNoCarrinho() {
+    List car_shop = user["car_shop"];
+    for (var x = 0; x < car_shop.length; x++) {
+      for (var y = 0; y < produtos.length; y++) {
+        if (produtos[y]["id"] == car_shop[x]) {
+          print(produtos[y]);
+          setState(() {
+            produtosNoCarrinho.add(produtos);
+          });
+        }
+      }
+    }
+  }
 
   Future search(search) async {
     for (var x = 0; x < produtos.length; x++) {
@@ -47,6 +68,9 @@ class _StoreState extends State<Store> {
   void initState() {
     // TODO: implement initState
     print("---------------------- Store.dart-------------");
+    user = widget.user;
+    print(user);
+    quantidadeProdutosNoCarrinho();
     super.initState();
   }
 
@@ -96,7 +120,7 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Favorite",
                               onPressed: () {
-                                produtos.forEach((element) {
+                                produtosNoCarrinho.forEach((element) {
                                   if (element["checbox"] == true) {
                                     setState(() {
                                       element["favorite"] =
@@ -112,7 +136,7 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Clear",
                               onPressed: () {
-                                produtos.removeWhere(
+                                produtosNoCarrinho.removeWhere(
                                     (element) => element["checbox"] == true);
                               }),
                           IconButton(
@@ -122,7 +146,7 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Select all",
                               onPressed: () {
-                                produtos.forEach((element) {
+                                produtosNoCarrinho.forEach((element) {
                                   if (element["checbox"] == false) {
                                     setState(() {
                                       element["checbox"] = true;
@@ -204,7 +228,7 @@ class _StoreState extends State<Store> {
                               ? Dismissible(
                                   onDismissed: (direction) {
                                     setState(() {
-                                      produtos.remove(planta["id"]);
+                                      produtosNoCarrinho.remove(planta["id"]);
                                     });
 
                                     key.currentState.showSnackBar(SnackBar(
@@ -259,18 +283,19 @@ class _StoreState extends State<Store> {
                                         });
                                       }))
                               : ListView.builder(
-                                  itemCount: produtos.length,
+                                  itemCount: produtosNoCarrinho.length,
                                   itemBuilder: (context, index) {
                                     return Dismissible(
                                         onDismissed: (direction) {
                                           setState(() {
-                                            produtos
-                                                .remove(produtos[index]["id"]);
+                                            produtos.remove(
+                                                produtosNoCarrinho[index][0]
+                                                    ["id"]);
                                           });
                                           key.currentState
                                               .showSnackBar(SnackBar(
                                             content: Text(
-                                              "Excluido o produto: ${produtos[index]["title"]}",
+                                              "Excluido o produto: ${produtosNoCarrinho[index][0]["title"]}",
                                               style: TextStyle(
                                                   color: Colors.green),
                                             ),
@@ -296,34 +321,39 @@ class _StoreState extends State<Store> {
                                         child: CheckboxListTile(
                                             subtitle: IconButton(
                                                 icon: Icon(Icons.favorite,
-                                                    color: produtos[index]
-                                                            ["favorite"]
-                                                        ? Colors.green
-                                                        : Colors.black),
+                                                    color:
+                                                        produtosNoCarrinho[index]
+                                                                [0]["favorite"]
+                                                            ? Colors.green
+                                                            : Colors.black),
                                                 onPressed: () {
                                                   setState(() {
-                                                    produtos[index]
+                                                    produtosNoCarrinho[index][0]
                                                             ["favorite"] =
-                                                        !produtos[index]
+                                                        !produtosNoCarrinho[
+                                                                index][0]
                                                             ["favorite"];
                                                   });
                                                 }),
                                             contentPadding: EdgeInsets.all(10),
-                                            title:
-                                                Text(produtos[index]["title"]),
+                                            title: Text(
+                                                produtosNoCarrinho[index][0]
+                                                    ["title"]),
                                             secondary: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 child: Image.file(File(
-                                                    produtos[index]["image"]
-                                                        [0]))),
+                                                    produtosNoCarrinho[index][0]
+                                                        ["image"][0]))),
                                             key: Key(DateTime.now().toString()),
-                                            value: produtos[index]["checbox"],
+                                            value: produtosNoCarrinho[index][0]
+                                                ["checbox"],
                                             checkColor: Colors.white,
                                             activeColor: Colors.green,
                                             onChanged: (v) {
                                               setState(() {
-                                                produtos[index]["checbox"] = v;
+                                                produtosNoCarrinho[index]
+                                                    ["checbox"] = v;
                                               });
                                             }));
                                   }),
@@ -336,9 +366,6 @@ class _StoreState extends State<Store> {
                               borderRadius: BorderRadius.circular(60),
                               child: RaisedButton(
                                 splashColor: Colors.white,
-                                onLongPress: () {
-                                  Tooltip(message: "ó");
-                                },
                                 onPressed: () {
                                   showModal(context);
                                 },
