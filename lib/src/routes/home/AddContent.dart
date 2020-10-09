@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 //---- Screens
-import 'package:agricultura/src/routes/home/showModal.dart';
+import 'package:agricultura/src/routes/home/widgets/showModal.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
@@ -240,8 +240,6 @@ class _AddContentState extends State<AddContent> {
                                       "price": "${_priceController.text}",
                                     });
                                   });
-                                  await Future.delayed(Duration(seconds: 1),
-                                      () => Navigator.pop(context));
                                 },
                                 icon: Icon(
                                   Icons.check,
