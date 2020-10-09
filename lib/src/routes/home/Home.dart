@@ -1,6 +1,8 @@
 //---- Packages
 import 'dart:io';
 import 'package:agricultura/src/routes/home/Product.dart';
+import 'package:agricultura/src/routes/home/Products.dart';
+import 'package:agricultura/src/routes/home/widgets/category.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -116,8 +118,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-        child: FutureBuilder(
+    return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           return SingleChildScrollView(
@@ -252,14 +253,14 @@ class _HomeState extends State<Home> {
                         topLeft: Radius.circular(60),
                         topRight: Radius.circular(60)),
                     child: RefreshIndicator(
-                      child: Container(
-                          height: size.height <= 700
-                              ? size.height * 0.62 + (animated ? 0 : 51)
-                              : size.height * 0.7 + (animated ? 0 : 70),
-                          color: Colors.white,
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          child: pesquisa != null
-                              ? Padding(
+                      child: pesquisa != null
+                          ? Container(
+                              height: size.height <= 700
+                                  ? size.height * 0.62 + (animated ? 0 : 51)
+                                  : size.height * 0.7 + (animated ? 0 : 70),
+                              color: Colors.white,
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: Padding(
                                   padding: EdgeInsets.all(20),
                                   child: ClipRRect(
                                       borderRadius: BorderRadius.circular(25),
@@ -267,6 +268,8 @@ class _HomeState extends State<Home> {
                                         child: Column(
                                           children: [
                                             Stack(
+                                              alignment: AlignmentDirectional
+                                                  .bottomEnd,
                                               textDirection: TextDirection.rtl,
                                               children: [
                                                 Image.file(
@@ -297,8 +300,12 @@ class _HomeState extends State<Home> {
                                             ),
                                           ],
                                         ),
-                                      )))
-                              : construtor(size, plantas)),
+                                      ))))
+                          : Container(
+                              height: 10,
+                              width: 10,
+                              child: construtor(size, plantas, "Que?", context,
+                                  Scaffold.of(context).setState)),
                       onRefresh: json,
                     )),
               ],
@@ -309,72 +316,20 @@ class _HomeState extends State<Home> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
-          return construtor(size, plantas);
-          /* Center(
-            child: Text(
-              "Error",
-              style: TextStyle(color: Colors.white, fontSize: 48),
-            ),
-          );*/
+          return SingleChildScrollView(
+              child: Column(
+            children: [
+              Divider(
+                color: Colors.green,
+                height: 140,
+              ),
+              construtor(size, plantas, "Os principais do mês de outubro",
+                  context, Scaffold.of(context).setState),
+            ],
+          ));
         }
       },
       future: datas(),
-    ));
-  }
-
-  Widget construtor(Size size, List item) {
-    return ListView.builder(
-      itemCount: item.length,
-      itemBuilder: (context, index) {
-        return ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: SizedBox(
-              width: size.width,
-              height:
-                  size.height <= 700 ? size.height * 0.37 : size.height * 0.30,
-              child: Card(
-                child: Column(
-                  children: [
-                    Stack(
-                      textDirection: TextDirection.rtl,
-                      children: [
-                        Image.file(
-                          File(item[index]["image"][0]),
-                          filterQuality: FilterQuality.high,
-                          fit: BoxFit.fill,
-                          height: 160,
-                        ),
-                        IconButton(
-                            icon: Icon(
-                              Icons.favorite,
-                              color: item[index]["favorite"]
-                                  ? Colors.green
-                                  : Colors.white,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                plantas[index]["favorite"] =
-                                    !plantas[index]["favorite"];
-                              });
-                            }),
-                      ],
-                    ),
-                    ListTile(
-                      title: Text(item[index]["title"]),
-                      subtitle: Text(item[index]["subtitle"]),
-                      onTap: () => Navigator.push(
-                          context,
-                          PageTransition(
-                              child: Product(
-                                item: item[index],
-                              ),
-                              type: PageTransitionType.bottomToTop)),
-                    ),
-                  ],
-                ),
-              ),
-            ));
-      },
     );
   }
 }
