@@ -358,6 +358,8 @@ class _HomeState extends State<Home> {
                                       category[index]["image"],
                                       fit: BoxFit.fill,
                                       filterQuality: FilterQuality.high,
+                                      height: size.height,
+                                      width: size.width,
                                     ),
                                     ListTile(
                                         title: Text(
