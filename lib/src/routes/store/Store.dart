@@ -28,15 +28,15 @@ class _StoreState extends State<Store> {
   //---- Functions
 
   Future search(search) async {
-    for (var x = 0; x < plantas.length; x++) {
-      if (search == plantas[x]["title"]) {
+    for (var x = 0; x < produtos.length; x++) {
+      if (search == produtos[x]["title"]) {
         print("'Chat.dart': Esse mesmo: $search");
         setState(() {
-          planta = plantas[x];
+          planta = produtos[x];
           pesquisa = true;
         });
         return planta;
-      } else if (x == plantas.length) {
+      } else if (x == produtos.length) {
         print("Não tem : (");
         return search;
       }
@@ -96,7 +96,7 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Favorite",
                               onPressed: () {
-                                plantas.forEach((element) {
+                                produtos.forEach((element) {
                                   if (element["checbox"] == true) {
                                     setState(() {
                                       element["favorite"] =
@@ -112,7 +112,7 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Clear",
                               onPressed: () {
-                                plantas.removeWhere(
+                                produtos.removeWhere(
                                     (element) => element["checbox"] == true);
                               }),
                           IconButton(
@@ -122,7 +122,7 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Select all",
                               onPressed: () {
-                                plantas.forEach((element) {
+                                produtos.forEach((element) {
                                   if (element["checbox"] == false) {
                                     setState(() {
                                       element["checbox"] = true;
@@ -204,7 +204,7 @@ class _StoreState extends State<Store> {
                               ? Dismissible(
                                   onDismissed: (direction) {
                                     setState(() {
-                                      plantas.remove(planta["id"]);
+                                      produtos.remove(planta["id"]);
                                     });
 
                                     key.currentState.showSnackBar(SnackBar(
@@ -259,18 +259,18 @@ class _StoreState extends State<Store> {
                                         });
                                       }))
                               : ListView.builder(
-                                  itemCount: plantas.length,
+                                  itemCount: produtos.length,
                                   itemBuilder: (context, index) {
                                     return Dismissible(
                                         onDismissed: (direction) {
                                           setState(() {
-                                            plantas
-                                                .remove(plantas[index]["id"]);
+                                            produtos
+                                                .remove(produtos[index]["id"]);
                                           });
                                           key.currentState
                                               .showSnackBar(SnackBar(
                                             content: Text(
-                                              "Excluido o produto: ${plantas[index]["title"]}",
+                                              "Excluido o produto: ${produtos[index]["title"]}",
                                               style: TextStyle(
                                                   color: Colors.green),
                                             ),
@@ -296,33 +296,34 @@ class _StoreState extends State<Store> {
                                         child: CheckboxListTile(
                                             subtitle: IconButton(
                                                 icon: Icon(Icons.favorite,
-                                                    color: plantas[index]
+                                                    color: produtos[index]
                                                             ["favorite"]
                                                         ? Colors.green
                                                         : Colors.black),
                                                 onPressed: () {
                                                   setState(() {
-                                                    plantas[index]["favorite"] =
-                                                        !plantas[index]
+                                                    produtos[index]
+                                                            ["favorite"] =
+                                                        !produtos[index]
                                                             ["favorite"];
                                                   });
                                                 }),
                                             contentPadding: EdgeInsets.all(10),
                                             title:
-                                                Text(plantas[index]["title"]),
+                                                Text(produtos[index]["title"]),
                                             secondary: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 child: Image.file(File(
-                                                    plantas[index]["image"]
+                                                    produtos[index]["image"]
                                                         [0]))),
                                             key: Key(DateTime.now().toString()),
-                                            value: plantas[index]["checbox"],
+                                            value: produtos[index]["checbox"],
                                             checkColor: Colors.white,
                                             activeColor: Colors.green,
                                             onChanged: (v) {
                                               setState(() {
-                                                plantas[index]["checbox"] = v;
+                                                produtos[index]["checbox"] = v;
                                               });
                                             }));
                                   }),

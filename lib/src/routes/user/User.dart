@@ -45,10 +45,10 @@ class _UserState extends State<User> {
   //---- Functios
 
   myplantas() async {
-    for (var x = 0; x < plantas.length; x++) {
-      if (plantas[x]["author"] == widget.data["name"]) {
+    for (var x = 0; x < produtos.length; x++) {
+      if (produtos[x]["author"] == widget.data["name"]) {
         setState(() {
-          myPlantas.add(plantas[x]);
+          myPlantas.add(produtos[x]);
         });
       } else {
         print("Não é meu");
