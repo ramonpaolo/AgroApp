@@ -1,8 +1,10 @@
 //---- Packages
 import 'dart:io';
+import 'package:agricultura/src/data/category.dart';
+import 'package:agricultura/src/routes/home/Category.dart';
 import 'package:agricultura/src/routes/home/Product.dart';
 import 'package:agricultura/src/routes/home/Products.dart';
-import 'package:agricultura/src/routes/home/widgets/category.dart';
+import 'package:agricultura/src/routes/home/widgets/campo.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -94,15 +96,15 @@ class _HomeState extends State<Home> {
   }
 
   Future search(search) async {
-    for (var x = 0; x <= plantas.length; x++) {
-      if (search == plantas[x]["title"]) {
+    for (var x = 0; x <= produtos.length; x++) {
+      if (search == produtos[x]["title"]) {
         print("Esse mesmo: $search");
         setState(() {
           pesquisa = search;
-          planta = plantas[x];
+          planta = produtos[x];
         });
         return pesquisa;
-      } else if (x == plantas.length) {
+      } else if (x == produtos.length) {
         print("Não tem :(");
         return search;
       }
@@ -111,7 +113,7 @@ class _HomeState extends State<Home> {
 
   Future json() async {
     setState(() {
-      plantas = plantas;
+      produtos = produtos;
     });
   }
 
@@ -304,7 +306,7 @@ class _HomeState extends State<Home> {
                           : Container(
                               height: 10,
                               width: 10,
-                              child: construtor(size, plantas, "Que?", context,
+                              child: construtor(size, produtos, "Que?", context,
                                   Scaffold.of(context).setState)),
                       onRefresh: json,
                     )),
@@ -321,9 +323,61 @@ class _HomeState extends State<Home> {
             children: [
               Divider(
                 color: Colors.green,
-                height: 140,
+                height: 30,
               ),
-              construtor(size, plantas, "Os principais do mês de outubro",
+              Text(
+                "Categorias",
+                style: TextStyle(color: Colors.white, fontSize: 22),
+              ),
+              Divider(color: Colors.green),
+              Container(
+                width: 1000,
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                        padding: EdgeInsets.all(10),
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: Category(
+                                    category: category[index],
+                                  ),
+                                  type: PageTransitionType.bottomToTop)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                                width: 120,
+                                color: Colors.white,
+                                child: Stack(
+                                  alignment: Alignment.bottomLeft,
+                                  children: [
+                                    Image.asset(
+                                      category[index]["image"],
+                                      fit: BoxFit.fill,
+                                      filterQuality: FilterQuality.high,
+                                    ),
+                                    ListTile(
+                                        title: Text(
+                                      category[index]["name"],
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ))
+                                  ],
+                                )),
+                          ),
+                        ));
+                  },
+                  itemCount: category.length,
+                ),
+              ),
+              Divider(
+                color: Colors.green,
+              ),
+              construtor(size, produtos, "Os principais do mês de outubro",
                   context, Scaffold.of(context).setState),
             ],
           ));
