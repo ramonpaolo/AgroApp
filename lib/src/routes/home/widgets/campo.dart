@@ -69,32 +69,14 @@ Widget construtor(
                         child: Card(
                           child: Column(
                             children: [
-                              Stack(
-                                textDirection: TextDirection.rtl,
-                                children: [
-                                  Container(
-                                    width: size.width * 0.5,
-                                    height: size.height * 0.2,
-                                    child: Image.file(
-                                      File(item[index]["image"][0]),
-                                      filterQuality: FilterQuality.high,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  IconButton(
-                                      icon: Icon(
-                                        Icons.favorite,
-                                        color: item[index]["favorite"]
-                                            ? Colors.green
-                                            : Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          item[index]["favorite"] =
-                                              !item[index]["favorite"];
-                                        });
-                                      }),
-                                ],
+                              Container(
+                                width: size.width * 0.5,
+                                height: size.height * 0.2,
+                                child: Image.file(
+                                  File(item[index]["image"][0]),
+                                  filterQuality: FilterQuality.high,
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                               ListTile(
                                 title: Text(item[index]["title"]),
