@@ -113,6 +113,18 @@ class _VisualizarState extends State<Visualizar> {
                             ))
                           ],
                         )))),
+            Text(
+              produto["title"],
+              style: TextStyle(color: Colors.white, fontSize: 22),
+            ),
+            Text(
+              produto["subtitle"],
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            Text(
+              produto["title"],
+              style: TextStyle(color: Colors.white, fontSize: 22),
+            )
           ],
         ),
       ),
