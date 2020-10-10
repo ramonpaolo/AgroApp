@@ -107,7 +107,9 @@ class _CategoryState extends State<Category> {
                                       produtosDaCategoriaEscolhida[index]
                                           ["subtitle"]),
                                   trailing: Text(
-                                    "R\$25,00",
+                                    "R\$" +
+                                        produtosDaCategoriaEscolhida[index]
+                                            ["price"],
                                     style: TextStyle(color: Colors.green),
                                   ),
                                 )
