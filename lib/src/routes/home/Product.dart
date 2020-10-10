@@ -31,15 +31,18 @@ class _ProductState extends State<Product> {
 
   //---- Functions
 
-  correios(String cep) async {
+  correios(String cepDestino) async {
     var sigep = Sigepweb(contrato: SigepContrato.semContrato());
     var calcPrecoPrazo = await sigep.calcPrecoPrazo(
-        cepOrigem: "70002900", cepDestino: cep, valorPeso: 1.0);
+        cepOrigem: "${item["cep_origem"]}",
+        cepDestino: cepDestino,
+        valorPeso: item["weight"]);
+
     for (var item in calcPrecoPrazo) {
       print("${item.nome}: R\$ ${item.valor}");
+
       if (item.nome == "Sedex") {
         setState(() {
-          sedex["name"] = item.nome.toString();
           sedex["price"] = item.valor.toString();
           sedex["time_delivery"] = item.prazoEntrega.toString();
           freteBuscado = true;

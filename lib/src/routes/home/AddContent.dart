@@ -1,4 +1,5 @@
 //---- Packages
+import 'dart:convert';
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,12 @@ import 'package:agricultura/src/routes/home/widgets/showModal.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AddContent extends StatefulWidget {
   AddContent({Key key, this.name}) : super(key: key);
   final String name;
+
   @override
   _AddContentState createState() => _AddContentState();
 }
@@ -26,12 +29,16 @@ class _AddContentState extends State<AddContent> {
 
   int selectedCategory;
 
+  Map data;
+
   String category = "";
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
   TextEditingController _describeController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TextEditingController _cepOrigemController = TextEditingController();
 
   var image;
 
@@ -53,6 +60,21 @@ class _AddContentState extends State<AddContent> {
       image = imagePicker.path;
       _images.insert(_images.length, image);
     });
+  }
+
+  Future<File> getData() async {
+    final file = await getApplicationDocumentsDirectory();
+    return File("${file.path}/data.json");
+  }
+
+  Future readData() async {
+    var file = await getData();
+    var read = jsonDecode(file.readAsStringSync());
+    setState(() {
+      data = read;
+    });
+    print(data);
+    return data;
   }
 
   title(String text) {
@@ -83,35 +105,55 @@ class _AddContentState extends State<AddContent> {
     print(_priceController.text);
   }
 
+  weight(String text) {
+    setState(() {
+      text = _weightController.text;
+    });
+  }
+
+  cepOrigem(String text) {
+    setState(() {
+      text = _cepOrigemController.text;
+    });
+  }
+
   loadData() {
     listDrop.add(DropdownMenuItem(
       child: Text(
-        "Plantas",
+        "Adubos",
       ),
       value: 1,
     ));
     listDrop.add(DropdownMenuItem(
       child: Text(
-        "Adubo",
+        "Cosméticos",
       ),
       value: 2,
     ));
     listDrop.add(DropdownMenuItem(
       child: Text(
-        "Cosméticos",
+        "Eletrônicos",
       ),
       value: 3,
     ));
     listDrop.add(DropdownMenuItem(
       child: Text(
-        "Peças",
+        "Ferramentas",
       ),
       value: 4,
+    ));
+    listDrop.add(DropdownMenuItem(
+      child: Text(
+        "Ter na casa",
+      ),
+      value: 5,
     ));
   }
 
   @override
   void initState() {
+    print("------- AddContet.dart -------");
+    readData();
     loadData();
     super.initState();
   }
@@ -235,6 +277,27 @@ class _AddContentState extends State<AddContent> {
                       Divider(
                         color: Colors.white,
                       ),
+                      formulario(
+                          "Peso do Produto",
+                          1,
+                          _weightController,
+                          weight,
+                          TextInputType.number,
+                          false,
+                          TextCapitalization.none,
+                          50),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      formulario(
+                          "CEP origem",
+                          1,
+                          _cepOrigemController,
+                          cepOrigem,
+                          TextInputType.number,
+                          false,
+                          TextCapitalization.none,
+                          50),
                       ClipRRect(
                         child: DropdownButton(
                             value: selectedCategory,
@@ -244,19 +307,23 @@ class _AddContentState extends State<AddContent> {
                             onChanged: (value) {
                               if (value == 1) {
                                 setState(() {
-                                  category = "Plantas";
+                                  category = "Adubos";
                                 });
                               } else if (value == 2) {
                                 setState(() {
-                                  category = "Adubos";
+                                  category = "Cosméticos";
                                 });
                               } else if (value == 3) {
                                 setState(() {
-                                  category = "Cosméticos";
+                                  category = "Eletrônicos";
                                 });
                               } else if (value == 4) {
                                 setState(() {
-                                  category = "Peças";
+                                  category = "Ferramentas";
+                                });
+                              } else if (value == 5) {
+                                setState(() {
+                                  category = "Ter na casa";
                                 });
                               }
                               setState(() {
@@ -295,20 +362,21 @@ class _AddContentState extends State<AddContent> {
                                   setState(() {
                                     produtos.insert(0, {
                                       "id": 0,
-                                      "favorite": false,
-                                      "title": "${_titleController.text}",
-                                      "subtitle": "${_subtitleController.text}",
+                                      "title": _titleController.text,
+                                      "subtitle": _subtitleController.text,
+                                      "describe": _describeController.text,
                                       "image": _images,
-                                      "checbox": false,
-                                      "author": "${widget.name}",
                                       "category": category,
-                                      "image_author": "assets/images/eu.jpg",
-                                      "describe": "${_describeController.text}",
+                                      "price": _priceController.text,
                                       "views": 0,
-                                      "price": "${_priceController.text}",
+                                      "weight":
+                                          double.parse(_weightController.text),
+                                      "author": widget.name,
+                                      "image_author": data["image"],
+                                      "cep_origem":
+                                          int.parse(_cepOrigemController.text)
                                     });
                                   });
-                                  print(category);
                                   Navigator.pop(context);
                                 },
                                 icon: Icon(
