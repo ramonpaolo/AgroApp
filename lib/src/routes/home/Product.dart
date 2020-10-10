@@ -19,6 +19,8 @@ class _ProductState extends State<Product> {
 
   bool freteBuscado = false;
 
+  int _indexPage = 0;
+
   List images = [];
 
   Map sedex = {"name": "", "price": "", "time_delivery": ""};
@@ -213,10 +215,42 @@ class _ProductState extends State<Product> {
                                   ));
                             },
                             options: CarouselOptions(
-                                height: 220,
-                                autoPlay: true,
-                                enlargeCenterPage: true,
-                                enableInfiniteScroll: false))
+                              height: 220,
+                              initialPage: _indexPage,
+                              autoPlay: true,
+                              enlargeCenterPage: true,
+                              enableInfiniteScroll: false,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _indexPage = index;
+                                });
+                              },
+                            )),
+                        Divider(
+                          color: Colors.white,
+                          height: 10,
+                        ),
+                        Container(
+                          width: (images.length * 25).ceilToDouble(),
+                          height: 10,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(40),
+                                    child: Container(
+                                      color: _indexPage == index
+                                          ? Colors.green[300]
+                                          : Colors.green[100],
+                                      width: 20,
+                                    ),
+                                  ));
+                            },
+                            itemCount: images.length,
+                          ),
+                        )
                       ],
                     ),
                   ]),
@@ -229,6 +263,17 @@ class _ProductState extends State<Product> {
               Text(
                 "${item["subtitle"]}",
                 style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              Text(
+                "${item["describe"]} a bolinha bbeij",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    textBaseline: TextBaseline.ideographic,
+                    letterSpacing: 1.5,
+                    wordSpacing: 2,
+                    fontStyle: FontStyle.normal,
+                    fontFamily: "Noto Sans"),
               ),
               Padding(
                 padding: EdgeInsets.all(20),
