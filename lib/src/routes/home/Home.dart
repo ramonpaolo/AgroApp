@@ -118,6 +118,12 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    print("---------- Home.dart ---------");
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return FutureBuilder(
