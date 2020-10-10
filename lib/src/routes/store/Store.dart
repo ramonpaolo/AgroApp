@@ -41,8 +41,10 @@ class _StoreState extends State<Store> {
         if (produtos[y]["id"] == car_shop[x]) {
           print(produtos[y]);
           setState(() {
-            produtosNoCarrinho.add(produtos);
+            produtosNoCarrinho.add(produtos[y]);
           });
+        } else {
+          print("Não é igual");
         }
       }
     }
@@ -69,7 +71,7 @@ class _StoreState extends State<Store> {
     // TODO: implement initState
     print("---------------------- Store.dart-------------");
     user = widget.user;
-    print(user);
+    print("Data user: " + user.toString());
     quantidadeProdutosNoCarrinho();
     super.initState();
   }
@@ -289,13 +291,13 @@ class _StoreState extends State<Store> {
                                         onDismissed: (direction) {
                                           setState(() {
                                             produtos.remove(
-                                                produtosNoCarrinho[index][0]
+                                                produtosNoCarrinho[index]
                                                     ["id"]);
                                           });
                                           key.currentState
                                               .showSnackBar(SnackBar(
                                             content: Text(
-                                              "Excluido o produto: ${produtosNoCarrinho[index][0]["title"]}",
+                                              "Excluido o produto: ${produtosNoCarrinho[index]["title"]}",
                                               style: TextStyle(
                                                   color: Colors.green),
                                             ),
@@ -318,44 +320,21 @@ class _StoreState extends State<Store> {
                                         ),
                                         direction: DismissDirection.startToEnd,
                                         key: Key(DateTime.now().toString()),
-                                        child: CheckboxListTile(
-                                            subtitle: IconButton(
-                                                icon: Icon(Icons.favorite,
-                                                    color:
-                                                        produtosNoCarrinho[index]
-                                                                [0]["favorite"]
-                                                            ? Colors.green
-                                                            : Colors.black),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    produtosNoCarrinho[index][0]
-                                                            ["favorite"] =
-                                                        !produtosNoCarrinho[
-                                                                index][0]
-                                                            ["favorite"];
-                                                  });
-                                                }),
-                                            contentPadding: EdgeInsets.all(10),
-                                            title: Text(
-                                                produtosNoCarrinho[index][0]
-                                                    ["title"]),
-                                            secondary: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: Image.file(File(
-                                                    produtosNoCarrinho[index][0]
-                                                        ["image"][0]))),
-                                            key: Key(DateTime.now().toString()),
-                                            value: produtosNoCarrinho[index][0]
-                                                ["checbox"],
-                                            checkColor: Colors.white,
-                                            activeColor: Colors.green,
-                                            onChanged: (v) {
-                                              setState(() {
-                                                produtosNoCarrinho[index]
-                                                    ["checbox"] = v;
-                                              });
-                                            }));
+                                        child: ListTile(
+                                          subtitle: Text(
+                                              produtosNoCarrinho[index]
+                                                  ["subtitle"]),
+                                          contentPadding: EdgeInsets.all(10),
+                                          title: Text(produtosNoCarrinho[index]
+                                              ["title"]),
+                                          leading: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.file(File(
+                                                  produtosNoCarrinho[index]
+                                                      ["image"][0]))),
+                                          key: Key(DateTime.now().toString()),
+                                        ));
                                   }),
                         ),
                       ),
