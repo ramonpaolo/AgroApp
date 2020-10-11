@@ -92,7 +92,6 @@ class _CategoryState extends State<Category> {
                             child: Column(
                               children: [
                                 Container(
-                                  width: size.width * 0.5,
                                   height: size.height <= 700
                                       ? size.height * 0.2
                                       : size.height * 0.15,
