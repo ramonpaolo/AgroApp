@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:agricultura/src/auth/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -166,7 +167,11 @@ class _CadastroState extends State<Cadastro> {
                             Icons.arrow_back,
                             color: Colors.white,
                           ),
-                          onPressed: () => Navigator.pop(context)),
+                          onPressed: () => Navigator.pushReplacement(
+                              context,
+                              PageTransition(
+                                  child: Login(),
+                                  type: PageTransitionType.rightToLeft))),
                     )),
               ],
             ),

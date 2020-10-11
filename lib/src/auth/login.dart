@@ -128,8 +128,9 @@ class _LoginState extends State<Login> {
                           onPressed: () => Navigator.push(
                               context,
                               PageTransition(
-                                  child: Cadastro(),
-                                  type: PageTransitionType.leftToRight)))),
+                                child: Cadastro(),
+                                type: PageTransitionType.leftToRight,
+                              )))),
                 ),
               ],
             ),
