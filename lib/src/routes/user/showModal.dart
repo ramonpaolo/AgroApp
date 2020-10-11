@@ -1,9 +1,17 @@
 //---- Packages
+import 'package:agricultura/src/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-showModalConf(context, localizacao, FirebaseAuth, _googleSignIn, _saveData,
-    Login, setState) {
+showModalConf(
+    {BuildContext context,
+    bool localizacao,
+    FirebaseAuth firebaseAuth,
+    GoogleSignIn googleSignIn,
+    Function deleteData,
+    setState}) {
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -39,9 +47,9 @@ showModalConf(context, localizacao, FirebaseAuth, _googleSignIn, _saveData,
                         try {
                           await FirebaseAuth.instance.currentUser.delete();
                         } catch (e) {
-                          await _googleSignIn.disconnect();
+                          await googleSignIn.disconnect();
                         }
-                        await _saveData();
+                        await deleteData();
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) => Login()));
                       },
@@ -59,7 +67,7 @@ showModalConf(context, localizacao, FirebaseAuth, _googleSignIn, _saveData,
       });
 }
 
-showModal(context, List item, index) {
+showModal({BuildContext context, List item, int index}) {
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(

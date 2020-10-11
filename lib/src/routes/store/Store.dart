@@ -23,10 +23,10 @@ class _StoreState extends State<Store> {
 
   double height = 76.0;
 
-  Map planta;
-  Map user;
-
   List produtosNoCarrinho = [];
+  List produtoPesquisado;
+
+  Map user;
 
   TextEditingController _searchController = TextEditingController();
 
@@ -35,16 +35,14 @@ class _StoreState extends State<Store> {
   //---- Functions
 
   quantidadeProdutosNoCarrinho() {
-    List car_shop = user["car_shop"];
-    for (var x = 0; x < car_shop.length; x++) {
+    List carShop = user["car_shop"];
+    for (var x = 0; x < carShop.length; x++) {
       for (var y = 0; y < produtos.length; y++) {
-        if (produtos[y]["id"] == car_shop[x]) {
+        if (produtos[y]["id"] == carShop[x]) {
           print(produtos[y]);
           setState(() {
             produtosNoCarrinho.add(produtos[y]);
           });
-        } else {
-          print("Não é igual");
         }
       }
     }
@@ -55,10 +53,10 @@ class _StoreState extends State<Store> {
       if (search == produtos[x]["title"]) {
         print("'Chat.dart': Esse mesmo: $search");
         setState(() {
-          planta = produtos[x];
+          produtoPesquisado.add(produtos[x]);
           pesquisa = true;
         });
-        return planta;
+        return produtoPesquisado;
       } else if (x == produtos.length) {
         print("Não tem : (");
         return search;
@@ -226,63 +224,80 @@ class _StoreState extends State<Store> {
                         child: Padding(
                           padding: EdgeInsets.only(left: 20, right: 40),
                           child: pesquisa == true
-                              ? Dismissible(
-                                  onDismissed: (direction) {
-                                    setState(() {
-                                      produtosNoCarrinho.remove(planta["id"]);
-                                    });
+                              ? ListView.builder(
+                                  itemBuilder: (context, index) {
+                                    return Dismissible(
+                                        onDismissed: (direction) {
+                                          setState(() {
+                                            produtosNoCarrinho.remove(
+                                                produtoPesquisado[index]["id"]);
+                                          });
 
-                                    key.currentState.showSnackBar(SnackBar(
-                                      content: Text(
-                                        "Excluido o produto: ${planta["title"]}",
-                                        style: TextStyle(color: Colors.green),
-                                      ),
-                                      duration: Duration(seconds: 3),
-                                      backgroundColor: Colors.white,
-                                    ));
-                                  },
-                                  background: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Container(
-                                        color: Colors.red,
-                                        child: Align(
-                                          alignment: Alignment(-0.5, 0),
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                          ),
-                                        )),
-                                  ),
-                                  direction: DismissDirection.startToEnd,
-                                  key: Key(DateTime.now().toString()),
-                                  child: CheckboxListTile(
-                                      subtitle: IconButton(
-                                          icon: Icon(Icons.favorite,
-                                              color: planta["favorite"]
-                                                  ? Colors.green
-                                                  : Colors.black),
-                                          onPressed: () {
-                                            setState(() {
-                                              planta["favorite"] =
-                                                  !planta["favorite"];
-                                            });
-                                          }),
-                                      contentPadding: EdgeInsets.all(10),
-                                      title: Text(planta["title"]),
-                                      secondary: ClipRRect(
+                                          key.currentState
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                              "Excluido o produto: ${produtoPesquisado[index]["title"]}",
+                                              style: TextStyle(
+                                                  color: Colors.green),
+                                            ),
+                                            duration: Duration(seconds: 3),
+                                            backgroundColor: Colors.white,
+                                          ));
+                                        },
+                                        background: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Image.file(
-                                              File(planta["image"]))),
-                                      key: Key(DateTime.now().toString()),
-                                      value: planta["checbox"],
-                                      checkColor: Colors.white,
-                                      activeColor: Colors.green,
-                                      onChanged: (v) {
-                                        setState(() {
-                                          planta["checbox"] = v;
-                                        });
-                                      }))
+                                              BorderRadius.circular(20),
+                                          child: Container(
+                                              color: Colors.red,
+                                              child: Align(
+                                                alignment: Alignment(-0.5, 0),
+                                                child: Icon(
+                                                  Icons.delete,
+                                                  color: Colors.white,
+                                                ),
+                                              )),
+                                        ),
+                                        direction: DismissDirection.startToEnd,
+                                        key: Key(DateTime.now().toString()),
+                                        child: CheckboxListTile(
+                                            subtitle: IconButton(
+                                                icon: Icon(Icons.favorite,
+                                                    color:
+                                                        produtoPesquisado[index]
+                                                                ["favorite"]
+                                                            ? Colors.green
+                                                            : Colors.black),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    produtoPesquisado[index]
+                                                            ["favorite"] =
+                                                        !produtoPesquisado[
+                                                            index]["favorite"];
+                                                  });
+                                                }),
+                                            contentPadding: EdgeInsets.all(10),
+                                            title: Text(produtoPesquisado[index]
+                                                ["title"]),
+                                            secondary: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Image.file(File(
+                                                    produtoPesquisado[index]
+                                                        ["image"]))),
+                                            key: Key(DateTime.now().toString()),
+                                            value: produtoPesquisado[index]
+                                                ["checbox"],
+                                            checkColor: Colors.white,
+                                            activeColor: Colors.green,
+                                            onChanged: (v) {
+                                              setState(() {
+                                                produtoPesquisado[index]
+                                                    ["checbox"] = v;
+                                              });
+                                            }));
+                                  },
+                                  itemCount: produtoPesquisado.length,
+                                )
                               : ListView.builder(
                                   itemCount: produtosNoCarrinho.length,
                                   itemBuilder: (context, index) {

@@ -1,7 +1,10 @@
-import 'package:agricultura/src/routes/home/AddContent.dart';
+//---- Packages
 import 'package:flutter/material.dart';
 
-showModal(context, data, Size size) {
+//---- Screens
+import 'package:agricultura/src/routes/home/AddContent.dart';
+
+showModal(BuildContext context, Map data, Size size) {
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -18,6 +21,7 @@ showModal(context, data, Size size) {
                 Image.asset(
                   "assets/images/reuniao.jpg",
                   height: 200,
+                  filterQuality: FilterQuality.high,
                 ),
                 Padding(
                     padding: EdgeInsets.all(20),

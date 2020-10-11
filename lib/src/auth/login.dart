@@ -19,6 +19,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   //---- Variables
+
   bool obscuteText = true;
 
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -33,26 +34,22 @@ class _LoginState extends State<Login> {
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
 
-  String text = "";
+  //---- Functions
 
   Future loginEmailSenha(email, senha) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: senha);
+
       await _saveData(email, senha);
-      await Future.delayed(
-          Duration(seconds: 1),
-          () => Navigator.pushReplacement(
-              context,
-              PageTransition(
-                  child: Nav(), type: PageTransitionType.bottomToTop)));
+
+      Navigator.pushReplacement(context,
+          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop));
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
-        print("Email não encontrado");
         await showDialog(
             context: (context),
             child: AlertDialog(content: Text("Email não cadastrado")));
       } else if (e.code == "wrong-password") {
-        print("Senha errada");
         await showDialog(
             context: (context),
             child: AlertDialog(content: Text("Senha errada")));
@@ -65,20 +62,18 @@ class _LoginState extends State<Login> {
   Future autonomo() async {
     try {
       await auth.signInAnonymously();
-      await Future.delayed(
-          Duration(seconds: 1),
-          () => Navigator.pushReplacement(
-              context,
-              PageTransition(
-                  child: Nav(), type: PageTransitionType.bottomToTop)));
+
+      await Navigator.pushReplacement(context,
+          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop));
     } catch (e) {
-      print(e.toString());
+      print(e);
     }
   }
 
   Future loginGoogle() async {
     try {
       await _googleSignIn.signIn();
+
       await loginEmailSenha(_googleSignIn.currentUser.email,
           _googleSignIn.currentUser.displayName);
     } catch (e) {

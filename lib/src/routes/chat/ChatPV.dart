@@ -31,11 +31,11 @@ class _ChatPVState extends State<ChatPV> {
   String _text;
 
   var _image;
-
   var id;
+
   //---- Functions
 
-  void imagem() async {
+  void getImage() async {
     var imagePicker =
         await ImagePicker.platform.pickImage(source: ImageSource.camera);
     setState(() {
@@ -50,7 +50,7 @@ class _ChatPVState extends State<ChatPV> {
     //print(messages[0]["content"]);
   }
 
-  void galery() async {
+  void getImageInGalery() async {
     var imagePicker =
         await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -68,7 +68,6 @@ class _ChatPVState extends State<ChatPV> {
   void initState() {
     print("-------------- ChatPV.dart -----------------");
     messages = users[widget.id]["mensagen"];
-
     super.initState();
   }
 
@@ -168,12 +167,12 @@ class _ChatPVState extends State<ChatPV> {
                         child: Padding(
                             padding: EdgeInsets.only(
                                 left: messages[index]["name"] ==
-                                        "${widget.user["name"]}"
+                                        widget.user["name"]
                                     ? 200
                                     : 0,
                                 bottom: 5,
                                 right: messages[index]["name"] ==
-                                        "${widget.user["name"]}"
+                                        widget.user["name"]
                                     ? 5
                                     : 140),
                             child: Container(
@@ -181,7 +180,7 @@ class _ChatPVState extends State<ChatPV> {
                                 padding: EdgeInsets.all(10),
                                 child: Card(
                                     color: messages[index]["name"] ==
-                                            "${widget.user["name"]}"
+                                            widget.user["name"]
                                         ? Colors.green[600]
                                         : Colors.white,
                                     child: Padding(
@@ -204,14 +203,14 @@ class _ChatPVState extends State<ChatPV> {
                                                           widget.user["name"]
                                                       ? ListTile(
                                                           title: Text(
-                                                          "${widget.user["name"]}",
+                                                          widget.user["name"],
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .white70),
                                                         ))
                                                       : ListTile(
                                                           title: Text(
-                                                          "${widget.name}",
+                                                          widget.name,
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.black),
@@ -219,24 +218,24 @@ class _ChatPVState extends State<ChatPV> {
                                                 ],
                                               )
                                             : messages[index]["name"] ==
-                                                    "${widget.user["name"]}"
+                                                    widget.user["name"]
                                                 ? ListTile(
                                                     title: Text(
-                                                      "${messages[index]["content"]}",
+                                                      messages[index]
+                                                          ["content"],
                                                       style: TextStyle(
                                                           color: Colors.white),
                                                     ),
                                                     subtitle: Text(
-                                                      "${messages[index]["name"]}",
+                                                      messages[index]["name"],
                                                       style: TextStyle(
                                                           color:
                                                               Colors.white70),
                                                     ))
                                                 : ListTile(
-                                                    title: Text(
-                                                        "${messages[index]["content"]}"),
-                                                    subtitle:
-                                                        Text("${widget.name}"),
+                                                    title: Text(messages[index]
+                                                        ["content"]),
+                                                    subtitle: Text(widget.name),
                                                   )))))),
                     borderRadius: BorderRadius.circular(40),
                   );
@@ -261,7 +260,10 @@ class _ChatPVState extends State<ChatPV> {
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        showModal(context, imagem, galery);
+                        showModal(
+                            context: context,
+                            imagem: getImage,
+                            galery: getImageInGalery);
                       }),
                 )),
           ),
@@ -285,7 +287,7 @@ class _ChatPVState extends State<ChatPV> {
                         messages.insert(0, {
                           "type": "txt",
                           "content": "$_text",
-                          "name": "${widget.user["name"]}"
+                          "name": widget.user["name"]
                         });
                       });
                     },

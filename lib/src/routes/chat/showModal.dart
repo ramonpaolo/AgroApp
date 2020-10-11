@@ -1,8 +1,11 @@
+//---- Packages
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:agricultura/src/routes/chat/PageHero.dart';
 
-showModal(context, imagem, galery) {
+//---- Screens
+import 'package:agricultura/src/routes/chat/HeroImage.dart';
+
+showModal({BuildContext context, Function imagem, Function galery}) {
   return showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(

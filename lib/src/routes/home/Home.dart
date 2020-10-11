@@ -1,17 +1,19 @@
 //---- Packages
 import 'dart:io';
-import 'package:agricultura/src/data/category.dart';
-import 'package:agricultura/src/routes/home/Category.dart';
-import 'package:agricultura/src/routes/home/Product.dart';
-import 'package:agricultura/src/routes/home/widgets/campo.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:page_transition/page_transition.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/home.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:agricultura/src/data/category.dart';
+
+//---- Screens
+import 'package:agricultura/src/routes/home/Category.dart';
+import 'package:agricultura/src/routes/home/Product.dart';
+import 'package:agricultura/src/routes/home/widgets/campo.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -23,6 +25,8 @@ class _HomeState extends State<Home> {
 
   bool animated = true;
 
+  List produtoPesquisado = [];
+
   http.Response response;
 
   String pesquisa;
@@ -32,7 +36,6 @@ class _HomeState extends State<Home> {
   var dolar;
   var tempo;
   var localization;
-  List produtoPesquisado = [];
 
   //---- Functions
 
@@ -43,15 +46,13 @@ class _HomeState extends State<Home> {
       //response = await http.get("https://api.hgbrasil.com/finance");
       response = await http.get("https://google");
       var json = await jsonDecode(response.body);
-
       dolar = await json["results"]["currencies"]["USD"]["buy"];
-      print("API Dolar:");
-      print(await dolar);
+      //print("API Dolar:");
+      //print(await dolar);
+      return await dolar;
     } catch (e) {
       print(e);
     }
-    return await dolar != null ? dolar : null;
-    //return dolar;
   }
 
   Future wheater(woeid) async {
@@ -60,8 +61,8 @@ class _HomeState extends State<Home> {
       //  .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=63c27cec");
       response = await http.get("https://google");
       tempo = await jsonDecode(response.body);
-      print("API Tempo:");
-      print(await tempo);
+      //print("API Tempo:");
+      //print(await tempo);
     } catch (e) {
       print(e);
     }
@@ -74,11 +75,9 @@ class _HomeState extends State<Home> {
       //    "https://api.hgbrasil.com/geoip?key=63c27cec&address=remote&precision=false");
       response = await http.get("https://google");
       localization = await jsonDecode(response.body);
-      print("API localização:");
-      print(await localization);
-      return await localization["results"]["woeid"] != null
-          ? localization
-          : null;
+      //print("API localização:");
+      //print(await localization);
+      return await localization["results"]["woeid"];
     } catch (e) {
       print(e);
     }
@@ -89,10 +88,10 @@ class _HomeState extends State<Home> {
       await localizatio();
       await money();
       await wheater(await localization["results"]["woeid"]);
+      return {await dolar, await tempo, await localization};
     } catch (e) {
       return null;
     }
-    return {await dolar, await tempo, await localization};
   }
 
   Future search(String search) async {
@@ -133,7 +132,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     print("---------- Home.dart ---------");
-    print(produtos);
     super.initState();
   }
 

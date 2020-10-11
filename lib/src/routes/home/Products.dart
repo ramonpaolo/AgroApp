@@ -9,6 +9,7 @@ import 'package:agricultura/src/routes/home/Product.dart';
 class Products extends StatefulWidget {
   Products({Key key, this.category}) : super(key: key);
   final List category;
+
   @override
   _ProductsState createState() => _ProductsState();
 }

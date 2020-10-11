@@ -23,15 +23,14 @@ class AddContent extends StatefulWidget {
 
 class _AddContentState extends State<AddContent> {
   //---- Variables
+  int selectedCategory;
 
   List _images = [];
   List<DropdownMenuItem<int>> listDrop = [];
 
-  int selectedCategory;
+  Map dataUser;
 
-  Map data;
-
-  String category = "";
+  String category;
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
@@ -71,10 +70,9 @@ class _AddContentState extends State<AddContent> {
     var file = await getData();
     var read = jsonDecode(file.readAsStringSync());
     setState(() {
-      data = read;
+      dataUser = read;
     });
-    print(data);
-    return data;
+    return dataUser;
   }
 
   title(String text) {
@@ -109,12 +107,14 @@ class _AddContentState extends State<AddContent> {
     setState(() {
       text = _weightController.text;
     });
+    print(_weightController.text);
   }
 
   cepOrigem(String text) {
     setState(() {
       text = _cepOrigemController.text;
     });
+    print(_cepOrigemController.text);
   }
 
   loadData() {
@@ -370,8 +370,8 @@ class _AddContentState extends State<AddContent> {
                                         "views": 0,
                                         "weight": double.parse(
                                             _weightController.text),
-                                        "author": widget.name,
-                                        "image_author": data["image"],
+                                        "author": dataUser["name"],
+                                        "image_author": dataUser["image"],
                                         "cep_origem":
                                             int.parse(_cepOrigemController.text)
                                       });

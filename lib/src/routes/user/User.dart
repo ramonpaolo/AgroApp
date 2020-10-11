@@ -26,7 +26,6 @@ class _UserState extends State<User> {
   bool localizacao = true;
 
   List myProduts = [];
-  List menorToMaior = [];
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -69,7 +68,6 @@ class _UserState extends State<User> {
   @override
   void initState() {
     print("--------------- User.dart--------------");
-    print(widget.data);
     try {
       if (FirebaseAuth.instance.currentUser.emailVerified) {
         setState(() {
@@ -80,10 +78,8 @@ class _UserState extends State<User> {
                 color: Colors.green,
               ));
         });
-        print("Email verificado");
       } else {
         FirebaseAuth.instance.currentUser.reload();
-        print("Email não verificado");
       }
     } catch (e) {
       print(e);
@@ -139,9 +135,13 @@ class _UserState extends State<User> {
                           Icons.settings,
                           color: Colors.green,
                         ),
-                        onPressed: () {
-                          showModalConf(context, localizacao, FirebaseAuth,
-                              _googleSignIn, _deleteData, Login, setState);
+                        onPressed: () async {
+                          await showModalConf(
+                              context: context,
+                              localizacao: localizacao,
+                              firebaseAuth: FirebaseAuth.instance,
+                              googleSignIn: _googleSignIn,
+                              deleteData: _deleteData);
                         }),
                   ],
                 )
@@ -194,7 +194,8 @@ Widget construtor(List item) {
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
         return GestureDetector(
-            onLongPress: () => showModal(context, item, index),
+            onLongPress: () async =>
+                await showModal(context: context, item: item, index: index),
             onTap: () => Navigator.push(
                   context,
                   PageTransition(

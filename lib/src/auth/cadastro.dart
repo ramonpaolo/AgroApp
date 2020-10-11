@@ -18,11 +18,12 @@ class Cadastro extends StatefulWidget {
 
 class _CadastroState extends State<Cadastro> {
   //---- Variables
+
   bool obscuteText = true;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  String text = "";
+  String textShowDialog = "";
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -35,41 +36,52 @@ class _CadastroState extends State<Cadastro> {
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
 
-  Widget txtBtn = Text("");
+  Widget actionButtonShowDialog = Text("");
 
   //---- Functions
 
   Future cadastroEmailSenha(email, senha) async {
     try {
       await auth.createUserWithEmailAndPassword(email: email, password: senha);
+
       User user = FirebaseAuth.instance.currentUser;
+
       await user.sendEmailVerification();
 
       setState(() {
-        text =
+        textShowDialog =
             "Você tem até 1 hora para confirmar o Email ou sua conta será cancelada";
-        txtBtn = TextButton(
-            onPressed: () => Future.delayed(
-                Duration(seconds: 1),
-                () => Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                        child: Nav(),
-                        type: PageTransitionType.bottomToTop,
-                        duration: Duration(milliseconds: 600)))),
+        actionButtonShowDialog = TextButton(
+            onPressed: () async => await Navigator.pushReplacement(
+                context,
+                PageTransition(
+                    child: Nav(),
+                    type: PageTransitionType.bottomToTop,
+                    duration: Duration(milliseconds: 600))),
             child: Text("Ok"));
       });
+
       await _saveData(_controllerName.text, email, senha);
     } on FirebaseAuthException catch (e) {
       if (e.code == "weak-password") {
-        print("Senha errada");
         setState(() {
-          text = "Senha errada";
+          textShowDialog = "Essa senha não pertence a esse email";
+          actionButtonShowDialog = TextButton(
+            onPressed: () => Navigator.pop(
+              context,
+            ),
+            child: Text("Ok"),
+          );
         });
       } else if (e.code == "email-already-in-use") {
-        print("Email em uso");
         setState(() {
-          text = "Email já em uso";
+          textShowDialog = "Email já cadastrado";
+          actionButtonShowDialog = TextButton(
+            onPressed: () => Navigator.pop(
+              context,
+            ),
+            child: Text("Ok"),
+          );
         });
       }
     } catch (e) {
@@ -80,20 +92,20 @@ class _CadastroState extends State<Cadastro> {
   Future loginGoogle() async {
     try {
       await _googleSignIn.signIn();
+
       await auth.createUserWithEmailAndPassword(
           email: _googleSignIn.currentUser.email,
           password: _googleSignIn.currentUser.displayName);
+
       await FirebaseAuth.instance.currentUser.sendEmailVerification();
+
       await _saveData(
           _googleSignIn.currentUser.displayName,
           _googleSignIn.currentUser.email,
           _googleSignIn.currentUser.displayName);
-      await Future.delayed(
-          Duration(seconds: 1),
-          () => Navigator.pushReplacement(
-              context,
-              PageTransition(
-                  child: Nav(), type: PageTransitionType.bottomToTop)));
+
+      await Navigator.pushReplacement(context,
+          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop));
     } catch (e) {
       print(e);
     }
@@ -101,15 +113,17 @@ class _CadastroState extends State<Cadastro> {
 
   Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
-    var file = File("${directory.path}/data.json");
-    return file;
+    return File("${directory.path}/data.json");
   }
 
   Future _saveData(name, email, password) async {
-    final path = await _getData();
-    final file = {"name": "$name", "email": "$email", "password": "$password"};
-    var en = jsonEncode(file);
-    await path.writeAsString(en);
+    final file = await _getData();
+    final dataUser = {
+      "name": "$name",
+      "email": "$email",
+      "password": "$password"
+    };
+    return await file.writeAsString(jsonEncode(dataUser));
   }
 
   @override
@@ -226,7 +240,8 @@ class _CadastroState extends State<Cadastro> {
                   await showDialog(
                       context: (context),
                       child: AlertDialog(
-                          content: Text("$text"), actions: [txtBtn]));
+                          content: Text("$textShowDialog"),
+                          actions: [actionButtonShowDialog]));
                 },
                 child: Container(
                     width: 150,

@@ -12,6 +12,7 @@ import 'package:agricultura/src/data/home.dart';
 class Category extends StatefulWidget {
   Category({Key key, this.category}) : super(key: key);
   final Map category;
+
   @override
   _CategoryState createState() => _CategoryState();
 }
@@ -75,15 +76,15 @@ class _CategoryState extends State<Category> {
             ],
           ),
           Container(
-            width: 200,
-            height: 1000,
+            width: size.width,
+            height: size.height * 0.9,
             child: ListView.builder(
               itemBuilder: (context, index) {
                 return GestureDetector(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
-                        width: 1000,
+                        width: size.width,
                         height: size.height <= 700
                             ? size.height * 0.32
                             : size.height * 0.25,

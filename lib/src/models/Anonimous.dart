@@ -1,6 +1,9 @@
-import 'package:agricultura/src/auth/login.dart';
+//---- Packages
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+//---- Screens
+import 'package:agricultura/src/auth/login.dart';
 
 class Anonimous extends StatelessWidget {
   @override
@@ -27,7 +30,7 @@ class Anonimous extends StatelessWidget {
             ),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
+              await Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) => Login()));
             },
           ),

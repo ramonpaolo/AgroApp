@@ -1,6 +1,8 @@
 //---- Packages
+import 'package:agricultura/src/routes/chat/HeroImage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'dart:io';
 import 'package:sigepweb/sigepweb.dart';
 
@@ -107,7 +109,6 @@ class _ProductState extends State<Product> {
             ),
             backgroundColor: Colors.white,
           ));
-          print("Adiciona");
         }
       }
     } else {
@@ -155,8 +156,8 @@ class _ProductState extends State<Product> {
                     bottomRight: Radius.circular(40)),
                 child: Container(
                   color: Colors.white,
-                  width: 1000,
-                  height: 330,
+                  width: size.width,
+                  height: size.height * 0.45,
                   child: Column(children: [
                     Column(
                       children: [
@@ -207,14 +208,23 @@ class _ProductState extends State<Product> {
                             itemBuilder: (context, index) {
                               return ClipRRect(
                                   borderRadius: BorderRadius.circular(30),
-                                  child: Image.file(
-                                    File(images[index]),
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
+                                  child: GestureDetector(
+                                    onTap: () async => await Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            child: PageHero(images[index]),
+                                            type: PageTransitionType.scale)),
+                                    child: Hero(
+                                        tag: "${images[index]}",
+                                        child: Image.file(
+                                          File(images[index]),
+                                          filterQuality: FilterQuality.high,
+                                          fit: BoxFit.fill,
+                                        )),
                                   ));
                             },
                             options: CarouselOptions(
-                              height: 220,
+                              height: size.height * 0.30,
                               initialPage: _indexPage,
                               autoPlay: true,
                               enlargeCenterPage: true,

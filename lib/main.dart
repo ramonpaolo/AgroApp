@@ -1,5 +1,4 @@
 //---- Packages
-import 'package:agricultura/src/models/instructions/instruction.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,8 +8,8 @@ import 'dart:convert';
 import 'dart:io';
 
 //---- Screens
+import 'package:agricultura/src/models/instructions/screen_initial.dart';
 import 'package:agricultura/src/models/Nav.dart';
-import 'package:agricultura/src/auth/login.dart';
 import 'package:agricultura/src/models/Splash.dart';
 
 void main() async {
@@ -29,30 +28,26 @@ class Index extends StatefulWidget {
 }
 
 class _IndexState extends State<Index> {
-  String widgets = "";
+  //---- Variables
+
+  Map dataUser = {"email": null};
+
+  //---- Functions
+
   Future<File> _getData() async {
     final directory = await getApplicationDocumentsDirectory();
-    final file = File("${directory.path}/data.json");
-    return file;
+    return File("${directory.path}/data.json");
   }
 
   Future _readData() async {
     try {
       final file = await _getData();
-      Map decode = await jsonDecode(file.readAsStringSync());
-      decode.forEach((key, value) {
-        if (key == "screen" && value == "true") {
-          widgets = "true";
-        } else if (key == "email" && value != null) {
-          setState(() {
-            widgets = "signOut";
-          });
-        }
+      setState(() {
+        dataUser = jsonDecode(file.readAsStringSync());
       });
-
-      return decode;
+      return dataUser;
     } catch (e) {
-      print("Error: " + e.toString());
+      print(e);
     }
   }
 
@@ -68,12 +63,7 @@ class _IndexState extends State<Index> {
     return Simple_splashscreen(
         context: context,
         splashscreenWidget: Splash(),
-        gotoWidget: widgets == "true"
-            ? widgets == "signOut"
-                ? Login()
-                : Nav()
-            : Instruction(),
-        // data == "tem" ? Nav() : Login(),
+        gotoWidget: dataUser["email"] != null ? Nav() : Instruction(),
         timerInSeconds: 2);
   }
 }

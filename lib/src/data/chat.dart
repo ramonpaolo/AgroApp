@@ -7,7 +7,7 @@ List users = [
     ],
     "image": "assets/images/eu.jpg"
   },
-  /*{
+  {
     "id": 1,
     "name": "Dudu",
     "mensagen": [
@@ -22,7 +22,7 @@ List users = [
       {"type": "txt", "name": "Ramon Paolo Maran", "content": "Enzo aki brow"}
     ],
     "image": "assets/images/eu.jpg"
-  },*/
+  },
 ];
 
 List grupos = [

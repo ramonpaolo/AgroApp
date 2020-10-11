@@ -25,39 +25,31 @@ class Nav extends StatefulWidget {
 class _NavState extends State<Nav> {
   //---- Variables
 
-  double sizeIcon = 40;
+  int _page = 0;
 
   Map data = {};
 
-  int _page = 0;
+  //---- Functions
 
   Future<File> _getData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return File("${directory.path}/data.json");
+  }
+
+  Future _readData() async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File("${directory.path}/data.json");
-      return file;
+      final file = await _getData();
+      final userData = await jsonDecode(file.readAsStringSync());
+      setState(() {
+        data = userData;
+      });
+      return data;
     } catch (e) {
       return null;
     }
   }
 
-  Future _readData() async {
-    try {
-      print("_readData");
-      final file = await _getData();
-      final decode = await jsonDecode(file.readAsStringSync());
-      //print("Decode: " + decode.toString());
-      setState(() {
-        data = decode;
-      });
-      print("Data: " + data.toString());
-      return data;
-    } catch (e) {
-      print("Error: " + e.toString());
-    }
-  }
-
-  page(index) {
+  screen(index) {
     if (AuthFire.FirebaseAuth.instance.currentUser.isAnonymous) {
       switch (index) {
         case 0:
@@ -109,7 +101,7 @@ class _NavState extends State<Nav> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.green[500],
-        body: page(_page),
+        body: screen(_page),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           items: [
@@ -119,8 +111,8 @@ class _NavState extends State<Nav> {
               activeIcon: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
-                    width: sizeIcon,
-                    height: sizeIcon,
+                    width: 40,
+                    height: 40,
                     color: Colors.green,
                     child: Icon(
                       Icons.home,
@@ -137,8 +129,8 @@ class _NavState extends State<Nav> {
               activeIcon: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
-                    width: sizeIcon,
-                    height: sizeIcon,
+                    width: 40,
+                    height: 40,
                     color: Colors.green,
                     child: Icon(
                       Icons.chat,
@@ -155,8 +147,8 @@ class _NavState extends State<Nav> {
               activeIcon: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
-                    width: sizeIcon,
-                    height: sizeIcon,
+                    width: 40,
+                    height: 40,
                     color: Colors.green,
                     child: Icon(
                       Icons.local_grocery_store,
@@ -170,8 +162,8 @@ class _NavState extends State<Nav> {
               activeIcon: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
-                    width: sizeIcon,
-                    height: sizeIcon,
+                    width: 40,
+                    height: 40,
                     color: Colors.green,
                     child: Icon(
                       Icons.person,
