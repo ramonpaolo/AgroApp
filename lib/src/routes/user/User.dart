@@ -223,7 +223,7 @@ Widget construtor(List item) {
                             trailing: Padding(
                                 padding: EdgeInsets.only(top: 6),
                                 child: Tooltip(
-                                  message: "Views",
+                                  message: "Vizualizações",
                                   child: Column(
                                     children: [
                                       Icon(
