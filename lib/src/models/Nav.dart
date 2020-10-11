@@ -99,7 +99,6 @@ class _NavState extends State<Nav> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("------------- Nav.dart ---------------");
     _readData();
     super.initState();

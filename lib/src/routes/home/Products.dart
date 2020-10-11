@@ -1,11 +1,10 @@
 // ---- Variables
 import 'dart:io';
-import 'package:agricultura/src/routes/home/Product.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
-//---- Datas
-import 'package:agricultura/src/data/home.dart';
+//---- Screens
+import 'package:agricultura/src/routes/home/Product.dart';
 
 class Products extends StatefulWidget {
   Products({Key key, this.category}) : super(key: key);

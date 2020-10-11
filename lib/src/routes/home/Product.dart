@@ -131,7 +131,6 @@ class _ProductState extends State<Product> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("-------- Product.dart---------");
     item = widget.item;
     quantidadeImagens();

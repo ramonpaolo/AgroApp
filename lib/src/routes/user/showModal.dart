@@ -1,4 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
+//---- Packages
 import 'package:flutter/material.dart';
 import 'dart:io';
 

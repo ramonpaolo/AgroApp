@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 //---- Screens
-import 'package:agricultura/src/routes/chat/PageHero.dart';
 import 'package:agricultura/src/routes/chat/showModal.dart';
 
 //---- Datas
@@ -67,7 +66,6 @@ class _ChatPVState extends State<ChatPV> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("-------------- ChatPV.dart -----------------");
     messages = users[widget.id]["mensagen"];
 

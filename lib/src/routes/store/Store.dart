@@ -68,7 +68,6 @@ class _StoreState extends State<Store> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("---------------------- Store.dart-------------");
     user = widget.user;
     print("Data user: " + user.toString());

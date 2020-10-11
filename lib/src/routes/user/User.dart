@@ -68,7 +68,6 @@ class _UserState extends State<User> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("--------------- User.dart--------------");
     print(widget.data);
     try {

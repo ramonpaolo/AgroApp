@@ -41,7 +41,6 @@ class _ChatState extends State<Chat> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("------------ Chat.dart -------------");
     print(widget.data);
     super.initState();

@@ -58,7 +58,6 @@ class _IndexState extends State<Index> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print("------------ main.dart------------");
     _readData();
     super.initState();
