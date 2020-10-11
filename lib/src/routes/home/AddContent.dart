@@ -338,58 +338,58 @@ class _AddContentState extends State<AddContent> {
                         "Segure o botão para adicionar o conteudo e sair.",
                         style: TextStyle(fontSize: 12),
                       ),
-                      Divider(
-                        color: Colors.white,
-                      ),
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(80),
-                          child: Container(
-                              width: size.width * 0.6,
-                              height: size.height * 0.07,
-                              child: RaisedButton.icon(
-                                splashColor: Colors.white,
-                                onPressed: () {
-                                  showModal(
-                                      context,
-                                      _images,
-                                      size,
-                                      _titleController,
-                                      _subtitleController,
-                                      _describeController,
-                                      _priceController);
-                                },
-                                onLongPress: () async {
-                                  setState(() {
-                                    produtos.insert(0, {
-                                      "id": 0,
-                                      "title": _titleController.text,
-                                      "subtitle": _subtitleController.text,
-                                      "describe": _describeController.text,
-                                      "image": _images,
-                                      "category": category,
-                                      "price": _priceController.text,
-                                      "views": 0,
-                                      "weight":
-                                          double.parse(_weightController.text),
-                                      "author": widget.name,
-                                      "image_author": data["image"],
-                                      "cep_origem":
-                                          int.parse(_cepOrigemController.text)
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 30),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(80),
+                            child: Container(
+                                width: size.width * 0.6,
+                                height: size.height * 0.07,
+                                child: RaisedButton.icon(
+                                  splashColor: Colors.white,
+                                  onPressed: () {
+                                    showModal(
+                                        context,
+                                        _images,
+                                        size,
+                                        _titleController,
+                                        _subtitleController,
+                                        _describeController,
+                                        _priceController);
+                                  },
+                                  onLongPress: () async {
+                                    setState(() {
+                                      produtos.insert(0, {
+                                        "id": 0,
+                                        "title": _titleController.text,
+                                        "subtitle": _subtitleController.text,
+                                        "describe": _describeController.text,
+                                        "image": _images,
+                                        "category": category,
+                                        "price": _priceController.text,
+                                        "views": 0,
+                                        "weight": double.parse(
+                                            _weightController.text),
+                                        "author": widget.name,
+                                        "image_author": data["image"],
+                                        "cep_origem":
+                                            int.parse(_cepOrigemController.text)
+                                      });
                                     });
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                icon: Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  semanticLabel: "Check",
-                                ),
-                                label: Text(
-                                  "Adicionar a venda",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                color: Colors.green,
-                              )))
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    semanticLabel: "Check",
+                                  ),
+                                  label: Text(
+                                    "Adicionar a venda",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  color: Colors.green,
+                                ))),
+                      )
                     ],
                   ),
                 ))));
