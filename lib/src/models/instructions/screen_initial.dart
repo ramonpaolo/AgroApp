@@ -1,9 +1,12 @@
-import 'package:agricultura/src/auth/login.dart';
-import 'package:agricultura/src/models/instructions/app.dart';
-import 'package:agricultura/src/models/instructions/user.dart';
+//---- Packages
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+
+//---- Screens
+import 'package:agricultura/src/auth/login.dart';
+import 'package:agricultura/src/models/instructions/about_user.dart';
+import 'package:agricultura/src/models/instructions/about_app.dart';
 
 class Instruction extends StatefulWidget {
   @override
@@ -11,9 +14,13 @@ class Instruction extends StatefulWidget {
 }
 
 class _InstructionState extends State<Instruction> {
+  //---- Variables
+
   int _page = 0;
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.green,
         body: SingleChildScrollView(
@@ -23,12 +30,12 @@ class _InstructionState extends State<Instruction> {
             children: [
               Center(
                 child: Container(
-                    width: 380,
-                    height: 560,
+                    width: size.width,
+                    height: size.height * 0.8,
                     child: CarouselSlider(
-                        items: [App(), User()],
+                        items: [AboutApp(), AboutUser()],
                         options: CarouselOptions(
-                          height: 1000,
+                          height: size.height,
                           autoPlay: true,
                           enlargeCenterPage: true,
                           initialPage: 0,
@@ -39,12 +46,7 @@ class _InstructionState extends State<Instruction> {
                               _page = page;
                             });
                           },
-                        ))
-
-                    /* PageView(
-                    children: [App(), User()],
-                  ),*/
-                    ),
+                        ))),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -65,8 +67,8 @@ class _InstructionState extends State<Instruction> {
                           color: _page == 1
                               ? Colors.green[100]
                               : Colors.green[300],
-                          width: 20,
-                          height: 10,
+                          width: size.width * 0.05,
+                          height: size.height * 0.015,
                         )),
                   )
                 ],
@@ -77,12 +79,12 @@ class _InstructionState extends State<Instruction> {
               ClipRRect(
                   borderRadius: BorderRadius.circular(40),
                   child: Container(
-                    width: 200,
-                    height: 50,
+                    width: size.width * 0.6,
+                    height: size.height * 0.07,
                     child: RaisedButton(
                       color: Colors.white,
                       onPressed: () async {
-                        Navigator.pushReplacement(
+                        await Navigator.pushReplacement(
                             context,
                             PageTransition(
                                 child: Login(),

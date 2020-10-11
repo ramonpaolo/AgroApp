@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class User extends StatelessWidget {
+class AboutUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
