@@ -327,13 +327,62 @@ class _HomeState extends State<Home> {
           return SingleChildScrollView(
               child: Column(
             children: [
-              Divider(
-                color: Colors.green,
-                height: 30,
+              Padding(
+                padding:
+                    EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: Container(
+                    child: TextField(
+                      controller: _pesquisa,
+                      onChanged: (value) {
+                        setState(() {
+                          animated = false;
+                        });
+                        search(_pesquisa.text);
+                        value = _pesquisa.text;
+                        if (value.isEmpty) {
+                          setState(() {
+                            animated = true;
+                            pesquisa = null;
+                          });
+                        }
+                      },
+                      showCursor: true,
+                      strutStyle: StrutStyle(leading: 0.4),
+                      keyboardType: TextInputType.text,
+                      cursorColor: Colors.green[900],
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.green,
+                        ),
+                        suffixIcon: pesquisa != null
+                            ? IconButton(
+                                icon: Icon(
+                                  Icons.clear,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _pesquisa.clear();
+                                    animated = true;
+                                    pesquisa = null;
+                                  });
+                                })
+                            : null,
+                      ),
+                    ),
+                    decoration: BoxDecoration(color: Colors.white),
+                  ),
+                ),
               ),
               Text(
                 "Categorias",
-                style: TextStyle(color: Colors.white, fontSize: 22),
+                style: TextStyle(
+                    color: Colors.white, fontSize: 22, fontFamily: "Noto Sans"),
               ),
               Divider(color: Colors.green),
               Container(
@@ -367,13 +416,17 @@ class _HomeState extends State<Home> {
                                       height: size.height,
                                       width: size.width,
                                     ),
-                                    ListTile(
-                                        title: Text(
-                                      category[index]["name"],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ))
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: 10, left: 10),
+                                        child: Text(
+                                          category[index]["name"],
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: "Noto sans",
+                                              fontSize: 16),
+                                        ))
                                   ],
                                 )),
                           ),
@@ -387,6 +440,11 @@ class _HomeState extends State<Home> {
               ),
               construtor(size, produtos, "Os principais do mês de outubro",
                   context, Scaffold.of(context).setState),
+              Divider(
+                color: Colors.green,
+              ),
+              construtor(size, produtos, "Os principais do ano", context,
+                  Scaffold.of(context).setState),
             ],
           ));
         }
