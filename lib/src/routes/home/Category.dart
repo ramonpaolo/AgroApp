@@ -84,14 +84,18 @@ class _CategoryState extends State<Category> {
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                         width: 1000,
-                        height: size.height * 0.32,
+                        height: size.height <= 700
+                            ? size.height * 0.32
+                            : size.height * 0.25,
                         child: Card(
                             color: Colors.white,
                             child: Column(
                               children: [
                                 Container(
-                                  width: 100,
-                                  height: 130,
+                                  width: size.width * 0.5,
+                                  height: size.height <= 700
+                                      ? size.height * 0.2
+                                      : size.height * 0.15,
                                   child: Image.file(
                                     File(produtosDaCategoriaEscolhida[index]
                                         ["image"][0]),
