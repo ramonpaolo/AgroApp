@@ -70,8 +70,9 @@ Widget construtor(
                           child: Column(
                             children: [
                               Container(
-                                width: size.width * 0.5,
-                                height: size.height * 0.2,
+                                height: size.height <= 700
+                                    ? size.height * 0.2
+                                    : size.height * 0.15,
                                 child: Image.file(
                                   File(item[index]["image"][0]),
                                   filterQuality: FilterQuality.high,
