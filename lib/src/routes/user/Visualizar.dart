@@ -113,17 +113,33 @@ class _VisualizarState extends State<Visualizar> {
                             ))
                           ],
                         )))),
+            Divider(
+              color: Colors.green,
+            ),
             Text(
               produto["title"],
               style: TextStyle(color: Colors.white, fontSize: 22),
+            ),
+            Divider(
+              color: Colors.green,
+              height: 5,
             ),
             Text(
               produto["subtitle"],
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
+            Divider(
+              color: Colors.green,
+            ),
             Text(
-              produto["title"],
-              style: TextStyle(color: Colors.white, fontSize: 22),
+              produto["describe"],
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  textBaseline: TextBaseline.ideographic,
+                  wordSpacing: 2,
+                  fontStyle: FontStyle.normal,
+                  fontFamily: "Noto Sans"),
             )
           ],
         ),
