@@ -265,7 +265,7 @@ class _ProductState extends State<Product> {
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               Text(
-                "${item["describe"]} a bolinha bbeij",
+                "${item["describe"]}",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
