@@ -1,10 +1,12 @@
 //---- Packages
-import 'package:agricultura/src/routes/chat/HeroImage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:io';
 import 'package:sigepweb/sigepweb.dart';
+
+//---- Screens
+import 'package:agricultura/src/routes/chat/HeroImage.dart';
 
 //---- Datas
 import 'package:agricultura/src/data/user.dart';
@@ -19,11 +21,11 @@ class Product extends StatefulWidget {
 class _ProductState extends State<Product> {
   //---- Variables
 
-  bool freteBuscado = false;
+  bool freteFoiBuscado = false;
 
-  int _indexPage = 0;
+  int _indexPageCarousel = 0;
 
-  List images = [];
+  List quantidadeImages = [];
 
   Map sedex = {"name": "", "price": "", "time_delivery": ""};
   Map pac = {"name": "", "price": "", "time_delivery": ""};
@@ -35,36 +37,42 @@ class _ProductState extends State<Product> {
 
   //---- Functions
 
-  correios(String cepDestino) async {
+  Future calcularFrete(String cepDestino) async {
     var sigep = Sigepweb(contrato: SigepContrato.semContrato());
     var calcPrecoPrazo = await sigep.calcPrecoPrazo(
         cepOrigem: "${item["cep_origem"]}",
         cepDestino: cepDestino,
         valorPeso: item["weight"]);
 
-    for (var item in calcPrecoPrazo) {
-      print("${item.nome}: R\$ ${item.valor}");
-
+    for (CalcPrecoPrazoItemModel item in calcPrecoPrazo) {
       if (item.nome == "Sedex") {
-        setState(() {
-          sedex["price"] = item.valor.toString();
-          sedex["time_delivery"] = item.prazoEntrega.toString();
-          freteBuscado = true;
-        });
+        await setSedex(item);
       } else {
-        setState(() {
-          pac["price"] = item.valor.toString();
-          pac["time_delivery"] = item.prazoEntrega.toString();
-          freteBuscado = true;
-        });
+        await setPac(item);
       }
     }
+  }
+
+  Future setSedex(CalcPrecoPrazoItemModel item) {
+    setState(() {
+      sedex["price"] = item.valor.toString();
+      sedex["time_delivery"] = item.prazoEntrega.toString();
+      freteFoiBuscado = true;
+    });
+  }
+
+  Future setPac(CalcPrecoPrazoItemModel item) {
+    setState(() {
+      pac["price"] = item.valor.toString();
+      pac["time_delivery"] = item.prazoEntrega.toString();
+      freteFoiBuscado = true;
+    });
   }
 
   quantidadeImagens() {
     for (var x = 0; x < 20; x++) {
       try {
-        images.add(item["image"][x]);
+        quantidadeImages.add(item["image"][x]);
         print("Add");
       } catch (e) {
         print(e);
@@ -204,7 +212,7 @@ class _ProductState extends State<Product> {
                           ),
                         ),
                         CarouselSlider.builder(
-                            itemCount: images.length,
+                            itemCount: quantidadeImages.length,
                             itemBuilder: (context, index) {
                               return ClipRRect(
                                   borderRadius: BorderRadius.circular(30),
@@ -212,12 +220,13 @@ class _ProductState extends State<Product> {
                                     onTap: () async => await Navigator.push(
                                         context,
                                         PageTransition(
-                                            child: PageHero(images[index]),
+                                            child: PageHero(
+                                                quantidadeImages[index]),
                                             type: PageTransitionType.scale)),
                                     child: Hero(
-                                        tag: "${images[index]}",
+                                        tag: "${quantidadeImages[index]}",
                                         child: Image.file(
-                                          File(images[index]),
+                                          File(quantidadeImages[index]),
                                           filterQuality: FilterQuality.high,
                                           fit: BoxFit.fill,
                                         )),
@@ -225,13 +234,13 @@ class _ProductState extends State<Product> {
                             },
                             options: CarouselOptions(
                               height: size.height * 0.30,
-                              initialPage: _indexPage,
+                              initialPage: _indexPageCarousel,
                               autoPlay: true,
                               enlargeCenterPage: true,
                               enableInfiniteScroll: false,
                               onPageChanged: (index, reason) {
                                 setState(() {
-                                  _indexPage = index;
+                                  _indexPageCarousel = index;
                                 });
                               },
                             )),
@@ -240,7 +249,7 @@ class _ProductState extends State<Product> {
                           height: 10,
                         ),
                         Container(
-                          width: (images.length * 25).ceilToDouble(),
+                          width: (quantidadeImages.length * 25).ceilToDouble(),
                           height: 10,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
@@ -250,14 +259,14 @@ class _ProductState extends State<Product> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(40),
                                     child: Container(
-                                      color: _indexPage == index
+                                      color: _indexPageCarousel == index
                                           ? Colors.green[300]
                                           : Colors.green[100],
                                       width: 20,
                                     ),
                                   ));
                             },
-                            itemCount: images.length,
+                            itemCount: quantidadeImages.length,
                           ),
                         )
                       ],
@@ -319,7 +328,9 @@ class _ProductState extends State<Product> {
                   child: RaisedButton(
                     onPressed: () async {
                       if (_cepController.text.length == 8) {
-                        await correios(_cepController.text);
+                        await calcularFrete(
+                          _cepController.text,
+                        );
                       } else {
                         _snack.currentState.showSnackBar(SnackBar(
                           content: Text(
@@ -389,7 +400,7 @@ class _ProductState extends State<Product> {
                           ],
                         ),
                       )),
-                  crossFadeState: freteBuscado == true
+                  crossFadeState: freteFoiBuscado == true
                       ? CrossFadeState.showSecond
                       : CrossFadeState.showFirst,
                   duration: Duration(milliseconds: 400)),
