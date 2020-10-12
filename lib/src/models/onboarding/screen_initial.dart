@@ -5,8 +5,8 @@ import 'package:page_transition/page_transition.dart';
 
 //---- Screens
 import 'package:agricultura/src/auth/login.dart';
-import 'package:agricultura/src/models/instructions/about_user.dart';
-import 'package:agricultura/src/models/instructions/about_app.dart';
+import 'package:agricultura/src/models/onboarding/about_user.dart';
+import 'package:agricultura/src/models/onboarding/about_app.dart';
 
 class Instruction extends StatefulWidget {
   @override

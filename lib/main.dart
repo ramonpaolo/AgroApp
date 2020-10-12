@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 
 //---- Screens
-import 'package:agricultura/src/models/instructions/screen_initial.dart';
+import 'package:agricultura/src/models/onboarding/screen_initial.dart';
 import 'package:agricultura/src/models/Nav.dart';
 import 'package:agricultura/src/models/Splash.dart';
 
