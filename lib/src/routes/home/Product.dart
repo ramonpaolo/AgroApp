@@ -53,7 +53,7 @@ class _ProductState extends State<Product> {
     }
   }
 
-  Future setSedex(CalcPrecoPrazoItemModel item) {
+  setSedex(CalcPrecoPrazoItemModel item) {
     setState(() {
       sedex["price"] = item.valor.toString();
       sedex["time_delivery"] = item.prazoEntrega.toString();
@@ -61,7 +61,7 @@ class _ProductState extends State<Product> {
     });
   }
 
-  Future setPac(CalcPrecoPrazoItemModel item) {
+  setPac(CalcPrecoPrazoItemModel item) {
     setState(() {
       pac["price"] = item.valor.toString();
       pac["time_delivery"] = item.prazoEntrega.toString();
