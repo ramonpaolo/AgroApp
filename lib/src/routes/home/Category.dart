@@ -1,13 +1,14 @@
 //---- Packages
+import 'package:agricultura/src/routes/home/widgets/dragable_scrollable.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'dart:io';
+
+//---- API
+import 'package:agricultura/src/firebase/api_firebase.dart';
 
 //---- Screens
 import 'package:agricultura/src/routes/home/Product.dart';
-
-//---- Datas
-import 'package:agricultura/src/data/home.dart';
 
 class Category extends StatefulWidget {
   Category({Key key, this.category}) : super(key: key);
@@ -20,6 +21,8 @@ class Category extends StatefulWidget {
 class _CategoryState extends State<Category> {
   //---- Variables
 
+  Object order;
+
   List produtosDaCategoriaEscolhida = [];
 
   Map category = {"name": ""};
@@ -27,10 +30,10 @@ class _CategoryState extends State<Category> {
   //---- Functions
 
   buscarProdutosNaCategoria() async {
-    for (var x = 0; x < produtos.length; x++) {
-      if (produtos[x]["category"] == category["name"]) {
+    for (var x = 0; x < productsOrderView.docs.length; x++) {
+      if (await productsOrderView.docs[x]["category"] == category["name"]) {
         setState(() {
-          produtosDaCategoriaEscolhida.add(produtos[x]);
+          produtosDaCategoriaEscolhida.add(productsOrderView.docs[x]);
         });
       }
     }
@@ -70,68 +73,64 @@ class _CategoryState extends State<Category> {
                 indent: size.width * 0.25,
               ),
               Text(
-                category["name"],
+                "${category["name"]}",
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ],
           ),
           Container(
             width: size.width,
-            height: size.height * 0.9,
+            height: 220,
             child: ListView.builder(
+              scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  child: ClipRRect(
+                return ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
-                        width: size.width,
-                        height: size.height <= 700
-                            ? size.height * 0.32
-                            : size.height * 0.25,
-                        child: Card(
-                            color: Colors.white,
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: size.height <= 700
-                                      ? size.height * 0.2
-                                      : size.height * 0.15,
-                                  child: Image.file(
-                                    File(produtosDaCategoriaEscolhida[index]
-                                        ["image"][0]),
-                                    fit: BoxFit.fill,
-                                    filterQuality: FilterQuality.high,
+                        width: 200,
+                        child: GestureDetector(
+                          child: Card(
+                              color: Colors.white,
+                              child: Column(
+                                children: [
+                                  CachedNetworkImage(
+                                    imageUrl:
+                                        "${produtosDaCategoriaEscolhida[index]["image"][0]}",
+                                    filterQuality: FilterQuality.medium,
+                                    useOldImageOnUrlChange: true,
+                                    width: 200,
+                                    height: 140,
+                                    fit: BoxFit.cover,
+                                    progressIndicatorBuilder:
+                                        (context, url, progress) =>
+                                            LinearProgressIndicator(
+                                                value: progress.progress),
                                   ),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                      produtosDaCategoriaEscolhida[index]
-                                          ["title"]),
-                                  subtitle: Text(
-                                      produtosDaCategoriaEscolhida[index]
-                                          ["subtitle"]),
-                                  trailing: Text(
-                                    "R\$" +
-                                        produtosDaCategoriaEscolhida[index]
-                                            ["price"],
-                                    style: TextStyle(color: Colors.green),
+                                  ListTile(
+                                    title: Text(
+                                        "${produtosDaCategoriaEscolhida[index]["title"]}"),
+                                    subtitle: Text(
+                                        "${produtosDaCategoriaEscolhida[index]["subtitle"]}"),
+                                    trailing: Text(
+                                      "R\$${produtosDaCategoriaEscolhida[index]["price"]}",
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  )
+                                ],
+                              )),
+                          onTap: () => Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: Product(
+                                    item: produtosDaCategoriaEscolhida[index],
                                   ),
-                                )
-                              ],
-                            ))),
-                  ),
-                  onTap: () => Navigator.push(
-                      context,
-                      PageTransition(
-                          child: Product(
-                            item: produtosDaCategoriaEscolhida[index],
-                          ),
-                          type: PageTransitionType.rightToLeft)),
-                );
+                                  type: PageTransitionType.rightToLeft)),
+                        )));
               },
               itemCount: produtosDaCategoriaEscolhida.length,
             ),
           ),
+          DraggableScrollable()
         ],
       )),
     );

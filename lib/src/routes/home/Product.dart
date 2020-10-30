@@ -1,19 +1,21 @@
 //---- Packages
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'dart:io';
+import 'package:share/share.dart';
 import 'package:sigepweb/sigepweb.dart';
 
-//---- Screens
-import 'package:agricultura/src/routes/chat/HeroImage.dart';
+//---- API
+import 'package:agricultura/src/firebase/api_firebase.dart';
 
-//---- Datas
-import 'package:agricultura/src/data/user.dart';
+//---- Screens
+import 'package:agricultura/src/routes/home/HeroImage.dart';
 
 class Product extends StatefulWidget {
   Product({Key key, this.item}) : super(key: key);
   final item;
+
   @override
   _ProductState createState() => _ProductState();
 }
@@ -25,7 +27,7 @@ class _ProductState extends State<Product> {
 
   int _indexPageCarousel = 0;
 
-  List quantidadeImages = [];
+  List images = [];
 
   Map sedex = {"name": "", "price": "", "time_delivery": ""};
   Map pac = {"name": "", "price": "", "time_delivery": ""};
@@ -69,83 +71,117 @@ class _ProductState extends State<Product> {
     });
   }
 
-  quantidadeImagens() {
-    for (var x = 0; x < 20; x++) {
+  getImages() {
+    for (int x = 0; x < 20; x++) {
       try {
-        quantidadeImages.add(item["image"][x]);
-        print("Add");
+        images.add(item["image"][x]);
       } catch (e) {
         print(e);
       }
     }
   }
 
-  addInUser(String text) {
-    List usuario;
+  Future addInUser(text) async {
+    bool haveProduct = false;
+    bool adicionarProduto = true;
+
     setState(() {
-      usuario = user[text];
+      dataUser.getDataUser();
     });
-    print("Usuario: " + usuario.toString());
-    if (usuario.length >= 1) {
-      for (var x = 0; x < usuario.length; x++) {
-        if (usuario[x] == item["id"]) {
-          usuario.forEach((element) {
-            if (element == item["id"]) {
-              setState(() {
-                usuario.remove(element);
-              });
-              _snack.currentState.showSnackBar(SnackBar(
-                content: Text(
-                  "Removido do $text",
-                  style: TextStyle(color: Colors.green),
-                ),
-                backgroundColor: Colors.white,
-              ));
-              print("$text removido");
-              print(usuario);
-            }
-          });
-        } else {
+
+    if (await user[text].length >= 1) {
+      for (var y = 0; y < user[text].length; y++) {
+        if (await user[text][y] == await item["id"]) {
+          print("O ${await user[text][y]} é igual a ${await item["id"]}");
           setState(() {
-            usuario.add(item["id"]);
-            user[text] = usuario;
+            haveProduct = true;
           });
-          _snack.currentState.showSnackBar(SnackBar(
-            content: Text(
-              "Adicionado no $text",
-              style: TextStyle(color: Colors.green),
-            ),
-            backgroundColor: Colors.white,
-          ));
         }
       }
     } else {
-      setState(() {
-        usuario.add(item["id"]);
-        user[text] = usuario;
-      });
-      _snack.currentState.showSnackBar(SnackBar(
-        content: Text(
-          "Adicionado no $text",
-          style: TextStyle(color: Colors.green),
-        ),
-        backgroundColor: Colors.white,
-      ));
-      print("Primeiro $text do perfil :)");
+      print("0");
     }
-    print(usuario.length.toString() +
-        " id cadastrado com valor: " +
-        user[text].toString());
+    if (haveProduct == false) {
+      if (text == "car_shop") {
+        _snack.currentState.showSnackBar(SnackBar(
+            content: Text(
+                "O produto ${item["title"]} foi adicionado no carrinho",
+                style: TextStyle(color: Colors.green)),
+            backgroundColor: Colors.white,
+            duration: Duration(seconds: 2),
+            action: SnackBarAction(
+                label: "Desfazer",
+                onPressed: () {
+                  setState(() {
+                    adicionarProduto = false;
+                  });
+                })));
+        await Future.delayed(
+            Duration(seconds: 3),
+            () async => adicionarProduto == true
+                ? await dataUser.setCarShop(item["id"])
+                : null);
+      } else {
+        _snack.currentState.showSnackBar(SnackBar(
+            content: Text(
+                "O produto ${item["title"]} foi adicionado no favoritos",
+                style: TextStyle(color: Colors.green)),
+            backgroundColor: Colors.white,
+            duration: Duration(seconds: 2),
+            action: SnackBarAction(
+                label: "Desfazer",
+                onPressed: () {
+                  setState(() {
+                    adicionarProduto = false;
+                  });
+                })));
+        await Future.delayed(
+            Duration(seconds: 3),
+            () async => adicionarProduto == true
+                ? await dataUser.setFavorites(item["id"])
+                : null);
+      }
+    } else {
+      if (text == "car_shop") {
+        _snack.currentState.showSnackBar(
+          SnackBar(
+            content: Text(
+              "Remover ${item["title"]} de carrinho?",
+              style: TextStyle(color: Colors.green),
+            ),
+            backgroundColor: Colors.white,
+            action: SnackBarAction(
+                label: "Remover",
+                onPressed: () async =>
+                    await dataUser.removeCarShop(item["id"])),
+          ),
+        );
+      } else {
+        _snack.currentState.showSnackBar(
+          SnackBar(
+            content: Text(
+              "Remover ${item["title"]} de favoritos?",
+              style: TextStyle(color: Colors.green),
+            ),
+            backgroundColor: Colors.white,
+            action: SnackBarAction(
+                label: "Remover",
+                onPressed: () async =>
+                    await dataUser.removeFavorites(item["id"])),
+          ),
+        );
+      }
+    }
   }
 
   @override
   void initState() {
     print("-------- Product.dart---------");
     item = widget.item;
-    quantidadeImagens();
-    setState(() {
-      item["views"] += 1;
-    });
+    getImages();
+
+    dataUser.setViews(item);
+    dataUser.getDataUser();
     super.initState();
   }
 
@@ -191,28 +227,31 @@ class _ProductState extends State<Product> {
                                     Icons.add_shopping_cart_sharp,
                                     color: Colors.green,
                                   ),
-                                  onPressed: () {
-                                    addInUser("car_shop");
-                                  }),
+                                  onPressed: () async =>
+                                      await addInUser("car_shop")),
                               IconButton(
                                   tooltip: "Compartilhar",
                                   icon: Icon(
                                     Icons.share,
                                     color: Colors.green,
                                   ),
-                                  onPressed: () {}),
+                                  onPressed: () async {
+                                    await Share.share(
+                                        item["title"] + ". " + item["subtitle"],
+                                        subject: "Pesquise por esse produto");
+                                  }),
                               IconButton(
                                   tooltip: "Adicionar no favoritos",
                                   icon:
                                       Icon(Icons.favorite, color: Colors.green),
-                                  onPressed: () {
-                                    addInUser("favorites");
+                                  onPressed: () async {
+                                    await addInUser("favorites");
                                   }),
                             ],
                           ),
                         ),
                         CarouselSlider.builder(
-                            itemCount: quantidadeImages.length,
+                            itemCount: images.length,
                             itemBuilder: (context, index) {
                               return ClipRRect(
                                   borderRadius: BorderRadius.circular(30),
@@ -221,15 +260,39 @@ class _ProductState extends State<Product> {
                                         context,
                                         PageTransition(
                                             child: PageHero(
-                                                quantidadeImages[index]),
-                                            type: PageTransitionType.scale)),
+                                              images[index],
+                                              item["title"] +
+                                                  DateTime.now().toString(),
+                                            ),
+                                            type: PageTransitionType.size,
+                                            alignment: Alignment.topCenter,
+                                            duration:
+                                                Duration(milliseconds: 400))),
                                     child: Hero(
-                                        tag: "${quantidadeImages[index]}",
-                                        child: Image.file(
-                                          File(quantidadeImages[index]),
-                                          filterQuality: FilterQuality.high,
-                                          fit: BoxFit.fill,
-                                        )),
+                                      tag: "${images[index]}",
+                                      child: CachedNetworkImage(
+                                        imageUrl: images[index],
+                                        filterQuality: FilterQuality.high,
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover)),
+                                        ),
+                                        useOldImageOnUrlChange: true,
+                                        progressIndicatorBuilder:
+                                            (context, child, loadingProgress) {
+                                          return loadingProgress == null
+                                              ? child
+                                              : LinearProgressIndicator(
+                                                  value:
+                                                      loadingProgress.progress,
+                                                );
+                                        },
+                                      ),
+                                    ),
                                   ));
                             },
                             options: CarouselOptions(
@@ -249,7 +312,7 @@ class _ProductState extends State<Product> {
                           height: 10,
                         ),
                         Container(
-                          width: (quantidadeImages.length * 25).ceilToDouble(),
+                          width: (images.length * 25).ceilToDouble(),
                           height: 10,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
@@ -266,7 +329,7 @@ class _ProductState extends State<Product> {
                                     ),
                                   ));
                             },
-                            itemCount: quantidadeImages.length,
+                            itemCount: images.length,
                           ),
                         )
                       ],
@@ -276,22 +339,27 @@ class _ProductState extends State<Product> {
               ),
               Text(
                 "${item["title"]}",
-                style: TextStyle(color: Colors.white, fontSize: 22),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
               ),
               Text(
                 "${item["subtitle"]}",
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
-              Text(
-                "${item["describe"]}",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    textBaseline: TextBaseline.ideographic,
-                    letterSpacing: 1.5,
-                    wordSpacing: 2,
-                    fontStyle: FontStyle.normal,
-                    fontFamily: "Noto Sans"),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "${item["describe"]}",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      letterSpacing: 0.2,
+                      wordSpacing: 0.5,
+                      fontStyle: FontStyle.normal,
+                      fontFamily: "Noto Sans"),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.all(20),

@@ -1,3 +1,4 @@
+//---- Packages
 import 'package:flutter/material.dart';
 
 showModal(context) {
@@ -9,10 +10,21 @@ showModal(context) {
       builder: (c) {
         return ClipRRect(
             borderRadius: BorderRadius.circular(40),
-            child: Container(
-                width: 1000,
-                height: 1000,
-                padding: EdgeInsets.all(20),
-                child: Text("Terminar aki")));
+            child: BottomSheet(
+              onClosing: () {},
+              builder: (context) {
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return Container(
+                        width: 1000,
+                        height: 1000,
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          children: [Text("Pagamento...")],
+                        ));
+                  },
+                );
+              },
+            ));
       });
 }

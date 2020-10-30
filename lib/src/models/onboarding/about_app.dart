@@ -23,6 +23,7 @@ class AboutApp extends StatelessWidget {
           ClipRRect(
             child: Image.asset(
               "assets/images/agricultura.png",
+              filterQuality: FilterQuality.high,
             ),
             borderRadius: BorderRadius.circular(1000),
           ),

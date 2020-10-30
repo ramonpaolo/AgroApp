@@ -1,19 +1,14 @@
 //---- Packages
-import 'dart:io';
+import 'package:agricultura/src/firebase/api_firebase.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
-import 'package:page_transition/page_transition.dart';
 
 //---- Datas
-import 'package:agricultura/src/data/home.dart';
 import 'package:agricultura/src/data/category.dart';
 
 //---- Screens
-import 'package:agricultura/src/routes/home/Category.dart';
-import 'package:agricultura/src/routes/home/Product.dart';
-import 'package:agricultura/src/routes/home/widgets/campo.dart';
+import 'package:agricultura/src/routes/home/functions/categorys.dart';
+import 'package:agricultura/src/routes/home/widgets/sub_category.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -27,111 +22,57 @@ class _HomeState extends State<Home> {
 
   List produtoPesquisado = [];
 
-  http.Response response;
-
   String pesquisa;
 
   TextEditingController _pesquisa = TextEditingController();
 
-  var dolar;
-  var tempo;
-  var localization;
-
   //---- Functions
 
-  //----- Key api: 63c27cec
-
-  Future money() async {
-    try {
-      //response = await http.get("https://api.hgbrasil.com/finance");
-      response = await http.get("https://google");
-      var json = await jsonDecode(response.body);
-      dolar = await json["results"]["currencies"]["USD"]["buy"];
-      //print("API Dolar:");
-      //print(await dolar);
-      return await dolar;
-    } catch (e) {
-      print(e);
-    }
+  Future refreshProduts() async {
+    setState(() {
+      productsOrderMinPrice = productsOrderMinPrice;
+      productsOrderName = productsOrderName;
+      productsOrderView = productsOrderView;
+    });
   }
 
-  Future wheater(woeid) async {
-    try {
-      //response = await http
-      //  .get("https://api.hgbrasil.com/weather?woeid=$woeid&key=63c27cec");
-      response = await http.get("https://google");
-      tempo = await jsonDecode(response.body);
-      //print("API Tempo:");
-      //print(await tempo);
-    } catch (e) {
-      print(e);
-    }
-    return await tempo['results']['city'] != null ? tempo : null;
-  }
-
-  Future localizatio() async {
-    try {
-      //response = await http.get(
-      //    "https://api.hgbrasil.com/geoip?key=63c27cec&address=remote&precision=false");
-      response = await http.get("https://google");
-      localization = await jsonDecode(response.body);
-      //print("API localização:");
-      //print(await localization);
-      return await localization["results"]["woeid"];
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<dynamic> datas() async {
-    try {
-      await localizatio();
-      await money();
-      await wheater(await localization["results"]["woeid"]);
-      return {await dolar, await tempo, await localization};
-    } catch (e) {
-      return null;
-    }
+  Future setProdutoPesquisado({String search, int array}) async {
+    setState(() {
+      pesquisa = search;
+      produtoPesquisado.add(productsOrderView.docs[array]);
+    });
   }
 
   Future search(String search) async {
+    //Manter a variavel limpa para novas pesquisas
     setState(() {
       produtoPesquisado.clear();
     });
-    String title;
-    try {
-      for (var x = 0; x < produtos.length; x++) {
-        setState(() {
-          title = produtos[x]["title"];
-        });
-        print(produtos[x]);
-        // if (title.contains(search) || title == search) {
-        if (title == search) {
-          print("Esse mesmo: $title");
-          setState(() {
-            pesquisa = search;
-            produtoPesquisado.add(produtos[x]);
-          });
-          return pesquisa;
-        } else if (x == produtos.length - 1) {
-          print("Não tem :(");
-          return search;
-        }
+
+    for (int x = 0; x < productsOrderView.docs.length; x++) {
+      if (productsOrderView.docs[x]["title"].contains(search)) {
+        await setProdutoPesquisado(search: search, array: x);
       }
-    } catch (e) {
-      print(e);
     }
   }
 
-  Future json() async {
-    setState(() {
-      produtos = produtos;
-    });
+  void clearDataSearch(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        _pesquisa.clear();
+        animated = true;
+        pesquisa = null;
+        produtoPesquisado.clear();
+      });
+    } else {
+      search(_pesquisa.text);
+    }
   }
 
   @override
   void initState() {
     print("---------- Home.dart ---------");
+    showAllProducts.showAllProducts();
     super.initState();
   }
 
@@ -139,426 +80,85 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return RefreshIndicator(
-      child: FutureBuilder(
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 40, left: 20, right: 20, bottom: 10),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: Container(
-                        child: TextField(
-                          controller: _pesquisa,
-                          onSubmitted: (value) {
-                            search(_pesquisa.text);
-                            print(_pesquisa.text);
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              animated = false;
-                            });
-                            value = _pesquisa.text;
-                            if (value.isEmpty) {
-                              setState(() {
-                                animated = true;
-                                pesquisa = null;
-                                produtoPesquisado.clear();
-                              });
-                            }
-                          },
-                          showCursor: true,
-                          strutStyle: StrutStyle(leading: 0.4),
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.search,
-                          cursorColor: Colors.green[900],
-                          textCapitalization: TextCapitalization.sentences,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.green,
-                            ),
-                            suffixIcon: pesquisa != null
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.search,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _pesquisa.clear();
-                                              animated = true;
-                                              pesquisa = null;
-                                              produtoPesquisado = [];
-                                            });
-                                          }),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.clear,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _pesquisa.clear();
-                                              animated = true;
-                                              pesquisa = null;
-                                            });
-                                          })
-                                    ],
-                                  )
-                                : null,
-                          ),
-                        ),
-                        decoration: BoxDecoration(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  AnimatedCrossFade(
-                      firstChild: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.wb_sunny,
-                              color: Colors.yellow,
-                              size: 88.0,
-                            ),
-                            Padding(
-                              child: Column(children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Max:" +
-                                          tempo["results"]["forecast"][0]["max"]
-                                              .toString() +
-                                          "ºC",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                                    Text(
-                                      " Min:" +
-                                          tempo["results"]["forecast"][0]["min"]
-                                              .toString() +
-                                          "ºC",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  tempo['results']['city'],
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                                Text(
-                                  "R\$${dolar.toStringAsPrecision(3)} um dólar",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                )
-                              ]),
-                              padding: EdgeInsets.only(left: 24),
-                            )
-                          ],
-                        ),
-                      ),
-                      secondChild: Column(children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              pesquisa == null
-                                  ? Text("Pesquisando...",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18))
-                                  : Text("")
-                            ]),
-                        pesquisa != null
-                            ? Text("Achado!",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18))
-                            : Text("")
-                      ]),
-                      crossFadeState: animated
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      duration: Duration(milliseconds: 700)),
-                  Divider(
-                    height: 2.5,
-                  ),
-                  ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(60),
-                          topRight: Radius.circular(60)),
-                      child: RefreshIndicator(
-                        child: pesquisa != null
-                            ? Container(
-                                height: size.height <= 700
-                                    ? size.height * 0.62 + (animated ? 0 : 51)
-                                    : size.height * 0.7 + (animated ? 0 : 70),
-                                color: Colors.white,
-                                padding: EdgeInsets.only(left: 10, right: 10),
-                                child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(25),
-                                        child: Card(
-                                          child: Column(
-                                            children: [
-                                              Stack(
-                                                alignment: AlignmentDirectional
-                                                    .bottomEnd,
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                                children: [
-                                                  Image.file(
-                                                    File(produtoPesquisado[0]
-                                                        ["image"]),
-                                                    filterQuality:
-                                                        FilterQuality.high,
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                  IconButton(
-                                                      icon: Icon(
-                                                        Icons.favorite,
-                                                        color:
-                                                            produtoPesquisado[0]
-                                                                    ["favorite"]
-                                                                ? Colors.green
-                                                                : Colors.white,
-                                                      ),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          produtoPesquisado[0]
-                                                                  ["favorite"] =
-                                                              !produtoPesquisado[
-                                                                      0]
-                                                                  ["favorite"];
-                                                        });
-                                                      }),
-                                                ],
-                                              ),
-                                              ListTile(
-                                                title: Text(
-                                                    "${produtoPesquisado[0]["title"]}"),
-                                                subtitle: Text(
-                                                    "${produtoPesquisado[0]["subtitle"]}"),
-                                              ),
-                                            ],
-                                          ),
-                                        ))))
-                            : Container(
-                                height: 10,
-                                width: 10,
-                                child: construtor(size, produtos, "Que?",
-                                    context, Scaffold.of(context).setState)),
-                        onRefresh: json,
-                      )),
-                ],
-              ),
-            );
-          } else {
-            return SingleChildScrollView(
-                child: Column(children: [
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(40),
-                  child: Container(
-                    child: TextField(
-                      controller: _pesquisa,
-                      onSubmitted: (value) {
-                        search(_pesquisa.text);
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          animated = false;
-                        });
-                        value = _pesquisa.text;
-                        if (value.isEmpty) {
-                          setState(() {
-                            _pesquisa.clear();
-                            animated = true;
-                            pesquisa = null;
-                            produtoPesquisado.clear();
-                          });
-                        }
-                      },
-                      showCursor: true,
-                      strutStyle: StrutStyle(leading: 0.4),
-                      keyboardType: TextInputType.text,
-                      cursorColor: Colors.green[900],
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.green,
-                        ),
-                        suffixIcon: pesquisa != null
-                            ? IconButton(
-                                icon: Icon(
-                                  Icons.clear,
-                                  color: Colors.green,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _pesquisa.clear();
-                                    animated = true;
-                                    pesquisa = null;
-                                    produtoPesquisado.clear();
-                                  });
-                                })
-                            : null,
-                      ),
-                    ),
-                    decoration: BoxDecoration(color: Colors.white),
-                  ),
-                ),
-              ),
-              pesquisa == null
-                  ? Column(children: [
-                      Text(
-                        "Categorias",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontFamily: "Noto Sans"),
-                      ),
-                      Divider(color: Colors.green),
-                      Container(
-                        width: 1000,
-                        height: 200,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                                padding: EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  onTap: () => Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          child: Category(
-                                            category: category[index],
-                                          ),
-                                          type:
-                                              PageTransitionType.bottomToTop)),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Container(
-                                        width: 120,
-                                        color: Colors.white,
-                                        child: Stack(
-                                          alignment: Alignment.bottomLeft,
-                                          children: [
-                                            Image.asset(
-                                              category[index]["image"],
-                                              fit: BoxFit.fill,
-                                              filterQuality: FilterQuality.high,
-                                              height: size.height,
-                                              width: size.width,
-                                            ),
-                                            Padding(
-                                                padding: EdgeInsets.only(
-                                                    bottom: 10, left: 10),
-                                                child: Text(
-                                                  category[index]["name"],
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontFamily: "Noto sans",
-                                                      fontSize: 16),
-                                                ))
-                                          ],
-                                        )),
-                                  ),
-                                ));
-                          },
-                          itemCount: category.length,
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.green,
-                      ),
-                      construtor(
-                          size,
-                          produtos,
-                          "Os principais do mês de outubro",
-                          context,
-                          Scaffold.of(context).setState),
-                      Divider(
-                        color: Colors.green,
-                      ),
-                      construtor(size, produtos, "Os principais do ano",
-                          context, Scaffold.of(context).setState),
-                    ])
-                  : Container(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: FutureBuilder(
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    centerTitle: true,
+                    floating: true,
+                    backgroundColor: Colors.green,
+                    elevation: 0.0,
+                    title: Container(
                       width: 1000,
-                      height: size.height * 0.755,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      child: Product(
-                                        item: produtoPesquisado[index],
-                                      ),
-                                      type: PageTransitionType.bottomToTop)),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: SizedBox(
-                                    width: size.width * 0.5,
-                                    child: Card(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: size.height <= 700
-                                                ? size.height * 0.2
-                                                : size.height * 0.15,
-                                            child: Image.file(
-                                              File(produtoPesquisado[index]
-                                                  ["image"][0]),
-                                              filterQuality: FilterQuality.high,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                          ListTile(
-                                            title: Text(produtoPesquisado[index]
-                                                ["title"]),
-                                            subtitle: Text(
-                                                produtoPesquisado[index]
-                                                    ["subtitle"]),
-                                            trailing: Text(
-                                              "R\$" +
-                                                  produtoPesquisado[index]
-                                                          ["price"]
-                                                      .toString(),
-                                              style: TextStyle(
-                                                  color: Colors.green),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )));
+                      height: 50,
+                      child: TextField(
+                        textInputAction: TextInputAction.search,
+                        controller: _pesquisa,
+                        onSubmitted: (value) {
+                          clearDataSearch(value);
                         },
-                        itemCount: produtoPesquisado.length,
-                      ))
-            ]));
-          }
-        },
-        future: datas(),
+                        onChanged: (value) {
+                          setState(() {
+                            animated = false;
+                          });
+                          value = _pesquisa.text;
+                          clearDataSearch(value);
+                        },
+                        showCursor: true,
+                        strutStyle: StrutStyle(leading: 0.4),
+                        keyboardType: TextInputType.text,
+                        cursorColor: Colors.green[900],
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.green,
+                          ),
+                          suffixIcon: _pesquisa.text.length >= 1
+                              ? IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    color: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    clearDataSearch("");
+                                  })
+                              : null,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40)),
+                    ),
+                  ),
+                  pesquisa == null
+                      ? categorys(category, size)
+                      : itemFounds(produtoPesquisado, size),
+                  sliverList(
+                      productsOrderView.docs, size, "Os principais de outubro"),
+                  sliverList(
+                      productsOrderName.docs, size, "Ordenado pelo Nome"),
+                  sliverList(
+                      productsOrderMinPrice.docs, size, "Os menores preços"),
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+              );
+            }
+          },
+          future: showAllProducts.showAllProducts(),
+        ),
       ),
-      onRefresh: json,
+      onRefresh: refreshProduts,
       color: Colors.green,
     );
   }

@@ -1,18 +1,19 @@
 //---- Packages
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+
+//---- API
+import 'package:agricultura/src/firebase/api_firebase.dart';
+
+//---- Functions
+import 'package:agricultura/src/routes/user/widgets/myAnuncios.dart';
+import 'package:agricultura/src/routes/user/widgets/analytics.dart';
+import 'package:agricultura/src/routes/user/functions/show_modal.dart';
+import 'package:agricultura/src/routes/user/functions/add_photo_profile.dart';
 
 //---- Screens
-import 'package:agricultura/src/auth/login.dart';
-import 'package:agricultura/src/routes/user/Visualizar.dart';
-import 'package:agricultura/src/routes/user/showModal.dart';
-
-//---- Datas
-import 'package:agricultura/src/data/home.dart';
+import 'package:agricultura/src/auth/Login.dart';
 
 class User extends StatefulWidget {
   User({Key key, this.data}) : super(key: key);
@@ -23,9 +24,6 @@ class User extends StatefulWidget {
 
 class _UserState extends State<User> {
   //---- Variables
-  bool localizacao = true;
-
-  List myProduts = [];
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -41,29 +39,7 @@ class _UserState extends State<User> {
         color: Colors.green,
       ));
 
-  //---- Functios
-
-  getMyProduts() async {
-    for (var x = 0; x < produtos.length; x++) {
-      if (produtos[x]["author"] == widget.data["name"]) {
-        setState(() {
-          myProduts.add(produtos[x]);
-        });
-      } else {
-        print("Não é meu");
-      }
-    }
-  }
-
-  Future<File> _getData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return File("${directory.path}/data.json");
-  }
-
-  Future _deleteData() async {
-    final path = await _getData();
-    await path.delete();
-  }
+  var _snack = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -84,13 +60,16 @@ class _UserState extends State<User> {
     } catch (e) {
       print(e);
     }
-    getMyProduts();
+
+    dataUser.showMyProduts(widget.data);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _snack,
       backgroundColor: Colors.green,
       body: SingleChildScrollView(
         child: Column(
@@ -106,26 +85,82 @@ class _UserState extends State<User> {
                         width: 1000,
                         height: 210,
                         color: Colors.white,
-                        child: Column(children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 30),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(200),
-                                child: Image.network(
-                                  "${widget.data["image"]}",
-                                  filterQuality: FilterQuality.high,
-                                  fit: BoxFit.fill,
-                                  height: 160,
-                                )),
-                          ),
-                          Text(
-                            "${widget.data["name"]}",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ]))),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                  padding: widget.data["image"] != 'null'
+                                      ? EdgeInsets.only(top: 30)
+                                      : EdgeInsets.only(top: 50, bottom: 10),
+                                  child: widget.data["image"] != 'null'
+                                      ? ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(200),
+                                          child: Image.network(
+                                            "${widget.data["image"]}",
+                                            filterQuality: FilterQuality.high,
+                                            fit: BoxFit.fill,
+                                            height: 160,
+                                          ))
+                                      : RaisedButton.icon(
+                                          color: Colors.white,
+                                          elevation: 0.0,
+                                          onPressed: () async {
+                                            await showModalBottomSheet(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(40),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    40))),
+                                                context: context,
+                                                builder: (context) {
+                                                  return Column(children: [
+                                                    Divider(),
+                                                    Text(
+                                                      "Olá ${widget.data["name"]}",
+                                                      style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontSize: 18),
+                                                    ),
+                                                    Text(
+                                                      "Adicione uma foto de perfil clicando no botão a baixo.",
+                                                      style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontSize: 14),
+                                                    ),
+                                                    IconButton(
+                                                      icon: Icon(
+                                                          Icons.attach_file,
+                                                          color: Colors.green),
+                                                      onPressed: () async {
+                                                        await addPhotoProfile(
+                                                            _snack,
+                                                            widget.data,
+                                                            context);
+                                                      },
+                                                      tooltip:
+                                                          "Adicionar foto de perfil",
+                                                    )
+                                                  ]);
+                                                });
+                                          },
+                                          icon: Icon(
+                                            Icons.person_add,
+                                            color: Colors.green,
+                                            size: 126,
+                                          ),
+                                          label: Text("Add imagem"))),
+                              Text(
+                                "${widget.data["name"]}",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ]))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -137,11 +172,10 @@ class _UserState extends State<User> {
                         ),
                         onPressed: () async {
                           await showModalConf(
-                              context: context,
-                              localizacao: localizacao,
-                              firebaseAuth: FirebaseAuth.instance,
-                              googleSignIn: _googleSignIn,
-                              deleteData: _deleteData);
+                            context: context,
+                            googleSignIn: _googleSignIn,
+                            myProduts: myProduts,
+                          );
                         }),
                   ],
                 )
@@ -159,7 +193,14 @@ class _UserState extends State<User> {
                     "Sem anúncio",
                     style: TextStyle(color: Colors.white),
                   )
-                : construtor(myProduts),
+                : construtor(myProduts, size),
+            myProduts.length > 1
+                ? Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Analytics(data: myProduts),
+                  )
+                : Text("Anuncie mais produtos para ver o gráfico",
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
             TextButton.icon(
                 onPressed: () async {
                   try {
@@ -167,7 +208,7 @@ class _UserState extends State<User> {
                   } catch (e) {
                     await _googleSignIn.signOut();
                   }
-                  await _deleteData();
+
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Login()));
                 },
@@ -184,67 +225,4 @@ class _UserState extends State<User> {
       ),
     );
   }
-}
-
-Widget construtor(List item) {
-  return Container(
-    width: 1000,
-    height: 200,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-            onLongPress: () async =>
-                await showModal(context: context, item: item, index: index),
-            onTap: () => Navigator.push(
-                  context,
-                  PageTransition(
-                      child: Visualizar(data: item[index]),
-                      type: PageTransitionType.bottomToTop),
-                ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                    width: 170,
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 110,
-                            child: Image.file(
-                              File(item[index]["image"][0]),
-                              fit: BoxFit.fill,
-                              filterQuality: FilterQuality.high,
-                            ),
-                          ),
-                          ListTile(
-                            title: Text(item[index]["title"]),
-                            subtitle: Text(item[index]["subtitle"]),
-                            trailing: Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: Tooltip(
-                                  message: "Vizualizações",
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.remove_red_eye,
-                                        color: Colors.green,
-                                      ),
-                                      Text(
-                                        item[index]["views"].toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ),
-                    ))));
-      },
-      itemCount: item.length,
-    ),
-  );
 }

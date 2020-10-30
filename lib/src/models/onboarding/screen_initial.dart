@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
 //---- Screens
-import 'package:agricultura/src/auth/login.dart';
-import 'package:agricultura/src/models/onboarding/about_user.dart';
+import 'package:agricultura/src/auth/Login.dart';
+import 'package:agricultura/src/models/onboarding/about_developer.dart';
 import 'package:agricultura/src/models/onboarding/about_app.dart';
 
 class Instruction extends StatefulWidget {
@@ -67,8 +67,8 @@ class _InstructionState extends State<Instruction> {
                           color: _page == 1
                               ? Colors.green[100]
                               : Colors.green[300],
-                          width: size.width * 0.05,
-                          height: size.height * 0.015,
+                          width: 20,
+                          height: 10,
                         )),
                   )
                 ],

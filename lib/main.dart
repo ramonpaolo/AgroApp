@@ -1,23 +1,22 @@
 //---- Packages
+import 'package:agricultura/src/firebase/api_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 //---- Screens
 import 'package:agricultura/src/models/onboarding/screen_initial.dart';
 import 'package:agricultura/src/models/Nav.dart';
-import 'package:agricultura/src/models/Splash.dart';
+import 'package:agricultura/src/models/widgets/SplashScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MaterialApp(
     home: Index(),
-    theme: ThemeData(cardColor: Colors.white, fontFamily: "Roboto"),
+    theme: ThemeData(cardColor: Colors.white, fontFamily: "Noto Sans"),
     title: "Agro é tudo",
   ));
 }
@@ -34,17 +33,13 @@ class _IndexState extends State<Index> {
 
   //---- Functions
 
-  Future<File> _getData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return File("${directory.path}/data.json");
-  }
-
   Future _readData() async {
     try {
-      final file = await _getData();
+      final file = await LocalUser().getData();
       setState(() {
         dataUser = jsonDecode(file.readAsStringSync());
       });
+      print(dataUser);
       return dataUser;
     } catch (e) {
       print(e);
