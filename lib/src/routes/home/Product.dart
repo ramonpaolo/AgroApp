@@ -179,7 +179,6 @@ class _ProductState extends State<Product> {
     print("-------- Product.dart---------");
     item = widget.item;
     getImages();
-
     dataUser.setViews(item);
     dataUser.getDataUser();
     super.initState();
@@ -237,7 +236,7 @@ class _ProductState extends State<Product> {
                                   ),
                                   onPressed: () async {
                                     await Share.share(
-                                        item["title"] + ". " + item["subtitle"],
+                                        "Pesquise pelo título: '${item["title"]}'",
                                         subject: "Pesquise por esse produto");
                                   }),
                               IconButton(

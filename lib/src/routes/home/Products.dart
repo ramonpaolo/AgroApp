@@ -69,7 +69,7 @@ class _ProductsState extends State<Products> {
                           CachedNetworkImage(
                             imageUrl: widget.produtsOfCategory[index]["image"]
                                 [0],
-                            filterQuality: FilterQuality.low,
+                            filterQuality: FilterQuality.high,
                             height: size.height * 0.2,
                             imageBuilder: (context, imageProvider) => Container(
                               decoration: BoxDecoration(

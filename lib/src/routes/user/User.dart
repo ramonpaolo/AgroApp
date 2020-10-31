@@ -117,34 +117,42 @@ class _UserState extends State<User> {
                                                                     40))),
                                                 context: context,
                                                 builder: (context) {
-                                                  return Column(children: [
-                                                    Divider(),
-                                                    Text(
-                                                      "Olá ${widget.data["name"]}",
-                                                      style: TextStyle(
-                                                          color: Colors.green,
-                                                          fontSize: 18),
-                                                    ),
-                                                    Text(
-                                                      "Adicione uma foto de perfil clicando no botão a baixo.",
-                                                      style: TextStyle(
-                                                          color: Colors.green,
-                                                          fontSize: 14),
-                                                    ),
-                                                    IconButton(
-                                                      icon: Icon(
-                                                          Icons.attach_file,
-                                                          color: Colors.green),
-                                                      onPressed: () async {
-                                                        await addPhotoProfile(
-                                                            _snack,
-                                                            widget.data,
-                                                            context);
-                                                      },
-                                                      tooltip:
-                                                          "Adicionar foto de perfil",
-                                                    )
-                                                  ]);
+                                                  return Container(
+                                                      height:
+                                                          size.height * 0.16,
+                                                      child: Column(children: [
+                                                        Divider(
+                                                            color:
+                                                                Colors.white),
+                                                        Text(
+                                                          "Olá ${widget.data["name"]}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.green,
+                                                              fontSize: 18),
+                                                        ),
+                                                        Text(
+                                                          "Adicione uma foto de perfil clicando no botão a baixo.",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.green,
+                                                              fontSize: 14),
+                                                        ),
+                                                        IconButton(
+                                                          icon: Icon(
+                                                              Icons.attach_file,
+                                                              color:
+                                                                  Colors.green),
+                                                          onPressed: () async {
+                                                            await addPhotoProfile(
+                                                                _snack,
+                                                                widget.data,
+                                                                context);
+                                                          },
+                                                          tooltip:
+                                                              "Adicionar foto de perfil",
+                                                        )
+                                                      ]));
                                                 });
                                           },
                                           icon: Icon(

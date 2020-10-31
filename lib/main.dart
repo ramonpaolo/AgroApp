@@ -1,5 +1,4 @@
 //---- Packages
-import 'package:agricultura/src/firebase/api_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +9,9 @@ import 'dart:convert';
 import 'package:agricultura/src/models/onboarding/screen_initial.dart';
 import 'package:agricultura/src/models/Nav.dart';
 import 'package:agricultura/src/models/widgets/SplashScreen.dart';
+
+//---- API
+import 'package:agricultura/src/firebase/api_firebase.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

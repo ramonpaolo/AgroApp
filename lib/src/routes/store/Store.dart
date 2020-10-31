@@ -60,7 +60,7 @@ class _StoreState extends State<Store> {
       if (search == await productsOrderMinPrice.docs[x]["title"]) {
         print("'Chat.dart': Esse mesmo: $search");
         setState(() {
-          produtoPesquisado.add(productsOrderMinPrice.docs[x]);
+          produtoPesquisado.add(productsOrderMinPrice.docs[x].data());
           pesquisa = true;
         });
         return produtoPesquisado;

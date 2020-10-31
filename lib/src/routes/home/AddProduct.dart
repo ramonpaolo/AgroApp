@@ -46,8 +46,8 @@ class _AddContentState extends State<AddContent> {
   Future imagem() async {
     var imagePicker = await ImagePicker.platform.pickImage(
         source: ImageSource.camera,
-        imageQuality: 80,
-        maxHeight: 250,
+        imageQuality: 100,
+        maxHeight: 1000,
         maxWidth: 1000);
     setState(() {
       image = imagePicker.path;
@@ -58,8 +58,8 @@ class _AddContentState extends State<AddContent> {
   Future galery() async {
     var imagePicker = await ImagePicker.platform.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 80,
-        maxHeight: 250,
+        imageQuality: 100,
+        maxHeight: 1000,
         maxWidth: 1000);
     setState(() {
       image = imagePicker.path;

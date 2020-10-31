@@ -26,6 +26,8 @@ OrderProductSortPrice orderDataProductsSortPrice = OrderProductSortPrice();
 OrderDataProductsSortName orderDataProductsSortName =
     OrderDataProductsSortName();
 
+Object order;
+
 QuerySnapshot productsOrderView;
 QuerySnapshot productsOrderName;
 QuerySnapshot productsOrderMinPrice;
@@ -116,12 +118,25 @@ class DatasUser {
     await getDataUser();
   }
 
-  Future setViews(QueryDocumentSnapshot product) async {
-    var dataProduct = product.data();
+  Future setViews(var product) async {
     try {
-      await product.reference.update({'views': (dataProduct['views'] + 1)});
+      await product.update("views", (value) => product["views"] + 1);
+      for (var x = 0; x < productsOrderName.size; x++) {
+        if (product["id"] == productsOrderName.docs[x]["id"]) {
+          await firebaseFirestore
+              .collection("products")
+              .doc(productsOrderName.docs[x].id)
+              .update({"views": await product["views"] + 1});
+        }
+      }
     } catch (e) {
-      print("Error update views: " + e);
+      try {
+        var dataProduct = product.data();
+        await product.reference
+            .update({'views': (await dataProduct['views'] + 1)});
+      } catch (e) {
+        print("Error update views: $e");
+      }
     }
   }
 
@@ -202,6 +217,59 @@ class AddProduct {
 
   Future addProduct(var product) async {
     await firebaseFirestore.collection("products").add(product);
+  }
+}
+
+//---- Class GetProductsCategory
+
+class GetProductsCategory {
+  QuerySnapshot produtos;
+  List<Map> produtosCategoriaEscolhida = [];
+
+  Future getProducts(String category, Object order) async {
+    produtos = await firebaseFirestore.collection("products").limit(10).get();
+    if (order.toString() == "nome") {
+      await orderByName(category);
+    } else if (order.toString() == "preco") {
+      await orderByPrice(category);
+    } else {
+      for (var x = 0; x < produtos.size; x++) {
+        if (category == produtos.docs[x]["category"]) {
+          produtosCategoriaEscolhida.add(produtos.docs[x].data());
+        }
+      }
+    }
+
+    return produtosCategoriaEscolhida;
+  }
+
+  Future orderByName(String category) async {
+    produtos = await firebaseFirestore
+        .collection("products")
+        .orderBy("title", descending: false)
+        .limit(10)
+        .get();
+
+    for (var x = 0; x < produtos.size; x++) {
+      if (category == produtos.docs[x]["category"]) {
+        produtosCategoriaEscolhida.add(produtos.docs[x].data());
+      }
+    }
+    return produtosCategoriaEscolhida;
+  }
+
+  Future orderByPrice(String category) async {
+    produtos = await firebaseFirestore
+        .collection("products")
+        .orderBy("price", descending: false)
+        .limit(15)
+        .get();
+    for (var x = 0; x < produtos.size; x++) {
+      if (category == produtos.docs[x]["category"]) {
+        produtosCategoriaEscolhida.add(produtos.docs[x].data());
+      }
+    }
+    return produtosCategoriaEscolhida;
   }
 }
 
