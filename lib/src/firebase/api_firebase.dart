@@ -36,7 +36,7 @@ ShowAllProducts showAllProducts = ShowAllProducts();
 
 var user;
 
-//---- Class
+//---- Class LocalUser
 
 class LocalUser {
   Future<File> getData() async {
@@ -50,12 +50,13 @@ class LocalUser {
     return user;
   }
 
-  Future showLocalUser() async {
-    print(await LocalUser().readData());
+  Future deleteData() async {
+    final directory = await getData();
+    await directory.delete();
   }
 }
 
-//---- Class User
+//---- Class DatasUser
 
 class DatasUser {
   Future getDataUser() async {
@@ -66,11 +67,11 @@ class DatasUser {
         .get();
   }
 
-  Future setCarShop(int id) async {
+  Future setCarShop(int idProduct) async {
     print("setCarShop");
     List quantidadeProdutosNoCarrinho = user["car_shop"];
 
-    quantidadeProdutosNoCarrinho.add(id);
+    quantidadeProdutosNoCarrinho.add(idProduct);
 
     await firebaseFirestore
         .collection("users")
@@ -79,11 +80,11 @@ class DatasUser {
     await getDataUser();
   }
 
-  Future setFavorites(int id) async {
+  Future setFavorites(int idProduct) async {
     print("setFavorites");
     List quantidadeProdutosEmFavorites = user["favorites"];
 
-    quantidadeProdutosEmFavorites.add(id);
+    quantidadeProdutosEmFavorites.add(idProduct);
 
     await firebaseFirestore
         .collection("users")
@@ -92,11 +93,12 @@ class DatasUser {
     await getDataUser();
   }
 
-  Future removeFavorites(int id) async {
+  Future removeFavorites(int idProduct) async {
     print("removefavorites");
     List quantidadeProdutosEmFavorites = user["favorites"];
 
-    quantidadeProdutosEmFavorites.removeWhere((element) => element["id"] == id);
+    quantidadeProdutosEmFavorites
+        .removeWhere((element) => element["id"] == idProduct);
 
     await firebaseFirestore
         .collection("users")
@@ -105,11 +107,11 @@ class DatasUser {
     await getDataUser();
   }
 
-  Future removeCarShop(int id) async {
+  Future removeCarShop(int idProduct) async {
     print("removeCarShop");
     List quantidadeProdutosEmCarrinho = user["car_shop"];
 
-    quantidadeProdutosEmCarrinho.removeWhere((element) => element == id);
+    quantidadeProdutosEmCarrinho.removeWhere((element) => element == idProduct);
 
     await firebaseFirestore
         .collection("users")
@@ -141,7 +143,6 @@ class DatasUser {
   }
 
   Future updateProduct(String idProduct, Map dataProduct) async {
-    print("idProdut: $idProduct");
     try {
       return await firebaseFirestore
           .collection("products")
@@ -179,15 +180,9 @@ class DatasUser {
   }
 }
 
-class AddProduct {
-  Future showPhoto({String path}) async {
-    firebase_storage.ListResult result =
-        await firebase_storage.FirebaseStorage.instance.ref(path).listAll();
-    result.items.forEach((firebase_storage.Reference ref) {
-      print(ref);
-    });
-  }
+//---- Class AddProduct
 
+class AddProduct {
   Future addPhoto(List file, String idProduct) async {
     try {
       for (var x = 0; x <= file.length; x++) {
@@ -229,9 +224,9 @@ class GetProductsCategory {
   Future getProducts(String category, Object order) async {
     produtos = await firebaseFirestore.collection("products").limit(10).get();
     if (order.toString() == "nome") {
-      await orderByName(category);
+      await orderByName(category: category);
     } else if (order.toString() == "preco") {
-      await orderByPrice(category);
+      await orderByPrice(category: category);
     } else {
       for (var x = 0; x < produtos.size; x++) {
         if (category == produtos.docs[x]["category"]) {
@@ -243,7 +238,7 @@ class GetProductsCategory {
     return produtosCategoriaEscolhida;
   }
 
-  Future orderByName(String category) async {
+  Future orderByName({String category}) async {
     produtos = await firebaseFirestore
         .collection("products")
         .orderBy("title", descending: false)
@@ -258,7 +253,7 @@ class GetProductsCategory {
     return produtosCategoriaEscolhida;
   }
 
-  Future orderByPrice(String category) async {
+  Future orderByPrice({String category}) async {
     produtos = await firebaseFirestore
         .collection("products")
         .orderBy("price", descending: false)
@@ -330,7 +325,6 @@ class ShowAllProducts {
       productsOrderView,
       productsOrderMinPrice,
       productsOrderName,
-      linkPhotos,
     };
   }
 }

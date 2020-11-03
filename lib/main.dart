@@ -6,9 +6,9 @@ import 'dart:async';
 import 'dart:convert';
 
 //---- Screens
-import 'package:agricultura/src/models/onboarding/screen_initial.dart';
-import 'package:agricultura/src/models/Nav.dart';
-import 'package:agricultura/src/models/widgets/SplashScreen.dart';
+import 'package:agricultura/src/pages/onboarding/screen_initial.dart';
+import 'package:agricultura/src/pages/Nav.dart';
+import 'package:agricultura/src/pages/widgets/SplashScreen.dart';
 
 //---- API
 import 'package:agricultura/src/firebase/api_firebase.dart';

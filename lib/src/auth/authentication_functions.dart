@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:agricultura/src/firebase/api_firebase.dart';
 
 //---- Screens
-import 'package:agricultura/src/models/Nav.dart';
+import 'package:agricultura/src/pages/Nav.dart';
 
 class AuthenticationFunctions {
   //---- Variables
@@ -25,8 +25,7 @@ class AuthenticationFunctions {
     ],
   );
 
-  String name;
-  String textShowDialog;
+  String nameUser;
 
   TextButton actionButtonShowDialog;
 
@@ -34,14 +33,8 @@ class AuthenticationFunctions {
 
   Future<File> getData() async {
     final directory = await getApplicationDocumentsDirectory();
-    var file = File("${directory.path}/data.json");
-    return file;
+    return File("${directory.path}/data.json");
   }
-
-  /*Future deleteData() async {
-    final path = await getData();
-    await path.delete();
-  }*/
 
   Future saveData(
       {String name,
@@ -209,7 +202,7 @@ class AuthenticationFunctions {
             auth: null);
       } catch (e) {
         await saveData(
-            name: name,
+            name: nameUser,
             email: email,
             password: senha,
             googleSignIn: null,
@@ -263,7 +256,7 @@ class AuthenticationFunctions {
           email: _googleSignIn.currentUser.email,
           senha: _googleSignIn.currentUser.email);
     } catch (e) {
-      print("Error 'loginGoogle': " + e.toString());
+      print("Error 'loginGoogle': $e");
     }
   }
 }

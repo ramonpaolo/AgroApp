@@ -58,6 +58,11 @@ Future deleteUserFirebase(
     print("Não possível apagar usuário");
   }
   try {
+    await LocalUser().deleteData();
+  } catch (e) {
+    print("Não foi possível apagar local user: $e");
+  }
+  try {
     await googleSignIn.disconnect();
   } catch (e) {
     print("desconectar do google não deu certo");
