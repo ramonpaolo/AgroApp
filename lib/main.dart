@@ -18,7 +18,11 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MaterialApp(
     home: Index(),
-    theme: ThemeData(cardColor: Colors.white, fontFamily: "Noto Sans"),
+    theme: ThemeData(
+      cardColor: Colors.white,
+      fontFamily: "Noto Sans",
+      primarySwatch: Colors.green,
+    ),
     title: "Agro é tudo",
   ));
 }

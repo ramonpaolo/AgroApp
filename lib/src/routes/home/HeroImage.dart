@@ -22,6 +22,7 @@ class PageHero extends StatelessWidget {
         ),
         action: SnackBarAction(
             label: "Abrir imagem",
+            textColor: Colors.white,
             onPressed: () async {
               try {
                 await ImageDownloader.open(
@@ -43,7 +44,8 @@ class PageHero extends StatelessWidget {
             tag: image,
             child: Column(children: [
               Padding(
-                  padding: EdgeInsets.only(right: size.width * 0.8, top: 30),
+                  padding: EdgeInsets.only(
+                      right: size.width * 0.8, top: 30, bottom: 8),
                   child: IconButton(
                     icon: Icon(
                       Icons.arrow_back,
@@ -52,22 +54,20 @@ class PageHero extends StatelessWidget {
                     ),
                     onPressed: () => Navigator.pop(context),
                   )),
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      image,
-                      filterQuality: FilterQuality.high,
-                      fit: BoxFit.contain,
-                      semanticLabel: "Imagem",
-                      loadingBuilder: (context, child, loadingProgress) {
-                        return loadingProgress == null
-                            ? child
-                            : LinearProgressIndicator();
-                      },
-                    )),
-              ),
+              Container(
+                  width: size.width,
+                  height: size.height * 0.8,
+                  child: Image.network(
+                    image,
+                    filterQuality: FilterQuality.high,
+                    fit: BoxFit.cover,
+                    semanticLabel: "Imagem",
+                    loadingBuilder: (context, child, loadingProgress) {
+                      return loadingProgress == null
+                          ? child
+                          : CircularProgressIndicator();
+                    },
+                  )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -78,7 +78,7 @@ class PageHero extends StatelessWidget {
                         await image,
                         destination:
                             AndroidDestinationType.custom(directory: "Agro")
-                              ..subDirectory("$title.png"),
+                              ..subDirectory("${title}.png"),
                       );
                       snackBar("Download feito na pasta 'Agro'");
                     },

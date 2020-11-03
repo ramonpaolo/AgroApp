@@ -1,10 +1,12 @@
 //---- Packages
-import 'package:agricultura/src/firebase/api_firebase.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 //---- Datas
 import 'package:agricultura/src/data/category.dart';
+
+//---- API
+import 'package:agricultura/src/firebase/api_firebase.dart';
 
 //---- Screens
 import 'package:agricultura/src/routes/home/functions/categorys.dart';
@@ -150,7 +152,7 @@ class _HomeState extends State<Home> {
             } else {
               return Center(
                 child: CircularProgressIndicator(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.green[100],
                 ),
               );
             }
