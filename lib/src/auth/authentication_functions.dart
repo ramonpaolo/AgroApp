@@ -200,12 +200,21 @@ class AuthenticationFunctions {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: senha);
 
-      await saveData(
-          name: _googleSignIn.currentUser.displayName,
-          email: _googleSignIn.currentUser.email,
-          password: _googleSignIn.currentUser.email,
-          googleSignIn: null,
-          auth: auth);
+      try {
+        await saveData(
+            name: _googleSignIn.currentUser.displayName,
+            email: _googleSignIn.currentUser.email,
+            password: _googleSignIn.currentUser.email,
+            googleSignIn: _googleSignIn,
+            auth: null);
+      } catch (e) {
+        await saveData(
+            name: name,
+            email: email,
+            password: senha,
+            googleSignIn: null,
+            auth: auth);
+      }
 
       await Navigator.pushAndRemoveUntil(
           context,
