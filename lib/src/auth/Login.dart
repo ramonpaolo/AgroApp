@@ -146,7 +146,7 @@ class _LoginState extends State<Login> {
               borderRadius: BorderRadius.circular(40),
               child: RaisedButton(
                 onPressed: () async {
-                  await AuthenticationFunctions().loginGoogle(context);
+                  await authenticationFunctions.loginGoogle(context);
                 },
                 child: Container(
                   width: 130,

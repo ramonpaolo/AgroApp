@@ -43,12 +43,17 @@ class AuthenticationFunctions {
     await path.delete();
   }*/
 
-  Future saveData(name, email, password, _googleSignIn, auth) async {
+  Future saveData(
+      {String name,
+      String email,
+      String password,
+      GoogleSignIn googleSignIn,
+      FirebaseAuth auth}) async {
     Map dataUser;
 
     final file = await getData();
 
-    if (_googleSignIn == null) {
+    if (googleSignIn == null) {
       dataUser = {
         'email': "$email",
         'password': "$password",
@@ -62,8 +67,8 @@ class AuthenticationFunctions {
       dataUser = {
         'email': "$email",
         'password': "$password",
-        'name': "${_googleSignIn.currentUser.displayName}",
-        'image': "${_googleSignIn.currentUser.photoUrl}",
+        'name': "${googleSignIn.currentUser.displayName}",
+        'image': "${googleSignIn.currentUser.photoUrl}",
         'screen': "true",
         "car_shop": [],
         "favorites": [],
@@ -94,7 +99,12 @@ class AuthenticationFunctions {
 
       await userr.sendEmailVerification();
 
-      await saveData(name, email, senha, null, userr.photoURL);
+      await saveData(
+          name: name,
+          email: email,
+          password: senha,
+          googleSignIn: null,
+          auth: auth);
 
       var user = await LocalUser().readData();
 
@@ -153,16 +163,16 @@ class AuthenticationFunctions {
 
       await auth.createUserWithEmailAndPassword(
           email: _googleSignIn.currentUser.email,
-          password: _googleSignIn.currentUser.displayName);
+          password: _googleSignIn.currentUser.email);
 
       await FirebaseAuth.instance.currentUser.sendEmailVerification();
 
       await saveData(
-          _googleSignIn.currentUser.displayName,
-          _googleSignIn.currentUser.email,
-          _googleSignIn.currentUser.displayName,
-          _googleSignIn,
-          null);
+          name: _googleSignIn.currentUser.displayName,
+          email: _googleSignIn.currentUser.email,
+          password: _googleSignIn.currentUser.email,
+          googleSignIn: _googleSignIn,
+          auth: null);
 
       user = await LocalUser().readData();
 
@@ -190,7 +200,12 @@ class AuthenticationFunctions {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: senha);
 
-      await saveData(name, email, email, null, auth);
+      await saveData(
+          name: _googleSignIn.currentUser.displayName,
+          email: _googleSignIn.currentUser.email,
+          password: _googleSignIn.currentUser.email,
+          googleSignIn: null,
+          auth: auth);
 
       await Navigator.pushAndRemoveUntil(
           context,
@@ -229,16 +244,15 @@ class AuthenticationFunctions {
       await _googleSignIn.signIn();
 
       await saveData(
-          _googleSignIn.currentUser.displayName,
-          _googleSignIn.currentUser.email,
-          _googleSignIn.currentUser.email,
-          _googleSignIn,
-          null);
-
-      await Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop),
-          (route) => false);
+          name: _googleSignIn.currentUser.displayName,
+          email: _googleSignIn.currentUser.email,
+          password: _googleSignIn.currentUser.email,
+          googleSignIn: _googleSignIn,
+          auth: null);
+      await loginEmailSenha(
+          context: context,
+          email: _googleSignIn.currentUser.email,
+          senha: _googleSignIn.currentUser.email);
     } catch (e) {
       print("Error 'loginGoogle': " + e.toString());
     }
