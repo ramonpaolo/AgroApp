@@ -1,5 +1,6 @@
 //---- Packages
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:page_transition/page_transition.dart';
@@ -25,11 +26,19 @@ class AuthenticationFunctions {
     ],
   );
 
+  DocumentSnapshot dataUserr;
+
   String nameUser;
 
   TextButton actionButtonShowDialog;
 
   //---- Functions
+  Future searchUser() async {
+    dataUserr = await firebaseFirestore
+        .collection("users")
+        .doc(auth.currentUser.uid)
+        .get();
+  }
 
   Future<File> getData() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -42,70 +51,39 @@ class AuthenticationFunctions {
       String password,
       GoogleSignIn googleSignIn,
       FirebaseAuth auth}) async {
-    Map dataUser;
-
     final file = await getData();
 
-    if (googleSignIn == null) {
-      dataUser = {
-        'email': "$email",
-        'password': "$password",
-        'name': "$name",
-        'image': "$auth",
-        'screen': "true",
-        "car_shop": [],
-        "favorites": [],
-      };
-    } else if (auth == null) {
-      dataUser = {
-        'email': "$email",
-        'password': "$password",
-        'name': "${googleSignIn.currentUser.displayName}",
-        'image': "${googleSignIn.currentUser.photoUrl}",
-        'screen': "true",
-        "car_shop": [],
-        "favorites": [],
-      };
-    } else {
-      dataUser = {
-        'email': "$email",
-        'password': "$password",
-        'name': "$name",
-        'image': "null",
-        'screen': "true",
-        "car_shop": [],
-        "favorites": [],
-      };
-    }
-    return await file.writeAsString(jsonEncode(dataUser));
+    print("Dado do usuário: ${dataUserr.data()}");
+
+    await file.writeAsString(jsonEncode(dataUserr.data()));
   }
 
   //------------------------- CADASTRO.DART -------------------------
 
   Future cadastroEmailSenha(
       {String email, String senha, String name, BuildContext context}) async {
-    print("Email: $email. Senha: $senha. Name: $name.");
     try {
       await auth.createUserWithEmailAndPassword(email: email, password: senha);
+
+      await dataUser.addUser({
+        "car_shop": [],
+        "favorites": [],
+        "image": auth.currentUser.photoURL == null
+            ? null
+            : auth.currentUser.photoURL,
+        "email": email,
+        "name": name,
+        "password": senha,
+        "screen": "true"
+      });
+
+      await searchUser();
+
+      await saveData();
 
       User userr = FirebaseAuth.instance.currentUser;
 
       await userr.sendEmailVerification();
-
-      await saveData(
-          name: name,
-          email: email,
-          password: senha,
-          googleSignIn: null,
-          auth: auth);
-
-      var user = await LocalUser().readData();
-
-      try {
-        await dataUser.addUser(user);
-      } catch (e) {
-        print("Error in 'cadastroEmailSenha': $e");
-      }
 
       await showDialog(
           context: (context),
@@ -146,7 +124,7 @@ class AuthenticationFunctions {
             ]));
       }
     } catch (e) {
-      print("Error 'cadastroEmailSenha': " + e.toString());
+      print("Error 'cadastroEmailSenha': $e");
     }
   }
 
@@ -154,31 +132,11 @@ class AuthenticationFunctions {
     try {
       await _googleSignIn.signIn();
 
-      await auth.createUserWithEmailAndPassword(
+      await cadastroEmailSenha(
           email: _googleSignIn.currentUser.email,
-          password: _googleSignIn.currentUser.email);
-
-      await FirebaseAuth.instance.currentUser.sendEmailVerification();
-
-      await saveData(
+          senha: _googleSignIn.currentUser.email,
           name: _googleSignIn.currentUser.displayName,
-          email: _googleSignIn.currentUser.email,
-          password: _googleSignIn.currentUser.email,
-          googleSignIn: _googleSignIn,
-          auth: null);
-
-      user = await LocalUser().readData();
-
-      try {
-        await dataUser.addUser(user);
-      } catch (e) {
-        print("Error in addUser in Firestore: $e");
-      }
-
-      await Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop),
-          (route) => false);
+          context: context);
     } catch (e) {
       print("Error in 'cadastroGoogle': $e");
     }
@@ -188,26 +146,12 @@ class AuthenticationFunctions {
 
   Future loginEmailSenha(
       {String email, String senha, BuildContext context}) async {
-    print("Email $email. Senha $senha.");
-
     try {
       await auth.signInWithEmailAndPassword(email: email, password: senha);
 
-      try {
-        await saveData(
-            name: _googleSignIn.currentUser.displayName,
-            email: _googleSignIn.currentUser.email,
-            password: _googleSignIn.currentUser.email,
-            googleSignIn: _googleSignIn,
-            auth: null);
-      } catch (e) {
-        await saveData(
-            name: nameUser,
-            email: email,
-            password: senha,
-            googleSignIn: null,
-            auth: auth);
-      }
+      await searchUser();
+
+      await saveData();
 
       await Navigator.pushAndRemoveUntil(
           context,
@@ -245,12 +189,6 @@ class AuthenticationFunctions {
     try {
       await _googleSignIn.signIn();
 
-      await saveData(
-          name: _googleSignIn.currentUser.displayName,
-          email: _googleSignIn.currentUser.email,
-          password: _googleSignIn.currentUser.email,
-          googleSignIn: _googleSignIn,
-          auth: null);
       await loginEmailSenha(
           context: context,
           email: _googleSignIn.currentUser.email,

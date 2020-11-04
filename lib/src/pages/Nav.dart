@@ -31,8 +31,7 @@ class _NavState extends State<Nav> {
 
   Future _setData() async {
     try {
-      final document = await localUser.readData();
-      data = await document;
+      data = await localUser.readData();
       print(data);
       return data;
     } catch (e) {
@@ -43,7 +42,6 @@ class _NavState extends State<Nav> {
 
   setScreen(index) {
     try {
-      print(data["email"]);
       if (data["email"] == null) {
         switch (index) {
           case 0:
