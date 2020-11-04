@@ -89,10 +89,10 @@ class _UserState extends State<User> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                  padding: widget.data["image"] != 'null'
+                                  padding: widget.data["image"] != null
                                       ? EdgeInsets.only(top: 30)
                                       : EdgeInsets.only(top: 50, bottom: 10),
-                                  child: widget.data["image"] != 'null'
+                                  child: widget.data["image"] != null
                                       ? ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(200),
@@ -213,10 +213,11 @@ class _UserState extends State<User> {
                 onPressed: () async {
                   try {
                     await FirebaseAuth.instance.signOut();
+                    await LocalUser().deleteData();
                   } catch (e) {
+                    await LocalUser().deleteData();
                     await _googleSignIn.signOut();
                   }
-
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Login()));
                 },
