@@ -58,7 +58,8 @@ Widget construtor(List item, Size size) {
                               subtitle: Text("${item[index]["subtitle"]}"),
                               trailing: Column(
                                 children: [
-                                  Text("R\$${item[index]["price"]}",
+                                  Text(
+                                      "R\$${item[index]["price"].toStringAsFixed(3)}",
                                       style: TextStyle(
                                           fontSize: 12, color: Colors.green)),
                                   Tooltip(
