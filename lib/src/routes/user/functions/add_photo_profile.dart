@@ -1,5 +1,7 @@
 //---- Packages
+import 'dart:convert';
 import 'dart:io';
+import 'package:agricultura/src/firebase/api_firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,6 +26,20 @@ Future addPhotoProfile(var _snack, dataUser, BuildContext context) async {
         .update({
       "image": await directoryImageProfile.getDownloadURL(),
     });
+
+    final file = await LocalUser().getData();
+    final user = await LocalUser().readData();
+    final userUpdate = {
+      "car_shop": user["car_shop"],
+      "favorites": user["favorites"],
+      "image": await directoryImageProfile.getDownloadURL(),
+      "email": user["email"],
+      "name": user["name"],
+      "password": user["password"],
+      "screen": "true"
+    };
+    file.writeAsStringSync(jsonEncode(userUpdate));
+
     Navigator.pop(context);
     _snack.currentState.showSnackBar(SnackBar(
       content: Text(
