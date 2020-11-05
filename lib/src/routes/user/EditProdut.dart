@@ -112,6 +112,7 @@ class _EditProdutState extends State<EditProdut> {
         },
         child: Text("Att", style: TextStyle(color: Colors.green)),
         backgroundColor: Colors.white,
+        elevation: 0.0,
       ),
       backgroundColor: Colors.green,
       body: SingleChildScrollView(
