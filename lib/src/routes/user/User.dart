@@ -12,9 +12,6 @@ import 'package:agricultura/src/routes/user/widgets/analytics.dart';
 import 'package:agricultura/src/routes/user/functions/show_modal.dart';
 import 'package:agricultura/src/routes/user/functions/add_photo_profile.dart';
 
-//---- Screens
-import 'package:agricultura/src/auth/Login.dart';
-
 class User extends StatefulWidget {
   User({Key key, this.data}) : super(key: key);
   final data;
@@ -180,10 +177,10 @@ class _UserState extends State<User> {
                         ),
                         onPressed: () async {
                           await showModalConf(
-                            context: context,
-                            googleSignIn: _googleSignIn,
-                            myProduts: myProduts,
-                          );
+                              context: context,
+                              googleSignIn: _googleSignIn,
+                              myProduts: myProduts,
+                              dataUser: widget.data);
                         }),
                   ],
                 )
@@ -209,26 +206,6 @@ class _UserState extends State<User> {
                   )
                 : Text("Anuncie mais produtos para ver o gráfico",
                     style: TextStyle(color: Colors.white, fontSize: 16)),
-            TextButton.icon(
-                onPressed: () async {
-                  try {
-                    await FirebaseAuth.instance.signOut();
-                    await LocalUser().deleteData();
-                  } catch (e) {
-                    await LocalUser().deleteData();
-                    await _googleSignIn.signOut();
-                  }
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Login()));
-                },
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.white,
-                ),
-                label: Text(
-                  "Logout",
-                  style: TextStyle(color: Colors.white),
-                ))
           ],
         ),
       ),
