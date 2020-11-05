@@ -1,5 +1,6 @@
 //---- Packages
 import 'package:agricultura/src/routes/home/Product.dart';
+import 'package:agricultura/src/routes/store/functions/buy_products.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,7 +30,7 @@ class _StoreState extends State<Store> {
 
   TextEditingController _searchController = TextEditingController();
 
-  var key = GlobalKey<ScaffoldState>();
+  var _snack = GlobalKey<ScaffoldState>();
 
   //---- Functions
 
@@ -86,6 +87,7 @@ class _StoreState extends State<Store> {
   @override
   void initState() {
     print("---------------------- Store.dart-------------");
+
     super.initState();
   }
 
@@ -95,7 +97,7 @@ class _StoreState extends State<Store> {
     setSizeScreen(size);
     return Scaffold(
         backgroundColor: Colors.green,
-        key: key,
+        key: _snack,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -240,7 +242,7 @@ class _StoreState extends State<Store> {
                                           itemBuilder: (context, index) {
                                             return Dismissible(
                                               onDismissed: (direction) {
-                                                key.currentState
+                                                _snack.currentState
                                                     .showSnackBar(SnackBar(
                                                   content: Text(
                                                     "Excluido o produto: ${produtoPesquisado[index]["title"]}",
@@ -315,7 +317,7 @@ class _StoreState extends State<Store> {
                                                   DatasUser().removeCarShop(
                                                       await produtosNoCarrinho[
                                                           index]["id"]);
-                                                  key.currentState
+                                                  _snack.currentState
                                                       .showSnackBar(SnackBar(
                                                     content: Text(
                                                       "Removido de carrinho o produto: ${produtosNoCarrinho[index]["title"]}",
@@ -408,7 +410,10 @@ class _StoreState extends State<Store> {
                                       child: RaisedButton(
                                         splashColor: Colors.white,
                                         onPressed: () async {
-                                          await showModal(context);
+                                          await showModal(
+                                            context: context,
+                                            products: produtosNoCarrinho,
+                                          );
                                         },
                                         color: Colors.green,
                                         child: Text(
@@ -417,7 +422,7 @@ class _StoreState extends State<Store> {
                                               color: Colors.white,
                                               fontSize: 18),
                                         ),
-                                      ))),
+                                      )))
                             ])));
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
