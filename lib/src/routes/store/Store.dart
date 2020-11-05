@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agricultura/src/firebase/api_firebase.dart';
 
 //----Screens
-import 'package:agricultura/src/routes/store/showModal.dart';
+import 'package:agricultura/src/routes/store/widgets/showModal.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Store extends StatefulWidget {
@@ -213,7 +213,8 @@ class _StoreState extends State<Store> {
               FutureBuilder(
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return ClipRRect(
+                    return RefreshIndicator(
+                      child: ClipRRect(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(60),
                             topRight: Radius.circular(60)),
@@ -423,7 +424,11 @@ class _StoreState extends State<Store> {
                                               fontSize: 18),
                                         ),
                                       )))
-                            ])));
+                            ])),
+                      ),
+                      onRefresh: () async =>
+                          await quantidadeProdutosNoCarrinho(),
+                    );
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(
