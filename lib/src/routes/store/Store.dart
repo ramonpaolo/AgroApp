@@ -22,10 +22,11 @@ class _StoreState extends State<Store> {
   bool animated = true;
   bool pesquisa = false;
 
-  double height = 76.0;
+  double height = 0.0;
+  DocumentSnapshot user;
 
   List produtosNoCarrinho = [];
-  List produtoPesquisado;
+  List produtoPesquisado = [];
 
   TextEditingController _searchController = TextEditingController();
 
@@ -34,56 +35,65 @@ class _StoreState extends State<Store> {
   //---- Functions
 
   Future quantidadeProdutosNoCarrinho() async {
-    setState(() {
-      produtosNoCarrinho.clear();
-    });
-
-    DocumentSnapshot user;
+    produtosNoCarrinho.clear();
 
     user = await dataUser.getDataUser();
-
-    print("car_shop: ${await user['car_shop']}");
 
     for (var x = 0; x < productsOrderView.docs.length; x++) {
       for (var y = 0; y < await user['car_shop'].length; y++) {
         if (await user['car_shop'][y] ==
             await productsOrderView.docs[x]["id"]) {
-          produtosNoCarrinho.add(productsOrderView.docs[x]);
+          produtosNoCarrinho.add(productsOrderView.docs[x].data());
+        }
+      }
+    }
+    if (produtosNoCarrinho.length > user["car_shop"].length) {
+      for (var x = 0; x < produtosNoCarrinho.length; x++) {
+        if (user["car_shop"].length > x) {
+          produtosNoCarrinho.removeAt(produtosNoCarrinho.length - 1);
         }
       }
     }
     return produtosNoCarrinho;
   }
 
-  Future search(search) async {
-    for (var x = 0; x < productsOrderMinPrice.docs.length; x++) {
-      if (search == await productsOrderMinPrice.docs[x]["title"]) {
-        print("'Chat.dart': Esse mesmo: $search");
+  Future search(String search) async {
+    //---- Manter a váriavel limpa para novas pesquisas
+    produtoPesquisado.clear();
+
+    for (var x = 0; x < produtosNoCarrinho.length; x++) {
+      if (await produtosNoCarrinho[x]["title"].contains(search)) {
+        print("'Chat.dart': Igual a: $search");
+        produtoPesquisado.add(produtosNoCarrinho[x]);
         setState(() {
-          produtoPesquisado.add(productsOrderMinPrice.docs[x].data());
           pesquisa = true;
         });
-        return produtoPesquisado;
-      } else if (x == productsOrderMinPrice.docs.length - 1) {
-        print("Não tem : (");
-        return search;
       }
     }
+    return produtoPesquisado;
+  }
+
+  setSizeScreen(Size size) {
+    setState(() {
+      if (animated == true) {
+        height = size.height * 0.37;
+      } else {
+        height = size.height * 0.28;
+      }
+    });
   }
 
   @override
   void initState() {
     print("---------------------- Store.dart-------------");
     user = widget.user;
-    setState(() {
-      produtosNoCarrinho.clear();
-    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    setSizeScreen(size);
     return Scaffold(
         backgroundColor: Colors.green,
         key: key,
@@ -92,7 +102,10 @@ class _StoreState extends State<Store> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                  padding: EdgeInsets.only(top: 30, left: 20, right: 20),
+                  padding: EdgeInsets.only(
+                      top: size.height * 0.035,
+                      left: size.width * 0.05,
+                      right: size.width * 0.05),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(40),
                     child: Container(
@@ -110,15 +123,7 @@ class _StoreState extends State<Store> {
                                 setState(() {
                                   animated = !animated;
                                 });
-                                if (animated == true) {
-                                  setState(() {
-                                    height = 70;
-                                  });
-                                } else {
-                                  setState(() {
-                                    height = 0;
-                                  });
-                                }
+                                setSizeScreen(size);
                               }),
                           IconButton(
                               icon: Icon(
@@ -128,12 +133,7 @@ class _StoreState extends State<Store> {
                               tooltip: "Favorite",
                               onPressed: () {
                                 produtosNoCarrinho.forEach((element) {
-                                  if (element["checbox"] == true) {
-                                    setState(() {
-                                      element["favorite"] =
-                                          !element["favorite"];
-                                    });
-                                  }
+                                  print(element);
                                 });
                               }),
                           IconButton(
@@ -143,8 +143,9 @@ class _StoreState extends State<Store> {
                               ),
                               tooltip: "Clear",
                               onPressed: () {
-                                produtosNoCarrinho.removeWhere(
-                                    (element) => element["checbox"] == true);
+                                produtosNoCarrinho.removeWhere((element) {
+                                  print(element);
+                                });
                               }),
                           IconButton(
                               icon: Icon(
@@ -154,15 +155,7 @@ class _StoreState extends State<Store> {
                               tooltip: "Select all",
                               onPressed: () {
                                 produtosNoCarrinho.forEach((element) {
-                                  if (element["checbox"] == false) {
-                                    setState(() {
-                                      element["checbox"] = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      element["checbox"] = false;
-                                    });
-                                  }
+                                  print(element);
                                 });
                               }),
                         ],
@@ -173,7 +166,10 @@ class _StoreState extends State<Store> {
                   firstChild: Text(""),
                   secondChild: Padding(
                     padding: EdgeInsets.only(
-                        top: 20, bottom: 30, left: 30, right: 30),
+                        top: size.height * 0.024,
+                        bottom: size.height * 0.032,
+                        left: size.width * 0.08,
+                        right: size.width * 0.08),
                     child: ClipRRect(
                       child: Container(
                         color: Colors.white,
@@ -222,103 +218,93 @@ class _StoreState extends State<Store> {
                             topRight: Radius.circular(60)),
                         child: Container(
                             color: Colors.white,
-                            width: 1000,
+                            width: size.width,
                             height: size.height <= 700
                                 ? size.height * 0.66 + height
-                                : size.height * 0.725 + height,
+                                : size.height <= 800
+                                    ? size.height * 0.725 + height
+                                    : size.height * 0.44 + height,
                             child: Column(children: [
                               Container(
-                                width: 1000,
+                                width: size.width,
                                 height: size.height <= 700
                                     ? size.height * 0.55 + height
-                                    : size.height * 0.64 + height,
+                                    : size.height <= 800
+                                        ? size.height * 0.64 + height
+                                        : size.height * 0.37 + height,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 20, right: 40),
+                                  padding: EdgeInsets.only(
+                                      left: size.width * 0.05,
+                                      right: size.width * 0.05),
                                   child: pesquisa == true
                                       ? ListView.builder(
                                           itemBuilder: (context, index) {
                                             return Dismissible(
-                                                onDismissed: (direction) {
-                                                  setState(() {
-                                                    produtosNoCarrinho.remove(
-                                                        produtoPesquisado[
-                                                            index]);
-                                                  });
-                                                  key.currentState
-                                                      .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                      "Excluido o produto: ${produtoPesquisado[index]["title"]}",
-                                                      style: TextStyle(
-                                                          color: Colors.green),
-                                                    ),
-                                                    duration:
-                                                        Duration(seconds: 3),
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                  ));
-                                                },
-                                                background: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: Container(
-                                                      color: Colors.red,
-                                                      child: Align(
-                                                        alignment:
-                                                            Alignment(-0.5, 0),
-                                                        child: Icon(
-                                                          Icons.delete,
-                                                          color: Colors.white,
-                                                        ),
-                                                      )),
+                                              onDismissed: (direction) {
+                                                key.currentState
+                                                    .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                    "Excluido o produto: ${produtoPesquisado[index]["title"]}",
+                                                  ),
+                                                  duration:
+                                                      Duration(seconds: 3),
+                                                  backgroundColor: Colors.white,
+                                                ));
+                                              },
+                                              background: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                child: Container(
+                                                    color: Colors.red,
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment(-0.5, 0),
+                                                      child: Icon(
+                                                        Icons.delete,
+                                                        color: Colors.white,
+                                                      ),
+                                                    )),
+                                              ),
+                                              direction:
+                                                  DismissDirection.startToEnd,
+                                              key: Key(
+                                                  DateTime.now().toString()),
+                                              child: ListTile(
+                                                title: Text(
+                                                    "${produtoPesquisado[index]["title"]}"),
+                                                subtitle: Text(
+                                                    "${produtoPesquisado[index]["subtitle"]}"),
+                                                contentPadding:
+                                                    EdgeInsets.all(10),
+                                                trailing: Text(
+                                                  "R\$${produtoPesquisado[index]["price"]}",
+                                                  style: TextStyle(
+                                                      color: Colors.green),
                                                 ),
-                                                direction:
-                                                    DismissDirection.startToEnd,
-                                                key: Key(
-                                                    DateTime.now().toString()),
-                                                child: CheckboxListTile(
-                                                    subtitle: IconButton(
-                                                        icon: Icon(
-                                                            Icons.favorite,
-                                                            color: produtoPesquisado[
-                                                                        index]
-                                                                    ["favorite"]
-                                                                ? Colors.green
-                                                                : Colors.black),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            produtoPesquisado[
-                                                                        index][
-                                                                    "favorite"] =
-                                                                !produtoPesquisado[
-                                                                        index][
-                                                                    "favorite"];
-                                                          });
-                                                        }),
-                                                    contentPadding:
-                                                        EdgeInsets.all(10),
-                                                    title: Text(
-                                                        produtoPesquisado[index]
-                                                            ["title"]),
-                                                    /*
-                                                  secondary: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      child: Image.file(
-                                                          File(produtoPesquisado[index]["image"]))),*/
-                                                    key: Key(DateTime.now()
-                                                        .toString()),
-                                                    value:
-                                                        produtoPesquisado[index]
-                                                            ["checbox"],
-                                                    checkColor: Colors.white,
-                                                    activeColor: Colors.green,
-                                                    onChanged: (v) {
-                                                      setState(() {
-                                                        produtoPesquisado[index]
-                                                            ["checbox"] = v;
-                                                      });
-                                                    }));
+                                                leading: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "${produtoPesquisado[index]["image"][0]}",
+                                                    filterQuality:
+                                                        FilterQuality.high,
+                                                    useOldImageOnUrlChange:
+                                                        true,
+                                                    width: size.width * 0.1,
+                                                    fit: BoxFit.cover,
+                                                    progressIndicatorBuilder:
+                                                        (context, child,
+                                                            loadingProgress) {
+                                                      return loadingProgress ==
+                                                              null
+                                                          ? child
+                                                          : LinearProgressIndicator();
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            );
                                           },
                                           itemCount: produtoPesquisado.length,
                                         )
@@ -326,14 +312,14 @@ class _StoreState extends State<Store> {
                                           itemCount: produtosNoCarrinho.length,
                                           itemBuilder: (context, index) {
                                             return Dismissible(
-                                                onDismissed: (direction) {
-                                                  setState(() {
-                                                    //Adicionar ainda o remover o ID do produto no usuário
-                                                  });
+                                                onDismissed: (direction) async {
+                                                  DatasUser().removeCarShop(
+                                                      await produtosNoCarrinho[
+                                                          index]["id"]);
                                                   key.currentState
                                                       .showSnackBar(SnackBar(
                                                     content: Text(
-                                                      "Excluido o produto: ${produtosNoCarrinho[index]["title"]}",
+                                                      "Removido de carrinho o produto: ${produtosNoCarrinho[index]["title"]}",
                                                       style: TextStyle(
                                                           color: Colors.green),
                                                     ),
@@ -375,11 +361,9 @@ class _StoreState extends State<Store> {
                                                                   .bottomToTop)),
                                                   child: ListTile(
                                                     title: Text(
-                                                        produtosNoCarrinho[
-                                                            index]["title"]),
+                                                        "${produtosNoCarrinho[index]["title"]}"),
                                                     subtitle: Text(
-                                                        produtosNoCarrinho[
-                                                            index]["subtitle"]),
+                                                        "${produtosNoCarrinho[index]["subtitle"]}"),
                                                     contentPadding:
                                                         EdgeInsets.all(10),
                                                     trailing: Text(
@@ -393,9 +377,7 @@ class _StoreState extends State<Store> {
                                                               10),
                                                       child: CachedNetworkImage(
                                                         imageUrl:
-                                                            produtosNoCarrinho[
-                                                                    index]
-                                                                ["image"][0],
+                                                            "${produtosNoCarrinho[index]["image"][0]}",
                                                         filterQuality:
                                                             FilterQuality.high,
                                                         useOldImageOnUrlChange:
@@ -426,8 +408,8 @@ class _StoreState extends State<Store> {
                                       borderRadius: BorderRadius.circular(60),
                                       child: RaisedButton(
                                         splashColor: Colors.white,
-                                        onPressed: () {
-                                          showModal(context);
+                                        onPressed: () async {
+                                          await showModal(context);
                                         },
                                         color: Colors.green,
                                         child: Text(
@@ -440,7 +422,10 @@ class _StoreState extends State<Store> {
                             ])));
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: CircularProgressIndicator(
+                      backgroundColor: Colors.green[100],
+                    ));
                   }
                 },
                 future: quantidadeProdutosNoCarrinho(),
