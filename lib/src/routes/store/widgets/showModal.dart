@@ -39,6 +39,7 @@ showModal({BuildContext context, List products}) {
 
   _buyProducts.calcPriceProduts(prices: prices);
   _buyProducts.calcShipping(ceps: ceps, products: products);
+
   return showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -64,8 +65,6 @@ showModal({BuildContext context, List products}) {
                       } else {
                         timer.cancel();
                       }
-
-                      print("Preço: $priceTotal");
                     });
                     return Container(
                         width: 1000,
