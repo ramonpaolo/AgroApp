@@ -1,16 +1,25 @@
 //---- Packages
-import 'package:agricultura/src/routes/user/functions/dialog_delete_user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:share/share.dart';
 
-showModalConf({
-  BuildContext context,
-  GoogleSignIn googleSignIn,
-  List myProduts,
-}) {
+//---- API
+import 'package:agricultura/src/firebase/api_firebase.dart';
+
+//---- Functions
+import 'package:agricultura/src/routes/user/functions/dialog_delete_user.dart';
+
+//---- Screens
+import 'package:agricultura/src/auth/Login.dart';
+
+showModalConf(
+    {BuildContext context,
+    GoogleSignIn googleSignIn,
+    List myProduts,
+    Map dataUser}) {
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -23,9 +32,30 @@ showModalConf({
               padding: EdgeInsets.all(40),
               color: Colors.white,
               width: 1000,
-              height: 1000,
+              height: 212,
               child: Column(
                 children: [
+                  Text("Bem vindo a configurações ${dataUser["name"]}"),
+                  Divider(color: Colors.white),
+                  TextButton.icon(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        await LocalUser().deleteData();
+                        try {
+                          await googleSignIn.signOut();
+                        } catch (e) {
+                          print(e);
+                        }
+                        await Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => Login()));
+                      },
+                      icon: Icon(
+                        Icons.logout,
+                        semanticLabel: "Logout",
+                      ),
+                      label: Text(
+                        "Logout",
+                      )),
                   TextButton.icon(
                       onPressed: () async {
                         await showDialogDeleteUser(
@@ -35,11 +65,11 @@ showModalConf({
                       },
                       icon: Icon(
                         Icons.delete,
-                        color: Colors.green,
+                        color: Colors.red,
                       ),
                       label: Text(
                         "Deletar conta",
-                        style: TextStyle(color: Colors.green),
+                        style: TextStyle(color: Colors.red),
                       ))
                 ],
               ),
