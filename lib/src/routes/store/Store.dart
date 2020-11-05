@@ -23,7 +23,6 @@ class _StoreState extends State<Store> {
   bool pesquisa = false;
 
   double height = 0.0;
-  DocumentSnapshot user;
 
   List produtosNoCarrinho = [];
   List produtoPesquisado = [];
@@ -35,6 +34,7 @@ class _StoreState extends State<Store> {
   //---- Functions
 
   Future quantidadeProdutosNoCarrinho() async {
+    DocumentSnapshot user;
     produtosNoCarrinho.clear();
 
     user = await dataUser.getDataUser();
@@ -86,7 +86,6 @@ class _StoreState extends State<Store> {
   @override
   void initState() {
     print("---------------------- Store.dart-------------");
-    user = widget.user;
     super.initState();
   }
 
