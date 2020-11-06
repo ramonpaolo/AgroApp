@@ -59,7 +59,7 @@ Widget construtor(List item, Size size) {
                               trailing: Column(
                                 children: [
                                   Text(
-                                      "R\$${item[index]["price"].toStringAsFixed(3)}",
+                                      "R\$${item[index]["price"].toString().replaceAll(".", ",")}",
                                       style: TextStyle(
                                           fontSize: 12, color: Colors.green)),
                                   Tooltip(

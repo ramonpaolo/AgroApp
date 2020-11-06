@@ -94,7 +94,7 @@ Widget sliverList(List item, Size size, String title) {
                                   subtitle: Text("${item[index]["subtitle"]}",
                                       style: TextStyle(fontSize: 12)),
                                   trailing: Text(
-                                    "R\$${item[index]["price"]}",
+                                    "R\$${item[index]["price"].toString().replaceAll(".", ",")}",
                                     style: TextStyle(
                                         color: Colors.green, fontSize: 14),
                                   ),
