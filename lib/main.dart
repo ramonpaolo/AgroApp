@@ -1,4 +1,5 @@
 //---- Packages
+import 'package:agricultura/src/firebase/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_splashscreen/simple_splashscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,6 +42,7 @@ class _IndexState extends State<Index> {
 
   Future _readData() async {
     try {
+      setState(() {});
       final file = await LocalUser().getData();
       setState(() {
         dataUser = jsonDecode(file.readAsStringSync());
@@ -56,6 +58,8 @@ class _IndexState extends State<Index> {
   void initState() {
     print("------------ main.dart------------");
     _readData();
+    configNotification();
+    receiveMessage();
     super.initState();
   }
 
@@ -64,7 +68,8 @@ class _IndexState extends State<Index> {
     return Simple_splashscreen(
         context: context,
         splashscreenWidget: Splash(),
-        gotoWidget: dataUser["email"] != null ? Nav() : Instruction(),
+        gotoWidget:
+            dataUser["email"] != null ? Nav(data: dataUser) : Instruction(),
         timerInSeconds: 2);
   }
 }

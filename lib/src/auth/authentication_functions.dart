@@ -34,10 +34,16 @@ class AuthenticationFunctions {
 
   //---- Functions
   Future searchUser() async {
-    dataUserr = await firebaseFirestore
-        .collection("users")
-        .doc(auth.currentUser.uid)
-        .get();
+    try {
+      dataUserr = await firebaseFirestore
+          .collection("users")
+          .doc(auth.currentUser.uid)
+          .get();
+
+      await saveData();
+    } catch (e) {
+      print("Usuário não achado");
+    }
   }
 
   Future<File> getData() async {
@@ -45,12 +51,7 @@ class AuthenticationFunctions {
     return File("${directory.path}/data.json");
   }
 
-  Future saveData(
-      {String name,
-      String email,
-      String password,
-      GoogleSignIn googleSignIn,
-      FirebaseAuth auth}) async {
+  Future saveData() async {
     final file = await getData();
 
     print("Dado do usuário: ${dataUserr.data()}");
@@ -79,8 +80,6 @@ class AuthenticationFunctions {
 
       await searchUser();
 
-      await saveData();
-
       User userr = FirebaseAuth.instance.currentUser;
 
       await userr.sendEmailVerification();
@@ -95,7 +94,10 @@ class AuthenticationFunctions {
                     onPressed: () => Navigator.pushAndRemoveUntil(
                         context,
                         PageTransition(
-                            child: Nav(), type: PageTransitionType.bottomToTop),
+                            child: Nav(
+                              data: dataUserr.data(),
+                            ),
+                            type: PageTransitionType.bottomToTop),
                         (route) => false),
                     child: Text("Ok"))
               ]));
@@ -151,11 +153,13 @@ class AuthenticationFunctions {
 
       await searchUser();
 
-      await saveData();
-
       await Navigator.pushAndRemoveUntil(
           context,
-          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop),
+          PageTransition(
+              child: Nav(
+                data: dataUserr.data(),
+              ),
+              type: PageTransitionType.bottomToTop),
           (route) => false);
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
@@ -178,7 +182,11 @@ class AuthenticationFunctions {
 
       Navigator.pushAndRemoveUntil(
           context,
-          PageTransition(child: Nav(), type: PageTransitionType.bottomToTop),
+          PageTransition(
+              child: Nav(
+                data: dataUserr.data(),
+              ),
+              type: PageTransitionType.bottomToTop),
           (route) => false);
     } catch (e) {
       print("Error 'loginAnonymous': $e");

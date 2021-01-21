@@ -15,7 +15,8 @@ import 'package:agricultura/src/routes/home/Home.dart';
 import 'package:agricultura/src/pages/widgets/showModal.dart';
 
 class Nav extends StatefulWidget {
-  Nav({Key key}) : super(key: key);
+  Nav({Key key, this.data}) : super(key: key);
+  final Map data;
   @override
   _NavState createState() => _NavState();
 }
@@ -25,57 +26,40 @@ class _NavState extends State<Nav> {
 
   int _page = 0;
 
-  Map data = {"email": null};
-
   LocalUser localUser = LocalUser();
-
-  Future _setData() async {
-    try {
-      data = await localUser.readData();
-      print(data);
-      return data;
-    } catch (e) {
-      print("Error _setData");
-      return null;
-    }
-  }
 
   setScreen(index) {
     try {
-      if (data["email"] == null) {
-        switch (index) {
-          case 0:
-            return Home();
-            break;
-          default:
-            return Anonimous();
-        }
-      } else {
-        switch (index) {
-          case 0:
-            return Home();
-            break;
-          case 1:
-            return Store(
-              user: user,
-            );
-            break;
-          case 2:
-            return User(data: data);
-            break;
-          default:
-            Home();
-        }
+      switch (index) {
+        case 0:
+          return Home();
+          break;
+        case 1:
+          return Store(
+            user: user,
+          );
+          break;
+        case 2:
+          return User(data: widget.data);
+          break;
+        default:
+          Home();
       }
     } catch (e) {
-      print("Error in setScreen");
+      switch (index) {
+        case 0:
+          return Home();
+          break;
+        default:
+          return Anonimous();
+      }
     }
   }
 
   @override
   void initState() {
     print("------------- Nav.dart ---------------");
-    _setData();
+
     super.initState();
   }
 
@@ -105,7 +89,7 @@ class _NavState extends State<Nav> {
                 ? FloatingActionButton(
                     backgroundColor: Colors.green,
                     onPressed: () {
-                      showModal(context, data, size);
+                      showModal(context, widget.data, size);
                     },
                     child: Icon(Icons.add),
                   )

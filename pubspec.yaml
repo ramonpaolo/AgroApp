@@ -36,7 +36,7 @@ dependencies:
   image_downloader: ^0.20.1
   share: ^0.6.5+3
   flutter_sparkline: ^0.1.0
-
+  firebase_messaging: ^6.0.13
 
   flutter:
     sdk: flutter
